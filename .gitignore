@@ -5,6 +5,7 @@ prompts/
 .env
 AGENTS.md
 projectworkflow.md
+memory.md
 
 # Python
 __pycache__/
