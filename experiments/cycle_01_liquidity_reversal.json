@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Short-Horizon Volume-Weighted Price Reversal",
+      "domain": "price_volume",
+      "economic_rationale": "Institutional liquidity shocks cause transient price overshoot over 1-to-5 day horizons. When price deviates sharply from VWAP or rolling averages accompanied by abnormal volume, liquidity replenishment by market makers causes predictable mean-reversion within subindustries.",
+      "expected_direction": "negative",
+      "intended_horizon": "5d",
+      "confounders": [
+        "sector_momentum",
+        "earnings_window",
+        "low_float_volatility"
+      ],
+      "falsification_test": "Signal produces negative Sharpe when holding horizon is extended past 10 days, or when subindustry neutralization is removed.",
+      "candidates": [
+        {
+          "expression": "-group_rank((close - vwap) / close, subindustry)",
+          "rationale": "Daily close-to-VWAP divergence normalized within subindustry",
+          "expected_direction": "negative"
+        },
+        {
+          "expression": "-group_rank(ts_delta(close, 3) * (volume / ts_mean(volume, 20)), subindustry)",
+          "rationale": "3-day price momentum weighted by abnormal volume surge relative to 20-day average",
+          "expected_direction": "negative"
+        },
+        {
+          "expression": "-group_rank(ts_rank((close - ts_mean(close, 10)) / ts_std_dev(close, 10), 5), subindustry)",
+          "rationale": "Rolling z-score of price relative to 10-day mean, smoothed over a 5-day window",
+          "expected_direction": "negative"
+        }
+      ]
+    }
+  ]
+}
