@@ -33,10 +33,18 @@ class Settings:
         self.data_sources_path: Path = CONFIGS_DIR / "data_sources.yaml"
 
         # Database URL
-        self.database_url: str = os.getenv(
+        raw_db_url = os.getenv(
             "DATABASE_URL",
             "postgresql://postgres:postgres@localhost:5432/worldquant_brain",
         )
+        # Strip ?schema= parameter if present, as psycopg/libpq does not recognize it
+        if "?schema=" in raw_db_url:
+            raw_db_url = raw_db_url.split("?schema=")[0]
+        # Prefer psycopg2 driver if raw postgresql:// is provided
+        if raw_db_url.startswith("postgresql://"):
+            raw_db_url = raw_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+
+        self.database_url: str = raw_db_url
         self.research_domain: str = os.getenv("RESEARCH_DOMAIN", "price_volume")
         self.log_level: str = os.getenv("LOG_LEVEL", "INFO")
 

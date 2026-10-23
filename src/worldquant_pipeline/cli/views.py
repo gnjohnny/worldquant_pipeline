@@ -20,9 +20,9 @@ def render_dashboard(
 ) -> None:
     """Render research status dashboard."""
     console.print()
-    console.print("[bold cyan]═══════════════════════════════════════════════════════════════[/bold cyan]")
+    console.print("[bold cyan]===============================================================[/bold cyan]")
     console.print("[bold cyan]            worldquant_pipeline Research Dashboard            [/bold cyan]")
-    console.print("[bold cyan]═══════════════════════════════════════════════════════════════[/bold cyan]\n")
+    console.print("[bold cyan]===============================================================[/bold cyan]\n")
 
     # Status summary table
     summary_table = Table(title="Candidate Alpha Pipeline Status", show_header=True, header_style="bold white")
@@ -111,14 +111,14 @@ def render_ingestion_report(report: IngestionReport) -> None:
     if report.errors:
         console.print("[bold red]Rejections / Errors:[/bold red]")
         for err in report.errors:
-            console.print(f"  • [yellow]{err['expression']}[/yellow]: [red]{err['reason']}[/red]")
+            console.print(f"  - [yellow]{err['expression']}[/yellow]: [red]{err['reason']}[/red]")
         console.print()
 
 
 def render_simulation_card(card: SimulationCard) -> None:
     """Render simulation parameters ready for WorldQuant BRAIN web platform."""
     console.print()
-    console.print(f"[bold cyan]WorldQuant BRAIN Simulation Card — Candidate `{card.candidate_id}`[/bold cyan]\n")
+    console.print(f"[bold cyan]WorldQuant BRAIN Simulation Card -- Candidate `{card.candidate_id}`[/bold cyan]\n")
 
     # Formula display panel
     expr_panel = Panel(
@@ -153,14 +153,14 @@ def render_simulation_card(card: SimulationCard) -> None:
 def render_gate_results(result: GateEvaluationResult) -> None:
     """Render evaluation gate results for recorded simulation metrics."""
     if result.passed:
-        console.print("[bold green]✓ Quality Gates Passed (G5 Robustness Check)[/bold green]")
+        console.print("[bold green][PASS] Quality Gates Passed (G5 Robustness Check)[/bold green]")
     else:
-        console.print("[bold red]✗ Quality Gate Failures Detected:[/bold red]")
+        console.print("[bold red][FAIL] Quality Gate Failures Detected:[/bold red]")
         for fail in result.failures:
-            console.print(f"  • [red]{fail}[/red]")
+            console.print(f"  - [red]{fail}[/red]")
 
     if result.warnings:
         console.print("[bold yellow]Warnings:[/bold yellow]")
         for warn in result.warnings:
-            console.print(f"  • [yellow]{warn}[/yellow]")
+            console.print(f"  - [yellow]{warn}[/yellow]")
     console.print()

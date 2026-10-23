@@ -211,7 +211,7 @@ def record(
         candidate.status = decision
         session.commit()
 
-        console.print(f"\n[bold green]✓ Successfully recorded experiment and decision ({decision})![/bold green]\n")
+        console.print(f"\n[bold green][SUCCESS] Successfully recorded experiment and decision ({decision})![/bold green]\n")
 
 
 def main() -> None:
