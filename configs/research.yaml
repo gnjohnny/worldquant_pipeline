@@ -1,0 +1,107 @@
+simulation_defaults:
+  region: "USA"
+  universe: "TOP3000"
+  delay: 1
+  decay: 4
+  neutralization: "SUBINDUSTRY"
+  truncation: 0.0100
+  paste_neutralization: "Subindustry"
+  unit_handling: "verify"
+
+quality_gates:
+  min_sharpe: 1.25
+  min_fitness: 1.00
+  max_turnover: 0.70
+  min_turnover: 0.01
+  max_drawdown: 0.25
+  max_correlation: 0.70
+
+operators:
+  # Time-series operators: [name, arity, description]
+  time_series:
+    - name: "ts_rank"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Time-series rank over d days"
+    - name: "ts_delay"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Value delayed by d days"
+    - name: "ts_delta"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "x - ts_delay(x, d)"
+    - name: "decay_linear"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Linear decay over d days"
+    - name: "ts_mean"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling average over d days"
+    - name: "ts_std_dev"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling standard deviation over d days"
+    - name: "ts_max"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling maximum over d days"
+    - name: "ts_min"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling minimum over d days"
+    - name: "ts_sum"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling sum over d days"
+    - name: "ts_correlation"
+      arity: 3
+      param_types: ["expression", "expression", "integer"]
+      description: "Rolling correlation between x and y over d days"
+    - name: "ts_covariance"
+      arity: 3
+      param_types: ["expression", "expression", "integer"]
+      description: "Rolling covariance between x and y over d days"
+
+  # Cross-sectional operators
+  cross_sectional:
+    - name: "rank"
+      arity: 1
+      param_types: ["expression"]
+      description: "Cross-sectional rank across the universe"
+    - name: "group_rank"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional rank within a group (e.g. subindustry)"
+    - name: "group_neutralize"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Neutralize expression relative to a group"
+    - name: "zscore"
+      arity: 1
+      param_types: ["expression"]
+      description: "Cross-sectional z-score (x - mean) / std"
+    - name: "normalize"
+      arity: 1
+      param_types: ["expression"]
+      description: "Scale expression to sum(abs(x)) = 1"
+
+  # Math & transformations
+  elementwise:
+    - name: "log"
+      arity: 1
+      param_types: ["expression"]
+      description: "Natural logarithm"
+    - name: "sign"
+      arity: 1
+      param_types: ["expression"]
+      description: "Sign of x (-1, 0, 1)"
+    - name: "abs"
+      arity: 1
+      param_types: ["expression"]
+      description: "Absolute value"
+    - name: "signed_power"
+      arity: 2
+      param_types: ["expression", "number"]
+      description: "sign(x) * (abs(x) ** y)"

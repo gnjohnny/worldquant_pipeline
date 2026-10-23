@@ -1,0 +1,115 @@
+fields:
+  # Price & Volume fields
+  - field_key: "close"
+    category: "price_volume"
+    description: "Daily closing price adjusted for splits and dividends"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "open"
+    category: "price_volume"
+    description: "Daily opening price adjusted"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "high"
+    category: "price_volume"
+    description: "Daily high price adjusted"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "low"
+    category: "price_volume"
+    description: "Daily low price adjusted"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "volume"
+    category: "price_volume"
+    description: "Daily trading volume in shares"
+    timing_delay: 1
+    unit: "shares"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "returns"
+    category: "price_volume"
+    description: "Daily total return (close to close)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "vwap"
+    category: "price_volume"
+    description: "Volume-weighted average price"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "sharesout"
+    category: "price_volume"
+    description: "Number of common shares outstanding"
+    timing_delay: 1
+    unit: "shares"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "cap"
+    category: "price_volume"
+    description: "Market capitalization (close * sharesout)"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  # Grouping & Classification fields
+  - field_key: "subindustry"
+    category: "group"
+    description: "GICS Subindustry classification code"
+    timing_delay: 1
+    unit: "code"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "industry"
+    category: "group"
+    description: "GICS Industry classification code"
+    timing_delay: 1
+    unit: "code"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "sector"
+    category: "group"
+    description: "GICS Sector classification code"
+    timing_delay: 1
+    unit: "code"
+    region: "USA"
+    permitted_use: true
+
+  # Fundamental fields
+  - field_key: "bookvalue_ps"
+    category: "fundamental"
+    description: "Book value per share (point in time)"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "ebitda"
+    category: "fundamental"
+    description: "Earnings before interest, taxes, depreciation, and amortization"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
