@@ -1,0 +1,24 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Relative Implied-to-Parkinson Volatility Risk Premium",
+      "domain": "option",
+      "economic_rationale": "Exploits the cross-sectional Volatility Risk Premium (VRP) by comparing long-dated call implied volatility (implied_volatility_call_720) against realized Parkinson high-low volatility (parkinson_volatility_120) with a 120-day backfill. Evaluating this ratio strictly within GICS Subindustry peers strips out sector-specific volatility clustering, isolating idiosyncratic options demand and institutional upside positioning.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "earnings_announcements",
+        "market_iv_crush",
+        "sector_dispersion"
+      ],
+      "falsification_test": "Alpha underperforms when option skew collapses or market realized volatility exceeds implied volatility during systemic crashes.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_720 / parkinson_volatility_120, 120), subindustry)",
+          "rationale": "Subindustry-neutralized Volatility Risk Premium (720d Call IV / 120d Parkinson Realized Volatility with 120d backfill)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

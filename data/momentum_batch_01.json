@@ -1,0 +1,62 @@
+{
+  "hypotheses": [
+    {
+      "title": "Risk-Adjusted Intermediate Momentum",
+      "domain": "momentum",
+      "economic_rationale": "Investors underreact to steady, consistent positive fundamental news drift, but overreact to lottery-like spikes. Scaling 20-day returns by historical realized return volatility isolates persistent drift and suppresses turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "market_beta",
+        "volatility_clustering",
+        "sector_momentum"
+      ],
+      "falsification_test": "Alpha performance degrades when realized volatility spikes or after controlling for broad market momentum.",
+      "candidates": [
+        {
+          "expression": "rank(ts_mean(returns, 20) / ts_std_dev(returns, 20))",
+          "rationale": "Standard 20-day risk-adjusted momentum (Sharpe momentum ratio)",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Lagged Risk-Adjusted Momentum",
+      "domain": "momentum",
+      "economic_rationale": "1-to-5 day price changes are frequently dominated by short-term microstructural reversal, order imbalance bounces, and liquidity provision. Delaying the 20-day Sharpe momentum calculation by 5 days isolates institutional accumulation while bypassing short-term bid-ask reversal.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_announcements",
+        "subindustry_drift"
+      ],
+      "falsification_test": "Signal underperforms standard unlagged momentum during sudden momentum regime transitions.",
+      "candidates": [
+        {
+          "expression": "rank(ts_delay(ts_mean(returns, 20) / ts_std_dev(returns, 20), 5))",
+          "rationale": "20-day Sharpe momentum lagged by 5 trading days to bypass short-term reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Quarterly High Proximity & Resistance Breakout",
+      "domain": "momentum",
+      "economic_rationale": "George and Hwang (2004) showed that proximity to historical intermediate price highs drives continuation due to investor anchoring bias. As price trades near its 60-day maximum, resistance dissolves, anchoring disappears, and prices drift upward.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "overbought_exhaustion",
+        "low_liquidity_gaps"
+      ],
+      "falsification_test": "Alpha demonstrates mean-reversion rather than continuation near quarterly highs across small-cap regimes.",
+      "candidates": [
+        {
+          "expression": "rank(close / ts_max(high, 60))",
+          "rationale": "Ratio of current closing price to 60-day maximum high price",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -43,6 +43,10 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Rolling standard deviation over d days"
+    - name: "ts_backfill"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Backfill missing values with the last valid value over d days"
     - name: "ts_max"
       arity: 2
       param_types: ["expression", "integer"]
@@ -51,6 +55,14 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Rolling minimum over d days"
+    - name: "ts_arg_max"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Relative index (days ago) of rolling maximum over d days"
+    - name: "ts_arg_min"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Relative index (days ago) of rolling minimum over d days"
     - name: "ts_sum"
       arity: 2
       param_types: ["expression", "integer"]

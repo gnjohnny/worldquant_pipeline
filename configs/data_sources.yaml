@@ -113,3 +113,350 @@ fields:
     unit: "USD"
     region: "USA"
     permitted_use: true
+
+  - field_key: "operating_income"
+    category: "fundamental"
+    description: "Operating income / earnings before interest and tax (point in time)"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  # Model Domain — Fundamental Scores (Derivative Ranks & Style Scores)
+  - field_key: "analyst_revision_rank_derivative"
+    category: "model_fundamental_scores"
+    description: "Daily-indicator variant of momentum capturing recent price moves and analyst estimate revisions"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "cashflow_efficiency_rank_derivative"
+    category: "model_fundamental_scores"
+    description: "Ranks stocks by their ability to generate cash flows and operational profitability"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "composite_factor_score_derivative"
+    category: "model_fundamental_scores"
+    description: "Momentum score based on analyst revisions; intraday variant"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "earnings_certainty_rank_derivative"
+    category: "model_fundamental_scores"
+    description: "Measures the sustainability and certainty of earnings quality"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "growth_potential_rank_derivative"
+    category: "model_fundamental_scores"
+    description: "Composite growth score qualifying the stock's expected medium-term growth potential"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "multi_factor_acceleration_score_derivative"
+    category: "model_fundamental_scores"
+    description: "Change in the acceleration of multi-factor score compared to previous period"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "multi_factor_static_score_derivative"
+    category: "model_fundamental_scores"
+    description: "Change in static multi-factor score compared to previous period"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "relative_valuation_rank_derivative"
+    category: "model_fundamental_scores"
+    description: "Assesses whether the stock is under or overpriced based on standard valuation multiples indicator variant"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_growth"
+    category: "model_fundamental_scores"
+    description: "Growth composite estimating expected medium-term growth potential (0-100)"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_momentum"
+    category: "model_fundamental_scores"
+    description: "Composite momentum measure reflecting recent price dynamics and analyst revisions"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_profitability"
+    category: "model_fundamental_scores"
+    description: "Profitability composite ranking firms by cash flows and operational efficiency (0-100)"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_quality"
+    category: "model_fundamental_scores"
+    description: "Composite measuring earnings quality, stability, and balance-sheet resilience"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_surface"
+    category: "model_fundamental_scores"
+    description: "Static composite style surface score aggregating five primary style scores"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_surface_accel"
+    category: "model_fundamental_scores"
+    description: "Acceleration (derivative) of pentagon surface score relative to previous month"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_total"
+    category: "model_fundamental_scores"
+    description: "Blended composite M-Score combining static pentagon surface score and acceleration"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_bfl_value"
+    category: "model_fundamental_scores"
+    description: "Valuation composite indicating under/overpricing versus common valuation measures (0-100)"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_growth"
+    category: "model_fundamental_scores"
+    description: "Composite measuring expected medium-term growth potential"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_momentum"
+    category: "model_fundamental_scores"
+    description: "Composite momentum metric focused on recent analyst estimate revisions"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_profitability"
+    category: "model_fundamental_scores"
+    description: "Composite ranking stocks by ability to generate cash flows and operational profitability"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_quality"
+    category: "model_fundamental_scores"
+    description: "Composite measuring sustainability and certainty of earnings"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_surface"
+    category: "model_fundamental_scores"
+    description: "Static overall style surface score combining Value, Growth, Profitability, Momentum, Quality"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_surface_accel"
+    category: "model_fundamental_scores"
+    description: "Acceleration (derivative) of pentagon surface score versus previous month"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_total"
+    category: "model_fundamental_scores"
+    description: "Final blended score combining static pentagon surface score with acceleration"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "fscore_value"
+    category: "model_fundamental_scores"
+    description: "Composite assessing whether stock is under/overpriced using standard valuation multiples"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  # Model Domain — Systematic Risk Metrics (SPY Betas, Correlation, Systematic & Idiosyncratic Risk)
+  - field_key: "beta_last_30_days_spy"
+    category: "model_systematic_risk"
+    description: "Rolling beta of security relative to SPY over last 30 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "beta_last_60_days_spy"
+    category: "model_systematic_risk"
+    description: "Rolling beta of security relative to SPY over last 60 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "beta_last_90_days_spy"
+    category: "model_systematic_risk"
+    description: "Rolling beta of security relative to SPY over last 90 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "beta_last_360_days_spy"
+    category: "model_systematic_risk"
+    description: "Rolling beta of security relative to SPY over last 360 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "correlation_last_30_days_spy"
+    category: "model_systematic_risk"
+    description: "Pearson correlation coefficient of daily log returns with SPY over last 30 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "correlation_last_60_days_spy"
+    category: "model_systematic_risk"
+    description: "Pearson correlation coefficient of daily log returns with SPY over last 60 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "correlation_last_90_days_spy"
+    category: "model_systematic_risk"
+    description: "Pearson correlation coefficient of daily log returns with SPY over last 90 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "correlation_last_360_days_spy"
+    category: "model_systematic_risk"
+    description: "Pearson correlation coefficient of daily log returns with SPY over last 360 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "systematic_risk_last_30_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance attributed to systematic risk (R^2 to SPY) over last 30 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "systematic_risk_last_60_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance attributed to systematic risk (R^2 to SPY) over last 60 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "systematic_risk_last_90_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance attributed to systematic risk (R^2 to SPY) over last 90 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "systematic_risk_last_360_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance attributed to systematic risk (R^2 to SPY) over last 360 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "unsystematic_risk_last_30_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 30 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "unsystematic_risk_last_60_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 60 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "unsystematic_risk_last_90_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 90 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "unsystematic_risk_last_360_days"
+    category: "model_systematic_risk"
+    description: "Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 360 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  # Option & Volatility Fields
+  - field_key: "implied_volatility_call_720"
+    category: "option"
+    description: "720-day call implied volatility"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "parkinson_volatility_120"
+    category: "option"
+    description: "120-day realized Parkinson high-low volatility"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
