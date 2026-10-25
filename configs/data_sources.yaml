@@ -460,3 +460,20 @@ fields:
     unit: "ratio"
     region: "USA"
     permitted_use: true
+
+  # Sentiment & News Fields
+  - field_key: "scl12_buzz"
+    category: "sentiment"
+    description: "Social media buzz volume score"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "nws12_afterhsz_sl"
+    category: "news"
+    description: "After-hours news sentiment level vector"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true

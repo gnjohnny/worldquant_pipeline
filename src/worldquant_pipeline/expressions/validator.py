@@ -13,6 +13,7 @@ from worldquant_pipeline.expressions.ast_nodes import (
     ExpressionNode,
     FieldNode,
     FunctionCallNode,
+    KeywordArgNode,
     LiteralNode,
     TernaryNode,
     UnaryOperationNode,
@@ -99,10 +100,20 @@ class ExpressionValidator:
                                     errors.append(
                                         f"Argument {i+1} for '{op_name}' must be a positive integer, got negative expression."
                                     )
+                            elif ptype == "string":
+                                val_node = arg.value if isinstance(arg, KeywordArgNode) else arg
+                                if not (isinstance(val_node, LiteralNode) and isinstance(val_node.value, str)):
+                                    errors.append(
+                                        f"Argument {i+1} for '{op_name}' must be a string or keyword string parameter."
+                                    )
 
                 for arg in current.args:
                     sub_d = traverse(arg, depth + 1)
                     max_d = max(max_d, sub_d)
+
+            elif isinstance(current, KeywordArgNode):
+                sub_d = traverse(current.value, depth + 1)
+                max_d = max(max_d, sub_d)
 
             elif isinstance(current, BinaryOperationNode):
                 d1 = traverse(current.left, depth + 1)

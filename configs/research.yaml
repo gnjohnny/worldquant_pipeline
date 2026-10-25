@@ -35,6 +35,10 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Linear decay over d days"
+    - name: "ts_decay_linear"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Linearly weighted moving average over d days"
     - name: "ts_mean"
       arity: 2
       param_types: ["expression", "integer"]
@@ -75,6 +79,10 @@ operators:
       arity: 3
       param_types: ["expression", "expression", "integer"]
       description: "Rolling covariance between x and y over d days"
+    - name: "ts_regression"
+      arity: 3
+      param_types: ["expression", "expression", "integer"]
+      description: "Rolling linear regression residual of y on x over d days"
 
   # Cross-sectional operators
   cross_sectional:
@@ -98,6 +106,18 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Scale expression to sum(abs(x)) = 1"
+    - name: "densify"
+      arity: 1
+      param_types: ["expression"]
+      description: "Densifies sparse group indexes into contiguous active memory buckets"
+    - name: "bucket"
+      arity: 2
+      param_types: ["expression", "string"]
+      description: "Converts continuous float vector into discrete categorical buckets"
+    - name: "vec_avg"
+      arity: 1
+      param_types: ["expression"]
+      description: "Computes arithmetic mean across elements of a vector data field"
 
   # Math & transformations
   elementwise:

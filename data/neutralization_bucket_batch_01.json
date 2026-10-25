@@ -1,0 +1,64 @@
+{
+  "hypotheses": [
+    {
+      "title": "Market Capitalization Decile Neutralized Volume-Shock Reversal",
+      "domain": "price_volume",
+      "economic_rationale": "Short-term mean reversion following heavy trading volume is distorted by market capitalization skew: small caps suffer wide bid-ask bounces and high volatility, whereas large caps react stably. Discretizing equities into 10 capitalization deciles using densify(bucket(rank(cap), range='0, 1, 0.1')) and group-neutralizing the volume-scaled 3-day return delta removes size factor dominance, isolating pure institutional liquidity rebalancing.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "earnings_announcements",
+        "macro_gap_openings",
+        "microcap_illiquidity"
+      ],
+      "falsification_test": "Alpha fails during broad momentum runaways where volume breakouts continue trending without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(-(ts_delta(close, 3) / close) * ts_rank(volume, 60), densify(bucket(rank(cap), range=\"0, 1, 0.1\")))",
+          "rationale": "Size-decile neutralized 3-day percentage delta scaled by 60-day volume rank",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Volatility Decile Neutralized Call IV to Parkinson Volatility Spread",
+      "domain": "option",
+      "economic_rationale": "Implied volatility premiums naturally vary across volatility regimes: high-beta growth stocks command persistent speculative option markups, while low-beta value stocks experience compressed premiums. Discretizing equities into 10 Parkinson volatility deciles using densify(bucket(rank(parkinson_volatility_120), range='0, 1, 0.1')) and neutralizing the IV/Parkinson volatility ratio eliminates macro volatility clustering, capturing true contract mispricing across peers.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "systemic_vix_spikes",
+        "earnings_implied_vol_crush",
+        "options_liquidity_gaps"
+      ],
+      "falsification_test": "Fails when realized volatility violently surpasses implied volatility across all equities in market-wide panic.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_backfill(implied_volatility_call_720 / parkinson_volatility_120, 120), densify(bucket(rank(parkinson_volatility_120), range=\"0, 1, 0.1\")))",
+          "rationale": "Volatility-decile neutralized 720-day Call IV / 120-day Parkinson Volatility ratio with 120-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Trading Liquidity Decile Neutralized Fundamental Factor Acceleration",
+      "domain": "model",
+      "economic_rationale": "Multi-factor fundamental acceleration reflects revisions in earnings and operational momentum. This information diffuses at different velocities across liquidity tiers: mega-volume equities price revisions rapidly, whereas medium-volume names demonstrate persistent multi-week drift. Neutralizing multi-factor acceleration scores across 10 20-day volume deciles ensures signal weights are balanced evenly across liquidity regimes.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "analyst_estimate_lag",
+        "earnings_calendar_clustering",
+        "liquidity_regime_shifts"
+      ],
+      "falsification_test": "Fails when analyst revision acceleration reverses abruptly due to macro revisions.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(multi_factor_acceleration_score_derivative, densify(bucket(rank(ts_mean(volume, 20)), range=\"0, 1, 0.1\")))",
+          "rationale": "Liquidity-decile neutralized multi-factor fundamental acceleration score",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

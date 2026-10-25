@@ -6,6 +6,7 @@ from worldquant_pipeline.expressions.ast_nodes import (
     ExpressionNode,
     FieldNode,
     FunctionCallNode,
+    KeywordArgNode,
     LiteralNode,
     TernaryNode,
     UnaryOperationNode,
@@ -23,7 +24,12 @@ def canonicalize_node(node: ExpressionNode) -> str:
             if node.value.is_integer():
                 return str(int(node.value))
             return f"{node.value:.6g}"
+        if isinstance(node.value, str):
+            return f'"{node.value}"'
         return str(node.value)
+
+    if isinstance(node, KeywordArgNode):
+        return f"{node.name.lower()}={canonicalize_node(node.value)}"
 
     if isinstance(node, FieldNode):
         return node.name.lower()

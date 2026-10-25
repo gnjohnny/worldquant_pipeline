@@ -17,7 +17,19 @@ class LiteralNode(ExpressionNode):
     value: int | float | str
 
     def to_string(self) -> str:
+        if isinstance(self.value, str):
+            return f'"{self.value}"'
         return str(self.value)
+
+
+@dataclass
+class KeywordArgNode(ExpressionNode):
+    """Represents a named keyword argument (e.g. range="0, 1, 0.1", buckets="1, 2, 3")."""
+    name: str
+    value: ExpressionNode
+
+    def to_string(self) -> str:
+        return f"{self.name}={self.value.to_string()}"
 
 
 @dataclass

@@ -6,6 +6,7 @@ from worldquant_pipeline.expressions.ast_nodes import (
     ExpressionNode,
     FieldNode,
     FunctionCallNode,
+    KeywordArgNode,
     LiteralNode,
     TernaryNode,
     UnaryOperationNode,
@@ -127,9 +128,9 @@ class Parser:
                 # Function call
                 args: list[ExpressionNode] = []
                 if not self._check(TokenType.RPAREN):
-                    args.append(self._expression())
+                    args.append(self._function_argument())
                     while self._match(TokenType.COMMA):
-                        args.append(self._expression())
+                        args.append(self._function_argument())
                 self._consume(TokenType.RPAREN, f"Expected ')' after arguments for '{name}'")
                 return FunctionCallNode(name=name, args=args)
             return FieldNode(name=name)
@@ -146,6 +147,18 @@ class Parser:
             position=token.position,
             token=token.value,
         )
+
+    def _function_argument(self) -> ExpressionNode:
+        if (
+            self._check(TokenType.IDENTIFIER)
+            and self.current + 1 < len(self.tokens)
+            and self.tokens[self.current + 1].type == TokenType.ASSIGN
+        ):
+            param_name = self._advance().value
+            self._advance()  # consume '='
+            value_expr = self._expression()
+            return KeywordArgNode(name=param_name, value=value_expr)
+        return self._expression()
 
     # --- Helper Methods ---
 

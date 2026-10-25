@@ -26,6 +26,7 @@ class TokenType(Enum):
     QUESTION = auto()
     COLON = auto()
     COMMA = auto()
+    ASSIGN = auto()
     LPAREN = auto()
     RPAREN = auto()
     EOF = auto()
@@ -62,6 +63,7 @@ class Tokenizer:
         "?": TokenType.QUESTION,
         ":": TokenType.COLON,
         ",": TokenType.COMMA,
+        "=": TokenType.ASSIGN,
         "(": TokenType.LPAREN,
         ")": TokenType.RPAREN,
     }
