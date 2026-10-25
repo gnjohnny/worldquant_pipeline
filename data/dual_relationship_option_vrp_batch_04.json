@@ -1,0 +1,42 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dual-Alpha Dynamic Synergy: Customer Return Inversion & Short-Term Delta",
+      "domain": "relationship",
+      "economic_rationale": "Dynamically branches between the 10-day linearly decayed customer return reversal signal and 3-day short-term price mean-reversion. Exploits supply chain information friction when customer signals are pronounced, and fills neutral periods with high-conviction subindustry mean-reversion to maximize Sharpe and Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "macro_liquidity_shocks",
+        "earnings_clustering"
+      ],
+      "falsification_test": "Alpha fails if branching reduces Sharpe below 1.0 or increases turnover beyond 25%.",
+      "candidates": [
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.5 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_delta(close, 3) / close), subindustry)",
+          "rationale": "Dual dynamic branching of customer momentum inversion and 3-day close delta",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Short-Dated Option Volatility Risk Premium (10d Call IV / 20d Historical Vol)",
+      "domain": "option",
+      "economic_rationale": "Exploits short-term Volatility Risk Premium (VRP) by comparing 10-day call implied volatility against 20-day historical realized close-to-close volatility within GICS subindustries. High call IV relative to realized volatility captures institutional upside hedging demand and volatility risk premia.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "earnings_iv_crush",
+        "systemic_crash_volatility_spikes"
+      ],
+      "falsification_test": "Alpha fails if short-term IV is structurally depressed below realized volatility across subindustries.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_10 / historical_volatility_20, 20), subindustry)",
+          "rationale": "Subindustry-relative short-dated call IV over 20-day realized volatility with 20-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

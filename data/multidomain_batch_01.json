@@ -1,0 +1,64 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Standardized Earnings Surprise (SUE) Drift",
+      "domain": "analyst",
+      "economic_rationale": "Captures Post-Earnings Announcement Drift (PEAD). When quarterly actual EPS exceeds the consensus forecast mean, stock prices adjust gradually due to institutional conservatism and investor underreaction. Normalizing by close price ensures cross-sectional comparability, while a 60-day backfill captures the full quarterly drift cycle.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_release_timing",
+        "market_macro_regime",
+        "sector_cyclicality"
+      ],
+      "falsification_test": "Alpha breaks down if returns fail to persist beyond 5 days post-announcement or if surprise drift reverses within the same quarter.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill((actual_eps_value_quarterly - anl4_afv4_eps_mean) / close, 60), subindustry)",
+          "rationale": "Subindustry-relative standardized earnings surprise with 60-day quarterly backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Customer Return Momentum Spillover across Supply Chain",
+      "domain": "relationship",
+      "economic_rationale": "Exploits information propagation delays across customer-supplier networks. Investors trade customers first upon positive demand shocks, but lag in adjusting supplier valuations. Aggregating 10 days of positive customer return signals creates a robust leading indicator for supplier performance.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "customer_concentration_risk",
+        "vertical_integration",
+        "macro_liquidity_shocks"
+      ],
+      "falsification_test": "Fails if customer momentum does not lead supplier returns or if downstream shocks are absorbed by pricing power imbalances.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(ts_sum(pv13_custretsig_retsig, 10), 5), subindustry)",
+          "rationale": "Subindustry-neutralized cumulative customer return momentum with 5-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Volatility Term Structure Panic Mean Reversion",
+      "domain": "volatility",
+      "economic_rationale": "Exploits term-structure slope distortions during liquidity and hedging crunches. Normal volatility curves slope upwards (contango). When short-term 20-day volatility spikes above the 180-day baseline due to localized panic, the curve inverts. Inverting this ratio within subindustries captures the systematic mean-reversion as liquidity returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "structural_default_risk",
+        "prolonged_bear_market",
+        "volatility_regime_shifts"
+      ],
+      "falsification_test": "Fails if high short-term volatility reflects permanent solvency distress rather than transitory liquidity-driven overreaction.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_backfill(historical_volatility_20 / historical_volatility_180, 20), subindustry)",
+          "rationale": "Subindustry-relative inverted 20d/180d volatility ratio with 20-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

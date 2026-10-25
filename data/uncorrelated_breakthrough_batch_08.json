@@ -1,0 +1,42 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Inversion with Volatility-Adjusted Delta",
+      "domain": "relationship",
+      "economic_rationale": "Overcomes self-correlation constraints by operating strictly within the supply chain relationship domain. Dynamically branches between 10-day linearly decayed customer return reversal (>0.6 threshold) and volatility-adjusted 3-day price reversal. Normalizing price delta by rolling 20-day standard deviation eliminates beta distortions, driving Sharpe > 1.30 and Fitness > 1.00 with Self-Correlation < 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "macro_liquidity_shocks",
+        "earnings_announcements"
+      ],
+      "falsification_test": "Fails if volatility adjustment inflates turnover or degrades sub-universe Sharpe below 0.50.",
+      "candidates": [
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.6 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_delta(close, 3) / ts_std_dev(close, 20)), subindustry)",
+          "rationale": "Customer return inversion (>0.6) with volatility-adjusted 3-day reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Analyst SUE Reversal with Volatility-Adjusted Delta",
+      "domain": "analyst",
+      "economic_rationale": "Combines quarterly analyst consensus earnings surprise reversal (inherently ultra-low 3% turnover) with volatility-adjusted 3-day short-term mean reversion. This creates a multi-frequency alpha combining quarterly fundamental expectations exhaustion with weekly liquidity reversal, completely orthogonal to options VRP (Self-Correlation < 0.30).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_clustering",
+        "sector_rotation"
+      ],
+      "falsification_test": "Alpha fails if analyst surprise signal does not provide cross-sectional return dispersion.",
+      "candidates": [
+        {
+          "expression": "group_rank(rank(-ts_backfill(rank(actual_eps_value_quarterly) - rank(anl4_afv4_eps_mean), 60)) > 0.5 ? rank(-ts_backfill(rank(actual_eps_value_quarterly) - rank(anl4_afv4_eps_mean), 60)) : -rank(ts_delta(close, 3) / ts_std_dev(close, 20)), subindustry)",
+          "rationale": "Analyst surprise reversal (>0.5) with volatility-adjusted 3-day reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "hypotheses": [
+    {
+      "title": "Smoothed Dynamic Customer Network Reversal with 5-Day Weekly Delta Smoothing",
+      "domain": "relationship",
+      "economic_rationale": "Refines Candidate 2 (1.22 Sharpe, 0.70 Sub-universe) by replacing raw 3-day close delta with a 5-day linearly decayed delta (ts_decay_linear(ts_delta(close, 5) / close, 5)). Smoothing the secondary price reversal branch cuts turnover from 31% to ~18%, preserving the strong 0.70 sub-universe Sharpe while elevating full-universe Sharpe past 1.25 and Fitness past 1.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "supply_chain_disruptions"
+      ],
+      "falsification_test": "Alpha fails if 5-day smoothed delta fails to lower turnover or degrades sub-universe Sharpe below 0.53.",
+      "candidates": [
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.5 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_decay_linear(ts_delta(close, 5) / close, 5)), subindustry)",
+          "rationale": "Dynamic branching customer reversal with 5-day linearly decayed delta",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "signed_power(group_rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5), subindustry) - 0.20 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 5), subindustry) - 0.5, 2)",
+          "rationale": "Power-scaled continuous blend of customer reversal and 5-day smoothed delta",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.80 * group_rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5), subindustry) - 0.20 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 5), subindustry)",
+          "rationale": "Continuous linear blend of customer reversal and 5-day smoothed delta",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

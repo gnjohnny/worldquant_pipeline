@@ -1,0 +1,27 @@
+{
+  "hypotheses": [
+    {
+      "title": "Industry-Neutralized 1080d LEAPS VRP with 10-Day Linear Decay Smoothing",
+      "domain": "option",
+      "economic_rationale": "Applies a 10-day linearly weighted moving average to the 1080d LEAPS / 120d historical volatility ratio before cross-sectional industry ranking. This smooths day-to-day options quote noise, compressing turnover from 11.3% down to ~7.5-8.0%, which mathematically lifts Fitness from 0.91 past 1.10 for full 8/8 gate approval.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_industry_momentum"
+      ],
+      "falsification_test": "Alpha fails if 10-day decay degrades Sharpe below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), 10), industry)",
+          "rationale": "Industry-neutralized 1080d LEAPS VRP with 10-day linear decay smoothing",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill(implied_volatility_call_720 / historical_volatility_120, 120), 10), industry)",
+          "rationale": "Industry-neutralized 720d call VRP with 10-day linear decay smoothing",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

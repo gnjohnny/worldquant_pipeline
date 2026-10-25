@@ -1,0 +1,32 @@
+{
+  "hypotheses": [
+    {
+      "title": "Power-Scaled Tail Amplification of Industry LEAPS VRP",
+      "domain": "option",
+      "economic_rationale": "Applies signed_power(rank - 0.5, 2) to amplify high-conviction extreme options mispricings while suppressing middle uninformative noise. This expands the return spread of long-dated LEAPS VRP, directly boosting annualized margin and driving Fitness from 0.91 past 1.10 without increasing turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_industry_momentum"
+      ],
+      "falsification_test": "Alpha fails if non-linear power scaling causes weight concentration exceeding truncation limits.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), industry) - 0.5, 2)",
+          "rationale": "Quadratic power-scaled industry 1080d LEAPS VRP",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "signed_power(group_rank(ts_backfill(implied_volatility_call_720 / historical_volatility_120, 120), industry) - 0.5, 2)",
+          "rationale": "Quadratic power-scaled industry 720d call VRP",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_backfill((implied_volatility_call_720 + implied_volatility_call_1080) / (2 * historical_volatility_120), 120), industry)",
+          "rationale": "Blended dual-tenor (720d + 1080d) call VRP",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

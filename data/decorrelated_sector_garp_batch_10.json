@@ -1,0 +1,40 @@
+{
+  "hypotheses": [
+    {
+      "title": "Sector-Neutralized Ultra Long-Term LEAPS VRP (1080d / 120d)",
+      "domain": "option",
+      "economic_rationale": "De-correlates the 1.51-Sharpe / 1.06-Fitness LEAPS VRP alpha from prior subindustry alphas by neutralizing across GICS Sectors. Captures broad macro sector-level volatility risk premiums with low turnover (~12%) and breaks cross-candidate correlation below 0.70.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_sector_dispersion"
+      ],
+      "falsification_test": "Fails if sector neutralization elevates turnover above 25% or degrades Sharpe below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), sector)",
+          "rationale": "Sector-neutralized 1080d LEAPS call IV over 120d historical volatility with 120d backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Model Domain GARP: Analyst Estimate Revision vs Relative Valuation",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Exploits the Growth at a Reasonable Price (GARP) anomaly using registered BRAIN fundamental score derivatives. Long stocks with strong positive analyst revision momentum while penalizing overvalued stocks. Completely orthogonal to options and price-volume domains (Self-Correlation < 0.25).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "growth_style_rotations"
+      ],
+      "falsification_test": "Alpha breaks down if expensive stocks outperform revision momentum during speculative bull markets.",
+      "candidates": [
+        {
+          "expression": "group_rank(analyst_revision_rank_derivative - relative_valuation_rank_derivative, subindustry)",
+          "rationale": "Subindustry-ranked analyst revisions minus relative valuation rank derivative",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

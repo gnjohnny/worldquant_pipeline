@@ -1,0 +1,28 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dual Relationship Synergy with 5-Day Weekly Delta Reversal",
+      "domain": "relationship",
+      "economic_rationale": "Refines Candidate 1 by extending the short-term reversion window from 3 days to 5 days (1 trading week). Weekly price reversal reduces daily noise and suppresses portfolio turnover from 31% to under 20%, pushing Sharpe past 1.25 and Fitness past 1.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "macro_liquidity_shocks",
+        "earnings_clustering"
+      ],
+      "falsification_test": "Alpha fails if 5-day delta fails to lower turnover or degrades sub-universe Sharpe below 0.53.",
+      "candidates": [
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.5 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_delta(close, 5) / close), subindustry)",
+          "rationale": "Dual relationship synergy with 5-day weekly price delta",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.5 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_decay_linear(ts_delta(close, 5) / close, 3)), subindustry)",
+          "rationale": "Dual relationship synergy with smoothed 5-day weekly price delta",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

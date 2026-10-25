@@ -477,3 +477,2215 @@ fields:
     unit: "score"
     region: "USA"
     permitted_use: true
+
+  # -------------------------------------------------------------------------
+  # Price Volume Data for Equity (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "adjfactor"
+    category: "price_volume"
+    description: "Adjustment factor applied to historical prices and dividends to account for splits and other corporate actions"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "adv20"
+    category: "price_volume"
+    description: "Average daily volume in past 20 days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "country"
+    category: "price_volume"
+    description: "Country grouping"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "currency"
+    category: "price_volume"
+    description: "Currency"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "cusip"
+    category: "price_volume"
+    description: "CUSIP Value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "dividend"
+    category: "price_volume"
+    description: "Dividend"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "exchange"
+    category: "price_volume"
+    description: "Exchange grouping"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "isin"
+    category: "price_volume"
+    description: "ISIN Value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "market"
+    category: "price_volume"
+    description: "Market grouping"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+
+  # -------------------------------------------------------------------------
+  # Volatility Data (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "historical_volatility_10"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 10 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_120"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 120 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_150"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 150 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_180"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 180 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_20"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 20 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_30"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 30 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_60"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 60 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "historical_volatility_90"
+    category: "volatility"
+    description: "Historical close-to-close volatility for approximately 90 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_call_10"
+    category: "volatility"
+    description: "Implied volatility of the at-the-money call for the stock with an expiration 10 calendar days from the measurement date"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_call_1080"
+    category: "volatility"
+    description: "Implied volatility of the at-the-money call for the stock with an expiration 1080 calendar days from the measurement date"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_10"
+    category: "volatility"
+    description: "The average of IvCall10 and IvPut10"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_12"
+    category: "volatility"
+    description: "The average of IvCall120 and IvPut120"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_15"
+    category: "volatility"
+    description: "The average of IvCall150 and IvPut150"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_18"
+    category: "volatility"
+    description: "The average of IvCall180 and IvPut180"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_20"
+    category: "volatility"
+    description: "The average of IvCall20 and IvPut20"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_27"
+    category: "volatility"
+    description: "The average of IvCall270 and IvPut270"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_30"
+    category: "volatility"
+    description: "The average of IvCall30 and IvPut30"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_36"
+    category: "volatility"
+    description: "The average of IvCall360 and IvPut360"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_60"
+    category: "volatility"
+    description: "The average of IvCall60 and IvPut60"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_mean_sk"
+    category: "volatility"
+    description: "ew_360 Skew steepness for the implied volatility duration of 360 calendar days by subtracting the mean implied volatility of the call and put options with strikes at…"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_put_10"
+    category: "volatility"
+    description: "At-the-money implied volatility of put options with 10 calendar days to expiration, annualized decimal"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_put_1080"
+    category: "volatility"
+    description: "At-the-money implied volatility of put options with 1080 calendar days to expiration, annualized decimal"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_put_120"
+    category: "volatility"
+    description: "At-the-money implied volatility of put options with 120 calendar days to expiration, annualized decimal"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_put_150"
+    category: "volatility"
+    description: "At-the-money implied volatility of put options with 150 calendar days to expiration, annualized decimal"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "implied_volatility_put_180"
+    category: "volatility"
+    description: "At-the-money implied volatility of put options with 180 calendar days to expiration, annualized decimal"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+
+  # -------------------------------------------------------------------------
+  # Options Analytics (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "call_breakeven_10"
+    category: "option"
+    description: "Price at which a stock's call options with expiration 10 days in the future break even based on its recent bid/ask mean, weighted by open interest or volume"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_1080"
+    category: "option"
+    description: "Price at which a stock's call options with expiration 1080 days in the future break even based on its recent bid/ask mean."
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_120"
+    category: "option"
+    description: "Price at which a stock's call options with expiration 120 days in the future break even based on its recent bid/ask mean, weighted by open interest or volume"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_150"
+    category: "option"
+    description: "Price at which a stock's call options with expiration 150 days in the future break even based on its recent bid/ask mean, weighted by open interest or volume"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_180"
+    category: "option"
+    description: "Open-interest-weighted mean breakeven price at which buyers of call options break even for options expiring in 180 days"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_20"
+    category: "option"
+    description: "Open-interest-weighted average breakeven price of call options expiring in 20 days, representing the price at which call buyers break even"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_270"
+    category: "option"
+    description: "Price at which a stock's call options with expiration 270 days in the future break even based on its recent bid/ask mean"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "call_breakeven_30"
+    category: "option"
+    description: "Open-interest-weighted average breakeven price of call options expiring in 30 days, representing the price at which call buyers break even"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "forward_price_360"
+    category: "option"
+    description: "Synthetic forward price at 360 days derived from put-call parity using ATM call and put prices, reflecting the market- consensus forward expectation of the…"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "forward_price_60"
+    category: "option"
+    description: "Synthetic forward price at 60 days derived from at-the-money call and put options reflecting the market's forward expectation of the underlying security"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "forward_price_720"
+    category: "option"
+    description: "Synthetic forward price at 720 days derived from at-the-money call and put options reflecting the market's forward expectation of the underlying security"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "forward_price_90"
+    category: "option"
+    description: "Synthetic forward price at 90 days derived from put-call parity using ATM call and put prices, reflecting the market- consensus forward expectation of the…"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "option_breakeven_10"
+    category: "option"
+    description: "Open-interest-weighted mean breakeven price at which buyers of calls and puts combined break even for options expiring in 10 days"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "option_breakeven_1080"
+    category: "option"
+    description: "Open-interest-weighted mean breakeven price at which buyers of calls and puts combined break even for options expiring in 1080 days"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "option_breakeven_120"
+    category: "option"
+    description: "Weighted mean breakeven price for combined call and put options with expiration 120 days in the future, based on recent bid/ask mid-prices and…"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "option_breakeven_150"
+    category: "option"
+    description: "Price at which a stock's options with expiration 150 days in the future break even based on its recent bid/ask mean"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_180"
+    category: "option"
+    description: "Ratio of total put option open interest to call option open interest for options expiring in 180 days, representing longer- term positioning"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_20"
+    category: "option"
+    description: "Ratio of put open interest to call open interest on a stock's options with expiration 20 days in the future"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_270"
+    category: "option"
+    description: "Ratio of put open interest to call open interest for options expiring in 270 days, indicating longer-term position skew"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_30"
+    category: "option"
+    description: "Ratio of put open interest to call open interest for options expiring in 30 days, reflecting medium-term option positioning"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_360"
+    category: "option"
+    description: "Ratio of total put option open interest to call option open interest for options expiring in 360 days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_60"
+    category: "option"
+    description: "Ratio of put open interest to call open interest for options expiring in 60 days, reflecting medium-to-long term option positioning"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_720"
+    category: "option"
+    description: "Ratio of put open interest to call open interest for options expiring in 720 days, indicating very long-term option sentiment"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_90"
+    category: "option"
+    description: "Ratio of put open interest to call open interest for options expiring in 90 days, reflecting longer-term positioning"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_oi_all"
+    category: "option"
+    description: "Ratio of total put option open interest to call option open interest aggregated across all option maturities for the stock"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_vol_90"
+    category: "option"
+    description: "Ratio of put options volume to call options volume for stock options expiring in 90 days, indicating short-term options flow sentiment"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pcr_vol_all"
+    category: "option"
+    description: "Ratio of total put option volume to call option volume aggregated across all maturities, measuring short-term options flow sentiment"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "put_breakeven_10"
+    category: "option"
+    description: "Open interest-weighted mean breakeven price for put options expiring in 10 days, average price at which put buyers break even"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "put_breakeven_1080"
+    category: "option"
+    description: "Price at which a stock's put options with expiration 1080 days in the future break even based on its recent bid/ask mean"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "put_breakeven_120"
+    category: "option"
+    description: "Price at which a stock's put options with expiration 120 days in the future break even based on its recent bid/ask mean"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "put_breakeven_150"
+    category: "option"
+    description: "Open-interest-weighted mean breakeven price at which buyers of put options break even for options expiring in 150 days"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "put_breakeven_180"
+    category: "option"
+    description: "Weighted mean breakeven price of put options expiring in 180 days derived from open interest or volume, indicating the price at which put buyers break even"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "put_breakeven_20"
+    category: "option"
+    description: "Price at which a stock's put options with expiration 20 days in the future break even based on its recent bid/ask mean, weighted by open interest or volume"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+
+  # -------------------------------------------------------------------------
+  # Fundamental Scores (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "analyst_revision_rank_deri"
+    category: "model_fundamental_scores"
+    description: "vative Daily-indicator variant of momentum capturing recent price moves and analyst estimate revisions"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "cashflow_efficiency_rank_d"
+    category: "model_fundamental_scores"
+    description: "erivative Ranks stocks by their ability to generate cash flows and operational profitability"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "composite_factor_score_d"
+    category: "model_fundamental_scores"
+    description: "erivative Momentum score based on analyst revisions; intraday variant"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "earnings_certainty_rank_d"
+    category: "model_fundamental_scores"
+    description: "erivative Measures the sustainability and certainty of earnings quality"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+
+  # -------------------------------------------------------------------------
+  # Systematic Risk Metrics (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "correlation_last_30_days_s"
+    category: "model_systematic_risk"
+    description: "py The Pearson correlation coefficient of daily log returns between the security and SPY, calculated over the most recent 30 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "correlation_last_60_days_s"
+    category: "model_systematic_risk"
+    description: "py The Pearson correlation coefficient of daily log returns between the security and SPY, calculated over the most recent 60 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "correlation_last_90_days_s"
+    category: "model_systematic_risk"
+    description: "py The Pearson correlation coefficient of daily log returns between the security and SPY, calculated over the most recent 90 calendar days"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+
+  # -------------------------------------------------------------------------
+  # Analyst Estimate Data for Equity (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "actual_cashflow_per_share_value_quarterly"
+    category: "analyst"
+    description: "Cash Flow Per Share - actual value for the quarter"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "actual_dividend_value_qua"
+    category: "analyst"
+    description: "rterly Dividend - Actual value for the quarter"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "actual_eps_value_quarterly"
+    category: "analyst"
+    description: "Earnings Per Share (Income Statement/Per Share) (Actual)"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "actual_sales_value_annual"
+    category: "analyst"
+    description: "Sales - Actual Value"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "actual_sales_value_quarter"
+    category: "analyst"
+    description: "ly Sales - Value in financial services income statement (in millions)"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "actuals_reporting_currency"
+    category: "analyst"
+    description: "Home currency of instrument"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "actuals_value_currency_co"
+    category: "analyst"
+    description: "de Pricing Currency where the security trades"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "adj_net_income_avg"
+    category: "analyst"
+    description: "Average adjusted net profit, excluding non-recurring items, for the period."
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "adj_net_income_median"
+    category: "analyst"
+    description: "Median adjusted net profit, excluding non-recurring items, for the period."
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "adj_net_income_stddev"
+    category: "analyst"
+    description: "Standard deviation of adjusted net profit estimates, excluding non-recurring items."
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_adxqfv110_high"
+    category: "analyst"
+    description: "The highest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_adxqfv110_low"
+    category: "analyst"
+    description: "The lowest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_adxqfv110_mean"
+    category: "analyst"
+    description: "Mean of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_adxqfv110_median"
+    category: "analyst"
+    description: "Median of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_adxqfv110_numest"
+    category: "analyst"
+    description: "The number of forecasts counted in aggregation"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_adxqfv110_pu"
+    category: "analyst"
+    description: "The number of upper estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_down"
+    category: "analyst"
+    description: "Number of lower estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_high"
+    category: "analyst"
+    description: "The highest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_low"
+    category: "analyst"
+    description: "The lowest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_mean"
+    category: "analyst"
+    description: "Mean of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_median"
+    category: "analyst"
+    description: "Median of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_numest"
+    category: "analyst"
+    description: "The number of forecasts counted in aggregation"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_ady_pu"
+    category: "analyst"
+    description: "The number of upper estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_cfps_median"
+    category: "analyst"
+    description: "Cash Flow Per Share - Median value among forecasts for the annual frequency"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_cfps_number"
+    category: "analyst"
+    description: "Cash Flow Per Share - number of estimations for annual frequency"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_div_high"
+    category: "analyst"
+    description: "Dividend per share - The highest estimation for the annual forecast."
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_div_low"
+    category: "analyst"
+    description: "Dividend - The lowest estimation for the annual forecast"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_div_mean"
+    category: "analyst"
+    description: "Dividend per share - average of estimations for annual frequency"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_div_median"
+    category: "analyst"
+    description: "Dividend per share - Median value among forecasts"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_div_number"
+    category: "analyst"
+    description: "Number of estimations for Dividend per share - annually"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_div_std"
+    category: "analyst"
+    description: "Dividend per share - standard deviation of estimations"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_dts_spe"
+    category: "analyst"
+    description: "Earnings per share - standard deviation of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_eps_high"
+    category: "analyst"
+    description: "Earnings per share - The highest estimation"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_eps_low"
+    category: "analyst"
+    description: "Earnings per share - The lowest estimation for annual frequency"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_afv4_eps_mean"
+    category: "analyst"
+    description: "Earnings per share - mean of estimations for annual frequency"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bac1conqfv110_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bac1conrecv110_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bac1detailafv110_ite"
+    category: "analyst"
+    description: "m Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bac1detaillt_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bac1detailqfv110_ite"
+    category: "analyst"
+    description: "m Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bac1detailrec_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicafv4_actual"
+    category: "analyst"
+    description: "Announced financial data for the annual period."
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconafv110_dow"
+    category: "analyst"
+    description: "n Number of lower estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconafv110_high"
+    category: "analyst"
+    description: "The highest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconafv110_low"
+    category: "analyst"
+    description: "The lowest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconltv110_pu"
+    category: "analyst"
+    description: "The number of upper estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_dow"
+    category: "analyst"
+    description: "n Number of lower estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_high"
+    category: "analyst"
+    description: "The highest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_low"
+    category: "analyst"
+    description: "The lowest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_mea"
+    category: "analyst"
+    description: "n Mean of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_medi"
+    category: "analyst"
+    description: "an Median of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_num"
+    category: "analyst"
+    description: "est The number of forecasts counted in aggregation"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicconqfv110_pu"
+    category: "analyst"
+    description: "The number of upper estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicdetaillt_bk"
+    category: "analyst"
+    description: "Broker name (int)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicdetaillt_estvalue"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicdetaillt_person"
+    category: "analyst"
+    description: "Broker Id"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicqfv4_maxguidan"
+    category: "analyst"
+    description: "ce Max guidance value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_basicqfv4_minguidan"
+    category: "analyst"
+    description: "ce Min guidance value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_baz1v110_bk"
+    category: "analyst"
+    description: "Broker name (int)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_baz1v110_estvalue"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_baz1v110_person"
+    category: "analyst"
+    description: "Broker Id"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_baz1v110_prevval"
+    category: "analyst"
+    description: "The previous estimation of financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_buy"
+    category: "analyst"
+    description: "The number of recommendations to long the instrument"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bvps_flag"
+    category: "analyst"
+    description: "Book value per share - forecast type (revision/new/...)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bvps_high"
+    category: "analyst"
+    description: "Book value - the highest estimation, per share"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bvps_low"
+    category: "analyst"
+    description: "Book value - the lowest estimation, per share"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bvps_mean"
+    category: "analyst"
+    description: "Book value per share - average of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_bvps_median"
+    category: "analyst"
+    description: "Book value per share - Median value among forecasts"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_capex_value"
+    category: "analyst"
+    description: "Capital Expenditures - announced financial value"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_flag"
+    category: "analyst"
+    description: "Cash Flow From Financing Activities - forecast type (revision/new/...)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_high"
+    category: "analyst"
+    description: "Cash Flow From Financing - The highest of forecasted values"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_low"
+    category: "analyst"
+    description: "Cash Flow From Financing - The lowest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_mean"
+    category: "analyst"
+    description: "Cash Flow From Financing - mean of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_median"
+    category: "analyst"
+    description: "Cash Flow From Financing Activities - Median value among forecasts"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_number"
+    category: "analyst"
+    description: "Cash Flow From Financing - number of estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cff_value"
+    category: "analyst"
+    description: "Cash Flow From Financing - announced financial value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfi_flag"
+    category: "analyst"
+    description: "Cash Flow From Investing - forecast type (revision/new/...)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfi_high"
+    category: "analyst"
+    description: "Cash Flow From Investing - The highest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfi_low"
+    category: "analyst"
+    description: "Cash Flow From Investing - The lowest estimation"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfi_mean"
+    category: "analyst"
+    description: "Cash Flow From Investing - mean of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfi_median"
+    category: "analyst"
+    description: "Cash Flow From Investing - median of estimations"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfo_number"
+    category: "analyst"
+    description: "Cash Flow From Operations - number of estimations"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cfo_value"
+    category: "analyst"
+    description: "Cash Flow From Operations - announced financial value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1actualqfv110_act"
+    category: "analyst"
+    description: "ual Announced financial data"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1actualqfv110_ite"
+    category: "analyst"
+    description: "m Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1conafv110_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1conqfv110_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1detailafv110_ite"
+    category: "analyst"
+    description: "m Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1detailqfv110_ite"
+    category: "analyst"
+    description: "m Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1guidaf_item"
+    category: "analyst"
+    description: "Financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1guidaf_maxguid"
+    category: "analyst"
+    description: "ance Max guidance value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_cuo1guidaf_minguida"
+    category: "analyst"
+    description: "nce Minimum guidance value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_detailltv4v104_preest"
+    category: "analyst"
+    description: "The previous estimation of financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_detailrecv4_est"
+    category: "analyst"
+    description: "Estimation value for recommendation detail"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_detailrecv4v104_est"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1afv4_est"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1afv4_preest"
+    category: "analyst"
+    description: "The previous estimation of finanicial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1basicafv4_est"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1basicafv4_preest"
+    category: "analyst"
+    description: "The previous estimation of finanicial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1basicafv4v104_e"
+    category: "analyst"
+    description: "st Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1basicafv4v104_p"
+    category: "analyst"
+    description: "reest The previous estimation of financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1basicqfv4_est"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_dez1basicqfv4_preest"
+    category: "analyst"
+    description: "The previous estimation of finanicial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1laf_estvalue"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1laf_person"
+    category: "analyst"
+    description: "Broker Id"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1laf_prevval"
+    category: "analyst"
+    description: "The previous estimation of financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1lqfv110_bk"
+    category: "analyst"
+    description: "Broker name (int)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1lqfv110_estvalue"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1lqfv110_person"
+    category: "analyst"
+    description: "Broker Id"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz1lqfv110_prevval"
+    category: "analyst"
+    description: "The previous estimation of financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz2lafv110_bk"
+    category: "analyst"
+    description: "Broker name (int)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz2lafv110_estvalue"
+    category: "analyst"
+    description: "Estimation value"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz2lafv110_person"
+    category: "analyst"
+    description: "Broker Id"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz2lafv110_prevval"
+    category: "analyst"
+    description: "The previous estimation of financial item"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "anl4_eaz2lltv110_bk"
+    category: "analyst"
+    description: "Broker name (int)"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+
+  # -------------------------------------------------------------------------
+  # Relationship Data for Equity (from BRAIN Quant_data)
+  # -------------------------------------------------------------------------
+  - field_key: "primary_sector_focused_c"
+    category: "relationship"
+    description: "ompany_count Number of companies primarily focused in a given sector."
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_1l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_2l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_3l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_4l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_5l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_6l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_com_page_rank"
+    category: "relationship"
+    description: "the PageRank of competitors"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_com_rk_au"
+    category: "relationship"
+    description: "the HITS authority score of competitors"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_custretsig_retsig"
+    category: "relationship"
+    description: "Sign of customer return"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_di_5l"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_di_6l"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h2_min2_1k_sector"
+    category: "relationship"
+    description: "Grouping fields for top 1000"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min24_500_sector"
+    category: "relationship"
+    description: "Grouping fields for top 500"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min2_3000_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min2_focused_pur"
+    category: "relationship"
+    description: "eplay_3000_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min2_focused_sect"
+    category: "relationship"
+    description: "or Grouping fields for top 200"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min30_3000_mapp"
+    category: "relationship"
+    description: "ed_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min51_f3_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min52_1k_sector"
+    category: "relationship"
+    description: "Grouping fields for top 1000"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min52_3000_secto"
+    category: "relationship"
+    description: "r grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min5_3000_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_h_min5_500_sector"
+    category: "relationship"
+    description: "Grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min100_2"
+    category: "relationship"
+    description: "000_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min100_co"
+    category: "relationship"
+    description: "rr21_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min10_10"
+    category: "relationship"
+    description: "00_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min10_2k_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min10_2k_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min10_3k_all_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min10_51"
+    category: "relationship"
+    description: "3_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min10_ind"
+    category: "relationship"
+    description: "ustry_3000_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min22_10"
+    category: "relationship"
+    description: "00_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min22_51"
+    category: "relationship"
+    description: "3_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min22_sec"
+    category: "relationship"
+    description: "tor grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min25_51"
+    category: "relationship"
+    description: "3_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min25_sec"
+    category: "relationship"
+    description: "tor grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min2_100"
+    category: "relationship"
+    description: "0_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min2_300"
+    category: "relationship"
+    description: "0_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min2_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min2_focu"
+    category: "relationship"
+    description: "sed_only_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min40_30"
+    category: "relationship"
+    description: "00_513_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min50_f3_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f1_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f1_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f2_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f2_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f3_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f4_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min51_f4_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min52_1k_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_min5_sect"
+    category: "relationship"
+    description: "or grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchy_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchys32_513_se"
+    category: "relationship"
+    description: "ctor grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_hierarchys32_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_new_1l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_new_2l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_new_3l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_new_4l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_new_5l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_new_6l_scibr"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_ompetitorgraphrank_hub_rank"
+    category: "relationship"
+    description: "the HITS hub score of competitors"
+    timing_delay: 1
+    unit: "rank"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_r2_liquid_min10_sect"
+    category: "relationship"
+    description: "or grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_r2_min5_1000_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_r2_min5_3000_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rcsed_6l"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_city"
+    category: "relationship"
+    description: "City code"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_company_tot"
+    category: "relationship"
+    description: "al Total number of companies in the sector"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_comproduct_company"
+    category: "relationship"
+    description: "Company product"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_country"
+    category: "relationship"
+    description: "Country code"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_index_cap"
+    category: "relationship"
+    description: "Company market capitalization"
+    timing_delay: 1
+    unit: "USD"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_index_value"
+    category: "relationship"
+    description: "Value of specified index for the date"
+    timing_delay: 1
+    unit: "score"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_key_sector_to"
+    category: "relationship"
+    description: "tal Number of key focus sectors for the company"
+    timing_delay: 1
+    unit: "count"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_level"
+    category: "relationship"
+    description: "Level of the sector within the hierarchy"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_revere_parent"
+    category: "relationship"
+    description: "Code of parent sector"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min20_3000_51"
+    category: "relationship"
+    description: "3_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min20_513_sec"
+    category: "relationship"
+    description: "tor grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min20_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min2_1000_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min2_3000_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min2_513_sect"
+    category: "relationship"
+    description: "or grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min2_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min30_3000_51"
+    category: "relationship"
+    description: "3_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min40_3000_51"
+    category: "relationship"
+    description: "3_sector grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+
+  - field_key: "pv13_rha2_min5_1000_513_sector"
+    category: "relationship"
+    description: "grouping fields"
+    timing_delay: 1
+    unit: "ratio"
+    region: "USA"
+    permitted_use: true
+

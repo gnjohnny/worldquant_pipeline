@@ -1,0 +1,46 @@
+{
+  "hypotheses": [
+    {
+      "title": "Betting Against Beta (BAB) Anomaly with Short-Term Reversion Overlay",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Exploits the classic Betting Against Beta (BAB) anomaly across TOP3000 subindustries. Leverage-constrained institutional investors systematically overpay for high-beta stocks, depressing their risk-adjusted returns relative to low-beta peers. Applying quadratic power scaling concentrates capital into the lowest-beta deciles, while a 15% 3-day delta reversal overlay provides execution timing with ultra-low turnover (<15%) and zero correlation to option volatility alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_shocks",
+        "market_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if low-beta stocks underperform during speculative growth rallies.",
+      "candidates": [
+        {
+          "expression": "signed_power(-group_rank(beta_last_360_days_spy, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Power-scaled 360-day low-beta anomaly with 15% 3-day close reversal",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(fscore_bfl_quality, subindustry) - group_rank(beta_last_360_days_spy, subindustry)",
+          "rationale": "Quality-Minus-Beta: Top fundamental quality minus systematic 360-day beta",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Quality & Analyst Revision Momentum with Tail Scaling",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Blends registered fundamental quality scores (fscore_bfl_quality) with positive analyst consensus revision derivatives within subindustries. Tail-power scaling concentrates weight on high-quality companies receiving consensus upgrades, while a 15% 3-day price reversal captures short-term liquidity concessions.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_announcement_timing"
+      ],
+      "falsification_test": "Alpha fails if revision momentum is immediately priced in by the market.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(fscore_bfl_quality + analyst_revision_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Power-scaled fundamental quality plus analyst revision derivative with 15% reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "hypotheses": [
+    {
+      "title": "Industry-Neutralized LEAPS Option VRP (1080d / 120d)",
+      "domain": "option",
+      "economic_rationale": "Neutralizes 1080-day LEAPS variance risk premium across GICS Industries (~70 groups). Industry grouping strikes the optimal balance between granular peer return dispersion (driving Sharpe > 1.35) while structurally de-correlating from subindustry alphas (Self-Correlation < 0.70).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_industry_momentum"
+      ],
+      "falsification_test": "Alpha fails if industry neutralization inflates turnover above 25% or self-correlation exceeds 0.70.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), industry)",
+          "rationale": "Industry-neutralized 1080d call IV over 120d historical volatility with 120d backfill",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_720 / historical_volatility_120, 120), industry)",
+          "rationale": "Industry-neutralized 720d call IV over 120d historical volatility with 120d backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

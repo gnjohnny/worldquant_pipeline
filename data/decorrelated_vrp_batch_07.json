@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Ultra Long-Term LEAPS Option VRP (1080d Call IV / 120d Realized Vol)",
+      "domain": "option",
+      "economic_rationale": "Exploits the 3-year LEAPS variance risk premium by comparing 1080-day call implied volatility against 120-day historical realized volatility. De-correlates from standard 720-day VRP by capturing multi-year structural warrant and index hedging demand.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_dryup",
+        "long_horizon_gamma_drag"
+      ],
+      "falsification_test": "Alpha fails if 1080d call IV exhibits excessive tracking error against realized volatility.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), subindustry)",
+          "rationale": "Subindustry-relative 1080d LEAPS call IV over 120d historical volatility with 120d backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Option Implied Volatility Term Structure Slope (720d IV vs 10d IV)",
+      "domain": "option",
+      "economic_rationale": "Measures the steepness of the options implied volatility term structure. When 720-day call IV trades at a wide premium to 10-day near-term call IV within subindustry peers, institutional investors are pricing in substantial long-horizon upside without near-term panic hedging.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "near_term_earnings_iv_expansion",
+        "volatility_regime_shifts"
+      ],
+      "falsification_test": "Alpha breaks down if inverted IVTS persists without price appreciation.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_720 / implied_volatility_call_10, 60), subindustry)",
+          "rationale": "Subindustry-relative implied volatility term structure slope (720d / 10d) with 60d backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Pentagon Style Score Interacted with Option VRP",
+      "domain": "option",
+      "economic_rationale": "Interacts the structural option volatility risk premium with composite M-Score fundamental quality (fscore_bfl_total). High upside call options demand concentrated in high-quality, profitable, low-valuation firms creates massive multi-factor synergy and drops cross-candidate correlation below 0.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "factor_crowding",
+        "quarterly_accounting_restatements"
+      ],
+      "falsification_test": "Alpha fails if fundamental score interaction dampens options signal return dispersion.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_720 / historical_volatility_120, 120) * rank(fscore_bfl_total), subindustry)",
+          "rationale": "Subindustry-relative 720d/120d VRP interacted with composite fundamental M-Score",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

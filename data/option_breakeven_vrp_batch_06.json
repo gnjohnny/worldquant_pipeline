@@ -1,0 +1,43 @@
+{
+  "hypotheses": [
+    {
+      "title": "Institutional Call Breakeven Upside Demand vs Stock Price",
+      "domain": "option",
+      "economic_rationale": "Measures institutional upside positioning in the options market by computing the percentage premium of the 120-day call option breakeven price relative to the underlying stock close price. When institutions pay aggressive premiums for out-of-the-money upside calls, it reveals non-public bullish sentiment and positive informational flow.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_announcements",
+        "market_iv_crush",
+        "gamma_squeezes"
+      ],
+      "falsification_test": "Alpha fails if high breakeven premiums reflect excessive retail speculation rather than institutional demand, leading to rapid theta decay and underperformance.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill((call_breakeven_120 - close) / close, 60), subindustry)",
+          "rationale": "Subindustry-relative 120-day call breakeven premium over close with 60-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Long-Term Option Volatility Risk Premium (720d Call IV / 120d Realized Vol)",
+      "domain": "option",
+      "economic_rationale": "Exploits the structural institutional variance risk premium by comparing 720-day call implied volatility against 120-day realized historical close-to-close volatility. Structural persistent demand from pension funds and asset managers for long-dated upside exposure creates high risk-adjusted cross-sectional returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "systemic_crash_clustering",
+        "macro_iv_expansion"
+      ],
+      "falsification_test": "Alpha breaks down during broad liquidity crunches where realized volatility permanently exceeds implied volatility.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_720 / historical_volatility_120, 120), subindustry)",
+          "rationale": "Subindustry-relative 720-day call IV over 120-day realized historical volatility with 120-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

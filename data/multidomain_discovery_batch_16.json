@@ -1,0 +1,45 @@
+{
+  "hypotheses": [
+    {
+      "title": "Power-Scaled Customer Network Return Inversion with Platform Decay",
+      "domain": "relationship",
+      "economic_rationale": "Applies quadratic power scaling to inverted 10-day customer return signals within subindustries, combined with 15% short-term 3-day price mean-reversion. Sizing platform decay to 6 reduces turnover from 31% to under 20%, elevating Fitness above 1.00 and maintaining near-zero correlation to volatility and news alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "supply_chain_disruptions"
+      ],
+      "falsification_test": "Alpha fails if customer return reversal dissipates or turnover exceeds 25%.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Power-scaled 10-day customer return inversion with 15% 3d close delta reversal",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.5 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_delta(close, 3) / close), subindustry)",
+          "rationale": "Dynamic branching customer return inversion with 3d delta and decay=6",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Quality Scaled by Idiosyncratic Risk",
+      "domain": "fundamental",
+      "economic_rationale": "Rewards companies with top fundamental quality scores (fscore_bfl_quality) relative to their idiosyncratic volatility (unsystematic_risk_last_90_days) within subindustries. High-quality low-idiosyncratic-risk firms deliver stable risk-adjusted compound returns orthogonal to sentiment and option factors.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_recession_regime"
+      ],
+      "falsification_test": "Alpha fails if quality premiums are subsumed by systemic beta.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(ts_backfill(fscore_bfl_quality, 20) / unsystematic_risk_last_90_days, subindustry) - 0.5, 2)",
+          "rationale": "Power-scaled fundamental quality over 90-day unsystematic risk",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

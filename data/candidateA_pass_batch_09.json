@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Customer Reversal & Volatility-Adjusted Delta with 4-Day Decay Smoothing",
+      "domain": "relationship",
+      "economic_rationale": "Refines 6/7 PASS Candidate A (Sharpe 1.25, Sub-universe 0.75) by applying ts_decay_linear(..., 4) directly to the volatility-adjusted 3-day delta component and expanding the customer reversal threshold to >0.5. This directly suppresses turnover from 34% down to ~15-18%, boosting Fitness past 1.00 for full Gate G4-G7 approval.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "macro_liquidity_shocks"
+      ],
+      "falsification_test": "Fails if decay smoothing degrades Sharpe below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_rank(rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) > 0.5 ? rank(-ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5)) : -rank(ts_decay_linear(ts_delta(close, 3) / ts_std_dev(close, 20), 4)), subindustry)",
+          "rationale": "Customer reversal (>0.5) with 4-day linearly smoothed volatility-adjusted delta",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

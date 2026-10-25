@@ -1,0 +1,45 @@
+{
+  "hypotheses": [
+    {
+      "title": "Refined Volume-Tilted LEAPS VRP with Short-Term Reversion",
+      "domain": "option",
+      "economic_rationale": "Refines Candidate B (Sharpe 1.31, Fitness 1.05, Turnover 12.01%) by blending 90% volume-tilted LEAPS VRP with 10% short-term 3-day reversion. Shaves the remaining 0.038 off self-correlation (from 0.7381 to < 0.60) while maintaining ultra-low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_shocks"
+      ],
+      "falsification_test": "Fails if Sharpe falls below 1.25 or self-correlation remains >= 0.70.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), industry) - 0.5, 2) * rank(adv20) - 0.10 * group_rank(ts_delta(close, 3) / close, industry)",
+          "rationale": "90% volume-tilted LEAPS VRP combined with 10% 3-day close reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Smoothed Customer Network Momentum with Short-Term Reversal",
+      "domain": "relationship",
+      "economic_rationale": "Customer return signal (pv13_custretsig_retsig) smoothed with 5-day linear decay to reduce turnover, combined with short-term price mean-reversion. Operates in the customer-supplier network domain, making it completely orthogonal to option volatility alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "supply_chain_disruptions"
+      ],
+      "falsification_test": "Fails if turnover exceeds 30% or Sharpe falls below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(rank(pv13_custretsig_retsig), 5), subindustry) - 0.25 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Linear customer return signal smoothed with 5-day decay and 25% 3d delta reversal",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "signed_power(group_rank(ts_decay_linear(rank(pv13_custretsig_retsig), 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Power-scaled customer return signal smoothed with 5-day decay and 15% 3d delta reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

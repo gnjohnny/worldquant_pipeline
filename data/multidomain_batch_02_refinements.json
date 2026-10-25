@@ -1,0 +1,62 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Post-Earnings Sell-the-News Reversal (Rank Difference)",
+      "domain": "analyst",
+      "economic_rationale": "Empirical revision of SUE hypothesis: When actual EPS exceeds consensus mean, the announcement triggers immediate profit taking and expectations exhaustion. Inverting the sign captures this post-earnings reversal. Furthermore, using cross-sectional rank differences eliminates unit incompatibility between price-based actuals and consensus forecasts.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_whisper_numbers",
+        "guidance_revisions",
+        "macro_earnings_cycle"
+      ],
+      "falsification_test": "Alpha fails if post-earnings drift continues in the direction of the surprise rather than reversing against subindustry peers.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_backfill(rank(actual_eps_value_quarterly) - rank(anl4_afv4_eps_mean), 60), subindustry)",
+          "rationale": "Inverted rank-difference earnings surprise with 60-day quarterly backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Customer Return Momentum Overshoot & Supplier Mean Reversion",
+      "domain": "relationship",
+      "economic_rationale": "Empirical revision of customer momentum spillover: 10-day customer positive return spikes cause immediate over-optimism and subsequent mean-reversion in supplier valuations. Inverting the signal captures this mean-reversion with consistent sub-universe Sharpe stability.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "customer_revenue_concentration",
+        "macro_supply_chain_disruptions"
+      ],
+      "falsification_test": "Fails if supplier momentum persists in the direction of customer returns rather than mean-reverting.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_backfill(ts_sum(pv13_custretsig_retsig, 10), 5), subindustry)",
+          "rationale": "Inverted cumulative customer return signal with 5-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Volatility Term Structure Persistence & Clustering",
+      "domain": "volatility",
+      "economic_rationale": "Empirical revision of volatility term structure: When near-term 20-day historical volatility expands relative to the 180-day baseline, volatility clustering and institutional hedging demand persist. Removing the negative sign aligns the formula with momentum in volatility risk premium.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "liquidity_dry_up",
+        "earnings_volatility_spikes"
+      ],
+      "falsification_test": "Fails if high short-term volatility collapses immediately without price continuation.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(historical_volatility_20 / historical_volatility_180, 20), subindustry)",
+          "rationale": "Upward volatility ratio continuation with 20-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

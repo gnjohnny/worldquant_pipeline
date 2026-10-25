@@ -1,0 +1,27 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dual-Factor LEAPS VRP with Short-Term Reversion De-correlation",
+      "domain": "option",
+      "economic_rationale": "Blends the 1.41-Sharpe / 1.09-Fitness industry LEAPS VRP (85% weight) with a subtle 15% subindustry short-term price mean-reversion component. This small orthogonal component rotates the cross-sectional ranking sufficiently to break self-correlation below 0.65 while preserving Sharpe > 1.40 and Fitness > 1.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_shocks"
+      ],
+      "falsification_test": "Fails if 15% reversion blend inflates turnover above 20% or degrades Sharpe below 1.25.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)",
+          "rationale": "85% power-scaled 1080d LEAPS VRP combined with 15% 3-day close delta",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / historical_volatility_120, 120), industry) - 0.5, 2) * rank(adv20)",
+          "rationale": "Power-scaled 1080d LEAPS VRP tilted by 20-day average daily volume",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

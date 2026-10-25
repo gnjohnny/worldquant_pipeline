@@ -1,0 +1,28 @@
+{
+  "hypotheses": [
+    {
+      "title": "Customer Return Momentum Mean Reversion with Linear Decay Smoothing",
+      "domain": "relationship",
+      "economic_rationale": "Refines the supply chain customer return reversal anomaly by replacing equal-weighted rectangular rolling sums with linearly decayed weights (ts_decay_linear). This smoothly weights recent customer performance higher while mitigating abrupt edge drops from finite lookback windows, filtering high-frequency noise and lowering portfolio turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "customer_concentration_risk",
+        "macro_supply_chain_disruptions"
+      ],
+      "falsification_test": "Alpha fails if linear decay increases turnover or if customer return mean-reversion dissipates faster than the decay window.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 10), 5), subindustry)",
+          "rationale": "10-day linearly decayed customer return reversal with 5-day backfill",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank(ts_backfill(ts_decay_linear(pv13_custretsig_retsig, 20), 5), subindustry)",
+          "rationale": "20-day extended linearly decayed customer return reversal for lower turnover",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
