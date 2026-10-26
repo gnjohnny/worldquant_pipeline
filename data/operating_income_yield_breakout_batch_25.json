@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Operating Income Yield Valuation Breakout",
+      "domain": "fundamental",
+      "economic_rationale": "Comparing a company's operating income against its stock price (operating yield = operating_income / close) over a multi-month rolling lookback identifies companies experiencing operational profit growth that the market has not yet fully reflected. Normalizing operating income by price in TOPSP500 with Market neutralization and decay=4 isolates large-cap valuation underreaction, unlocking an elite Fitness of 1.55 ('GOOD' platform rating), Sharpe 1.58, ultra-low 7.90% turnover, and 0.2707 self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "cyclical_industry_swings",
+        "inflation_distortions"
+      ],
+      "falsification_test": "Alpha fails if high operating yield is driven by permanent business impairment where stock price collapsed due to insolvency risk.",
+      "candidates": [
+        {
+          "expression": "ts_rank(operating_income / close, 170)",
+          "rationale": "Alpha 8 Crown Jewel ('GOOD' Rating, Fitness 1.55, Sharpe 1.58): 170-day operating income yield in TOPSP500 with Market neutralization and decay=4",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(operating_income / close, 252), subindustry)",
+          "rationale": "Candidate 1 (8/8 PASS): Subindustry cross-sectionally ranked 1-year operating income yield momentum",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 252), subindustry)",
+          "rationale": "Candidate 2 (8/8 PASS): Quarterly backfilled operating income yield momentum with subindustry neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_rank(operating_income / close, 252)",
+          "rationale": "Candidate 3 (8/8 PASS): Raw time-series operating income yield momentum",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

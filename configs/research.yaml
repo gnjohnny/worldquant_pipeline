@@ -118,6 +118,10 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Computes arithmetic mean across elements of a vector data field"
+    - name: "vector_neut"
+      arity: 2
+      param_types: ["expression", "expression"]
+      description: "Projects vector x orthogonally to vector y, stripping out y exposure"
 
   # Math & transformations
   elementwise:

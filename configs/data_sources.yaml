@@ -2525,3 +2525,712 @@ fields:
   unit: USD
   region: USA
   permitted_use: true
+- field_key: 67anl4_af_cfps_value
+  category: analyst
+  description: Cash Flow Per Share - Actual Value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_af_div_value
+  category: analyst
+  description: Dividend - Actual value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_af_eps_value
+  category: analyst
+  description: Earnings Per Share - Actual Value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_actual
+  category: analyst
+  description: Announced financial data
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_cfps_high
+  category: analyst
+  description: Cash Flow Per Share - The highest estimation for the annual forecast
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_cfps_low
+  category: analyst
+  description: Cash Flow Per Share - The lowest estimation for the upcoming fiscal
+    year
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_cfps_mean
+  category: analyst
+  description: Cash Flow Per Share - average of estimations for the annual frequency
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: 67anl4_afv4_eps_number
+  category: analyst
+  description: Earnings per share - number of estimations for annual frequency
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_maxguidance
+  category: analyst
+  description: Max guidance value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_median_eps
+  category: analyst
+  description: Earnings per share - median of estimations
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_afv4_minguidance
+  category: analyst
+  description: Min guidance value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_basicqfv4_actual
+  category: analyst
+  description: Announced financial data
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_bvps_value
+  category: analyst
+  description: Book value per share - announced financial value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_cfi_value
+  category: analyst
+  description: Cash Flow From Investing - announced financial value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_detailltv4_est
+  category: analyst
+  description: Long term estimation value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_detailltv4_preest
+  category: analyst
+  description: The previous estimation of financial item
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_dez1qfv4_est
+  category: analyst
+  description: Estimation value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_dez1qfv4_preest
+  category: analyst
+  description: The previous estimation of finanicial item
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_dez1safv4_est
+  category: analyst
+  description: Estimation value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: anl4_dez1safv4_preest
+  category: analyst
+  description: The previous estimation of finanicial item
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: score
+  category: fundamental
+  description: combining Value, Growth, Profitability, Momentum, and Quality; larger
+    surface implies higher rank
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: term
+  category: fundamental
+  description: growth potential
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: multi_factor_static_score_d
+  category: fundamental
+  description: erivative Change in static multi-factor score compared to previous
+    period.
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: relative_valuation_rank_de
+  category: fundamental
+  description: rivative Assesses whether the stock is under or overpriced based on
+    standard valuation multiples indicator variant
+  timing_delay: 1
+  unit: ratio
+  region: USA
+  permitted_use: true
+- field_key: call_breakeven_360
+  category: options
+  description: Weighted mean break-even price of call options expiring in 360 days,
+    based on recent bid/ask prices
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: call_breakeven_60
+  category: options
+  description: Open interest-weighted mean breakeven price for call options expiring
+    in 60 days, showing average price at which call buyers break even
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: call_breakeven_720
+  category: options
+  description: Weighted mean breakeven price of call options expiring in 720 days
+    indicating the price at which call buyers break even
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: call_breakeven_90
+  category: options
+  description: Price at which a stock's call options with expiration 90 days in the
+    future break even based on its recent bid/ask mean
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_10
+  category: options
+  description: Synthetic forward price for the underlying at 10 days derived from
+    put- call parity using ATM options and adjusted for interest rates and dividends
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_120
+  category: options
+  description: Synthetic forward price at 120 days derived from at-the-money call
+    and put options reflecting the market's forward expectation of the underlying
+    secur
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_150
+  category: options
+  description: Synthetic forward price at 150 days derived from at-the-money call
+    and put options reflecting the market's forward expectation of the underlying
+    secur
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_180
+  category: options
+  description: Synthetic forward price at 180 days derived from put-call parity using
+    at-the- money calls and puts reflecting market consensus forward expectation
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_20
+  category: options
+  description: Synthetic forward price for the underlying at 20 days derived from
+    put- call parity using ATM options and adjusted for interest rates and dividends
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_270
+  category: options
+  description: Synthetic forward price at 270 days expiry derived from ATM calls and
+    puts reflecting the market-consensus forward expectation
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: forward_price_30
+  category: options
+  description: Synthetic forward price at 30 days expiry, derived from at-the-money
+    call and put options, reflecting market consensus forward expectation
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: option_breakeven_180
+  category: options
+  description: Weighted mean break-even price for combined call and put options expiring
+    in 180 days, based on recent bid/ask prices
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: option_breakeven_20
+  category: options
+  description: Price at which a stock's options with expiration 20 days in the future
+    break even based on its recent bid/ask mean
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: option_breakeven_270
+  category: options
+  description: The weighted mean price at which buyers of call and put options combined
+    break even at 270 days to expiry based on recent bid/ask prices
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: option_breakeven_60
+  category: options
+  description: The weighted mean price at which buyers of call and put options combined
+    break even at 60 days to expiry based on recent bid/ask prices
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: option_breakeven_720
+  category: options
+  description: Price at which a stock's options with expiration 720 days in the future
+    break even based on its recent bid/ask mean
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: option_breakeven_90
+  category: options
+  description: Open-interest-weighted mean breakeven price at which buyers of calls
+    and puts combined break even for options expiring in 90 days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_oi_10
+  category: options
+  description: Ratio of put open interest to call open interest for options expiring
+    in 10 days, indicating short-term positioning
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_oi_1080
+  category: options
+  description: Ratio of put option open interest to call option open interest for
+    stock options expiring in 1080 days, representing longer-term positioning
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_oi_120
+  category: options
+  description: Ratio of total put option open interest to total call option open interest
+    for options expiring in 120 days, indicating longer- term put-call position
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_oi_150
+  category: options
+  description: Ratio of total put option open interest to total call option open interest
+    for options expiring in 150 days, indicating longer- term put-call position
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_10
+  category: options
+  description: Ratio of total put option volume to call option volume for options
+    expiring in 10 days, reflecting very short-term sentiment flow
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_1080
+  category: options
+  description: Ratio of put volume to call volume on a stock's options with expiration
+    1080 days in the future.
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_120
+  category: options
+  description: Ratio of put options volume to call options volume for contracts expiring
+    in 120 days on a stock's options
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_150
+  category: options
+  description: Ratio of total put options volume to call options volume for options
+    expiring in 150 days, reflecting short-term options flow sentiment
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_180
+  category: options
+  description: Ratio of total put option volume to call option volume for options
+    expiring in 180 days, capturing short-term options flow sentiment
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_20
+  category: options
+  description: Ratio of put option volume to call option volume for options expiring
+    in 20 days, signaling short-term options flow sentiment
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_30
+  category: options
+  description: Ratio of put volume to call volume on a stock's options with expiration
+    30 days in the future
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_360
+  category: options
+  description: Ratio of put volume to call volume on a stock's options with expiration
+    360 days in the future
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_60
+  category: options
+  description: Ratio of total put options volume to call options volume for contracts
+    expiring 60 days in the future, indicating short-term options flow sentiment
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pcr_vol_720
+  category: options
+  description: Ratio of put options volume to call options volume for contracts expiring
+    in 720 days on a stock's options
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: put_breakeven_270
+  category: options
+  description: Weighted mean breakeven price of put options expiring in 270 days indicating
+    the break even price for put buyers based on recent bids and asks
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: put_breakeven_30
+  category: options
+  description: The weighted mean break-even price of put options expiring in 30 days
+    based on recent bid/ask prices
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: put_breakeven_360
+  category: options
+  description: Open-interest-weighted mean breakeven price at which buyers of put
+    options break even for options expiring in 360 days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: put_breakeven_60
+  category: options
+  description: Price at which a stock's put options with expiration 60 days in the
+    future break even based on its recent bid/ask mean, weighted by open interest
+    or v
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: put_breakeven_720
+  category: options
+  description: Weighted mean breakeven price of put options expiring in 720 days indicating
+    the put buyers break-even price based on recent bid/ask
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: put_breakeven_90
+  category: options
+  description: Open-interest-weighted mean breakeven price at which buyers of put
+    options break even for options expiring in 90 days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: TOPSP500
+  category: price_volume
+  description: 1/2 Page size 20 out of 24 1 2 open Daily open price
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: primary_sector_focused_company_count
+  category: alternative
+  description: Number of companies primarily focused in a given sector.
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: pv13_reveremap
+  category: alternative
+  description: Mapping data
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: single_sector_pureplay_company_count
+  category: alternative
+  description: Number of companies exclusively operating in a single sector.
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: correlation_last_360_days_
+  category: risk
+  description: spy The Pearson correlation coefficient of daily log returns between
+    the security and SPY, calculated over the most recent 360 calendar days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: over
+  category: risk
+  description: the last 90 calendar days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_120
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    120 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_150
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    150 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_180
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    180 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_20
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    20 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_270
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    270 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_30
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    30 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_360
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    360 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_60
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    60 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_call_90
+  category: options
+  description: Implied volatility of the at-the-money call for the stock with an expiration
+    90 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_mean_72
+  category: options
+  description: 0 The average of IvCall720 and IvPut720
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_mean_90
+  category: options
+  description: The average of IvCall90 and IvPut90
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_20
+  category: options
+  description: At-the-money implied volatility of put options with 20 calendar days
+    to expiration, annualized decimal
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_270
+  category: options
+  description: Implied volatility of the at-the-money put for the stock with an expiration
+    270 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_30
+  category: options
+  description: Implied volatility of the at-the-money put for the stock with an expiration
+    30 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_360
+  category: options
+  description: Implied volatility of the at-the-money put for the stock with an expiration
+    360 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_60
+  category: options
+  description: Implied volatility of the at-the-money put for the stock with an expiration
+    60 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_720
+  category: options
+  description: Implied volatility of the at-the-money put for the stock with an expiration
+    720 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_put_90
+  category: options
+  description: Implied volatility of the at-the-money put for the stock with an expiration
+    90 calendar days from the measurement date
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_10
+  category: options
+  description: Historical Parkinson volatility for approximately 10 calendar days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_150
+  category: options
+  description: Historical Parkinson volatility for approximately 150 calendar days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_180
+  category: options
+  description: Historical Parkinson volatility for approximately 180 calendar days
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_20
+  category: options
+  description: "Historical volatility using the Parkinson high\u2013low estimator\
+    \ over approximately the past 20 calendar days"
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_30
+  category: options
+  description: "Historical volatility using the Parkinson high\u2013low estimator\
+    \ over approximately the past 30 calendar days"
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_60
+  category: options
+  description: "Historical volatility using the Parkinson high\u2013low estimator\
+    \ over approximately the past 60 calendar days"
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: parkinson_volatility_90
+  category: options
+  description: "Historical volatility using the Parkinson high\u2013low estimator\
+    \ over approximately the past 90 calendar days"
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true

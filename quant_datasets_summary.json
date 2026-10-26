@@ -1,0 +1,75 @@
+{
+  "analyst4": {
+    "title": "Analyst Estimate Data for Equity",
+    "files": [
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_10.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_2.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_3.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_4.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_5.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_6.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_7.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_8.pdf",
+      "Analyst Estimate Data for Equity _ WorldQuant BRAIN_9.pdf"
+    ]
+  },
+  "model16": {
+    "title": "Fundamental Scores",
+    "files": [
+      "Fundamental Scores _ WorldQuant BRAIN.pdf",
+      "Fundamental Scores _ WorldQuant BRAIN_2.pdf"
+    ]
+  },
+  "option9": {
+    "title": "Options Analytics",
+    "files": [
+      "Options Analytics _ WorldQuant BRAIN.pdf",
+      "Options Analytics _ WorldQuant BRAIN_2.pdf",
+      "Options Analytics _ WorldQuant BRAIN_3.pdf",
+      "Options Analytics _ WorldQuant BRAIN_4.pdf"
+    ]
+  },
+  "pv1": {
+    "title": "Price Volume Data for Equity",
+    "files": [
+      "Price Volume Data for Equity _ WorldQuant BRAIN.pdf",
+      "Price Volume Data for Equity _ WorldQuant BRAIN_2.pdf"
+    ]
+  },
+  "pv13": {
+    "title": "Relationship Data for Equity",
+    "files": [
+      "Relationship Data for Equity _ WorldQuant BRAIN.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_2.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_3.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_4.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_5.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_6.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_7.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_8.pdf",
+      "Relationship Data for Equity _ WorldQuant BRAIN_9.pdf"
+    ]
+  },
+  "model51": {
+    "title": "Systematic Risk Metrics",
+    "files": [
+      "Systematic Risk Metrics _ WorldQuant BRAIN.pdf"
+    ]
+  },
+  "univ1": {
+    "title": "Universe Dataset",
+    "files": [
+      "Universe Dataset _ WorldQuant BRAIN.pdf"
+    ]
+  },
+  "option8": {
+    "title": "Volatility Data",
+    "files": [
+      "Volatility Data _ WorldQuant BRAIN.pdf",
+      "Volatility Data _ WorldQuant BRAIN_2.pdf",
+      "Volatility Data _ WorldQuant BRAIN_3.pdf",
+      "Volatility Data _ WorldQuant BRAIN_4.pdf"
+    ]
+  }
+}
