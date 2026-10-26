@@ -1,0 +1,60 @@
+{
+  "hypotheses": [
+    {
+      "title": "Informed Options Flow: Put-Call Volume Ratio Anomaly",
+      "domain": "option",
+      "economic_rationale": "Following Pan & Poteshman (2006), sophisticated options market participants accumulate call contracts ahead of favorable news and buy puts ahead of unfavorable news. Stocks with low put-to-call volume ratios (pcr_vol_all) reflect informed institutional call accumulation. Quadratic power scaling concentrates capital into the highest call-conviction names, while an orthogonal 15% 3-day reversal overlay provides execution timing with low turnover and zero correlation to pure volatility alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "macro_hedging_demand",
+        "index_arbitrage"
+      ],
+      "falsification_test": "Alpha fails if high put-to-call volume ratios reflect retail panic rather than informed directional flow.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_backfill(pcr_vol_all, 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Informed options flow: low put/call volume ratio power-scaled with 15% 3-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Options Breakeven Asymmetry: Implied Upside vs Downside Drift",
+      "domain": "option",
+      "economic_rationale": "Measures the cross-sectional asymmetry between 120-day call option breakeven prices (call_breakeven_120) and put option breakeven prices (put_breakeven_120) relative to current stock price. When the options market demands a wider breakeven premium on calls than puts, it prices in positive right-tail distribution asymmetry, predicting positive medium-term stock returns. Dimensionless and free of unit mismatch.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "earnings_jump_risk",
+        "liquidity_skew"
+      ],
+      "falsification_test": "Alpha fails if option market breakevens reflect mispriced lottery tickets rather than directional drift.",
+      "candidates": [
+        {
+          "expression": "group_rank((ts_backfill(call_breakeven_120, 20) + ts_backfill(put_breakeven_120, 20) - 2 * close) / close, subindustry)",
+          "rationale": "Subindustry-ranked options breakeven asymmetry (upside minus downside breakeven over close)",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Acceleration & Cash Flow Efficiency",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Firms exhibiting both accelerating multi-factor fundamental momentum (multi_factor_acceleration_score_derivative) and superior operational cash flow profitability (cashflow_efficiency_rank_derivative) capture fundamental corporate health improvements before full market incorporation. Both fields have 100% instrument coverage across TOP3000, creating dense, low-turnover, non-decaying alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_growth_rotation"
+      ],
+      "falsification_test": "Alpha fails if fundamental acceleration is already fully priced in by equity analysts.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(multi_factor_acceleration_score_derivative + cashflow_efficiency_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Power-scaled multi-factor acceleration plus cash flow efficiency with 15% reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Foreign Currency Translation Efficiency and Short-Term Price Reversion Synergy",
+      "domain": "fundamental",
+      "economic_rationale": "Multinational companies reporting higher gains on foreign currency transactions and tax translation adjustments (fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a) normalized by total assets possess superior treasury risk management and currency hedging capabilities. Applying a quadratic power transform isolates top hedging-efficient balance sheets within each subindustry, while a 15% 3-day short-term price reversal overlay harvests agile microstructure mean reversion, yielding superior risk-adjusted returns and robust sub-universe performance.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_dollar_index_trends",
+        "multinational_revenue_mix"
+      ],
+      "falsification_test": "Alpha fails if foreign exchange translation gains stem entirely from unhedged speculative currency swings rather than disciplined risk management.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Variation 3 (8/8 PASS): Point-in-time asset-normalized FX translation gain with 15% 3-day delta reversal stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Variation 2 (8/8 PASS): 1-year trailing mean asset-normalized FX translation gain with 15% 3-day delta reversal stabilizer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

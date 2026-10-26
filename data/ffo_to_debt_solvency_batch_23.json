@@ -1,0 +1,23 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Operating Cash Flow Solvency and Short-Term Price Reversion Synergy",
+      "domain": "fundamental",
+      "economic_rationale": "Companies generating superior Funds from Operations (fnd6_fopo) relative to their long-term debt obligations (debt_lt) possess high structural solvency, credit durability, and earnings quality. Applying a quadratic power transform sharpens capital allocation toward top debt-serviceable balance sheets within each subindustry, while a 15% 3-day price reversal overlay provides agile microstructure mean reversion, optimizing risk-adjusted performance and sub-universe stability.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "sector_interest_rate_sensitivity",
+        "working_capital_seasonality"
+      ],
+      "falsification_test": "Alpha fails if high debt coverage firms suffer from structural capital under-utilization that causes chronic relative equity underperformance.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(fnd6_fopo, 60) / (ts_backfill(debt_lt, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Option A (8/8 PASS): Quadratic power-scaled FFO to long-term debt solvency ratio with 15% 3-day short-term delta reversal stabilizer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

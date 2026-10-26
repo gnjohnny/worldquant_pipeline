@@ -1,0 +1,23 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Normalized Fair Value Liabilities Quarterly Surge Inversion",
+      "domain": "fundamental",
+      "economic_rationale": "Fair value accounting reports ongoing valuations of assets and liabilities. A recent 63-day increase in Level 1 fair value of liabilities (fn_liab_fair_val_l1_a) normalized by liability scale indicates escalating market-quoted debt obligations and heightened refinancing costs. Shorting stocks with surging fair-value liabilities within each subindustry captures the subsequent underperformance driven by deteriorating credit quality and lower forward profitability.",
+      "expected_direction": "negative",
+      "intended_horizon": "63d",
+      "confounders": [
+        "sector_capital_intensity",
+        "market_interest_rate_regimes"
+      ],
+      "falsification_test": "Alpha fails if surging liabilities correspond to growth-accretive leveraged acquisitions that outperform peers cross-sectionally.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_delta(ts_backfill(fn_liab_fair_val_l1_a, 63), 63) / (ts_backfill(fn_liab_fair_val_l1_a, 63) + 1000), subindustry)",
+          "rationale": "Normalized 63-day relative surge in fair value liabilities inverted and ranked cross-sectionally by subindustry",
+          "expected_direction": "negative"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Financial Leverage Beta and Short-Term Price Reversion Synergy",
+      "domain": "fundamental",
+      "economic_rationale": "Firms with higher financial leverage (liabilities normalized by total assets) within their subindustry possess higher operational and financial risk betas that earn an equity risk premium over quarterly horizons. Applying a non-linear quadratic power transform sharpens exposure to extreme capital structure dispersion while an orthogonal 15% short-term 5-day delta price reversal overlay captures microstructure mean reversion, maximizing risk-adjusted return and stabilizing drawdowns.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "sector_interest_coverage",
+        "market_liquidity_shocks"
+      ],
+      "falsification_test": "Alpha fails if higher leverage leads to widespread financial distress downgrades that impair equity returns relative to sector peers.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(liabilities, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Path C (Rated GOOD): Quadratic power-scaled subindustry financial leverage with 15% 5-day delta reversal stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.80 * group_rank(ts_backfill(liabilities, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.20 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Path B (Rated Average): Linear subindustry financial leverage with 20% 5-day delta reversal stabilizer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

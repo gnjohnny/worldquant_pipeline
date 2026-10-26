@@ -1,0 +1,45 @@
+{
+  "hypotheses": [
+    {
+      "title": "Smoothed Informed Options Flow: Put-Call Volume Ratio Decay",
+      "domain": "option",
+      "economic_rationale": "Refines the 0.78-subuniverse Sharpe put-call volume ratio anomaly by smoothing raw daily volume fluctuations with a 15-day linear decay (ts_decay_linear). Sizing the smoothing window over 15 trading days filters high-frequency noise and suppresses portfolio turnover from 52% to under 20%, elevating Fitness past 1.00 while preserving the strong informed options flow signal.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "macro_hedging_demand"
+      ],
+      "falsification_test": "Alpha fails if 15-day smoothing degrades sub-universe Sharpe below 0.38 or fails to reduce turnover below 25%.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_decay_linear(ts_backfill(pcr_vol_all, 5), 15), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 5), subindustry)",
+          "rationale": "15-day linearly smoothed put/call volume ratio with 5-day smoothed delta reversal",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "signed_power(group_rank(-ts_decay_linear(ts_backfill(pcr_vol_all, 5), 20), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "20-day linearly smoothed put/call volume ratio power-scaled with decay=6",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Structural Options Positioning: Open Interest Put-Call Ratio",
+      "domain": "option",
+      "economic_rationale": "Replaces high-turnover daily trading volume with cumulative Open Interest (pcr_oi_all). Open interest tracks total outstanding institutional contracts across all maturities, providing a low-turnover (<12%) structural indicator of option market positioning and call accumulation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "index_arbitrage_hedging"
+      ],
+      "falsification_test": "Alpha fails if open interest adjustments lag directional stock price moves.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_backfill(pcr_oi_all, 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 5), subindustry)",
+          "rationale": "Open interest put/call ratio with 5-day smoothed delta reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
