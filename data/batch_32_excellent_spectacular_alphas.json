@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Non-Linear Conviction Sharpening and Multi-Domain Alpha Elevation",
+      "domain": "cross_domain",
+      "economic_rationale": "Traditional linear rank expressions allocate significant capital to noisy middle-decile securities that carry low information coefficient (IC). Applying quadratic power transformation (signed_power(group_rank(...) - 0.5, 2)) compresses neutral percentiles to near-zero allocation while doubling capital deployment to extreme high-conviction winners and losers. Combining this conviction sharpening across three orthogonal domains (analyst consensus forward EPS yield, 100% coverage operational cashflow efficiency derivatives, and options downside put breakeven support floors) with a 15% 3-day price reversal stabilizer optimizes turnover into the 11%-13% sweet spot, directly maximizing the WorldQuant BRAIN Fitness multiplier to achieve EXCELLENT (Fitness >= 1.80) and SPECTACULAR (Fitness >= 2.20) ratings.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_earnings_recession",
+        "liquidity_crunch_options_skew"
+      ],
+      "falsification_test": "The hypothesis fails if quadratic conviction scaling amplifies tail risk instead of return density, or if subindustry neutralization fails to insulate against sector-level rotation shocks.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Quadratic Conviction Forward EPS Yield Elevation targeting SPECTACULAR rating (Sharpe >= 2.15, Fitness >= 2.20, Turnover ~12%) in TOP1000",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(cashflow_efficiency_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: 100% Coverage Operational Cashflow Efficiency Power Engine targeting EXCELLENT/SPECTACULAR rating (Sharpe >= 1.85, Fitness >= 1.85, Turnover ~11%) with zero cash drag",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank((close - put_breakeven_30) / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 3: Institutional Downside Gamma Support Floor targeting EXCELLENT rating (Sharpe >= 1.75, Fitness >= 1.80, Turnover ~14%) orthogonal to accounting metrics",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

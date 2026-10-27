@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quarterly Estimate Upgrade Acceleration, Forward Cash Flow Yield & Bounded Options VRP",
+      "domain": "cross_domain",
+      "economic_rationale": "Alpha 10 locked in 1-year annual EPS yield (252-day lookback) with Sharpe 1.96. To break self-correlation below 0.70 while preserving elite Sharpe >= 1.80, Candidate 1 contracts the lookback window to 90 days, capturing high-velocity quarterly earnings announcement upgrades. Concurrently, Candidate 2 harnesses sell-side consensus forward Cash Flow Per Share yield (anl4_afv4_cfps_mean), exploiting pure operational cash generation stripped of accrual accounting adjustments. Candidate 3 captures the structural Variance Risk Premium (VRP) by taking the 1-year time-series rank of 30-day realized volatility over implied volatility (historical_volatility_30 / (implied_volatility_mean_30 + 0.001)), providing bounded dimensionless normalization to prevent weight concentration spikes while securing zero correlation (< 0.15) to fundamental forecast models.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "earnings_announcement_clustering",
+        "market_regime_volatility_shock"
+      ],
+      "falsification_test": "Fails if quarterly estimate revisions mean-revert too rapidly without price drift or if normalized options variance risk premium loses predictive power across liquid large-cap equities.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 90), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: 90-Day Quarterly Forward EPS Upgrade Acceleration to break Alpha 10 self-correlation (<0.70) while maintaining Sharpe >= 1.85 and Fitness >= 1.50 in TOP1000",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: 1-Year Consensus Forward Cash Flow Per Share Yield in TOP1000 targeting EXCELLENT rating (Sharpe >= 1.90, Fitness >= 1.55) and self-correlation < 0.50 against Alpha 10",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(ts_rank(historical_volatility_30 / (implied_volatility_mean_30 + 0.001), 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 3: Bounded Options Variance Risk Premium (VRP) Ratio in TOP1000 to eliminate weight concentration and deliver uncorrelated (<0.15) Sharpe >= 1.50 and Fitness >= 1.40",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
