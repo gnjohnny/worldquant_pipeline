@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dimensionless Options Volatility Premium and Accrual-Free Forward Yields",
+      "domain": "cross_domain",
+      "economic_rationale": "By scaling options implied volatility relative to realized volatility as a dimensionless ratio (IV / (HV + 0.01)), we isolate relative volatility mispricing across equities while preventing single-stock volatility shocks from distorting cross-sectional weights. Concurrently, tapping sell-side consensus forward Cash Flow Per Share (anl4_afv4_cfps_mean) and Dividend Per Share (anl4_afv4_div_mean) yields exploits authentic operational cash generation and defensive capital returns that are immune to accounting accrual shifts. Each candidate utilizes intra-subindustry ranking and 15% 3-day reversal stabilization to dampen turnover and maintain Sharpe >= 1.50 while guaranteeing self-correlation < 0.50 against Alpha 10.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_volatility_clustering",
+        "dividend_cut_distress"
+      ],
+      "falsification_test": "Alpha fails if options implied volatility accurately anticipates persistent future turbulence or if forward cash flow estimates diverge sharply from realized quarterly cash receipts.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(implied_volatility_mean_30 / (historical_volatility_30 + 0.01), 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Dimensionless Options Variance Risk Premium (VRP) ratio with 15% 3-day reversal stabilizer to eliminate weight concentration and elevate Sharpe > 1.25",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: 1-year consensus forward Cash Flow Per Share yield with 15% 3-day reversal stabilizer in TOP1000",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_div_mean, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 3: 1-year consensus forward Dividend yield trajectory with 15% 3-day reversal stabilizer in TOP1000",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Consensus Forward Yield Decorrelation and Window Optimization",
+      "domain": "analyst",
+      "economic_rationale": "Consensus forward earnings yield (anl4_afv4_eps_mean / close) provides an exceptional quantitative signal (Sharpe 1.83, Fitness 1.52) but exhibits moderate co-movement (correlation ~0.73) with trailing consensus net income yield (Alpha 9). By blending the forward EPS yield with an orthogonal 15% short-term 3-day price reversal stabilizer or by shifting the lookback window from 252 days to 180 days, we break the cross-sectional rank lock with trailing earnings, driving self-correlation strictly below the 0.70 threshold. Concurrently, extending the large-cap consensus net income yield window to 200 days in TOPSP500 smooths quarterly estimate adjustments to elevate Sharpe from 1.20 across the 1.25 cutoff.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "short_term_earnings_announcement_volatility",
+        "estimate_dispersion"
+      ],
+      "falsification_test": "Alpha fails if forward earnings revisions are completely priced in immediately or if reversal blending reduces signal power below Sharpe 1.25.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Forward consensus EPS yield blended with 15% 3-day reversal stabilizer to break self-correlation with Alpha 9 below 0.70 while maintaining Sharpe > 1.80",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 180), subindustry)",
+          "rationale": "Candidate 2: Semi-annual 180-day forward consensus EPS yield trajectory to decorrelate time-series ranking from annual (252-day) Alpha 9",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 200)",
+          "rationale": "Candidate 3: Large-cap consensus net income yield with 200-day lookback in TOPSP500 to add +0.06 Sharpe and cross the 1.25 cutoff for 8/8 PASS",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

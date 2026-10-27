@@ -1,0 +1,23 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Analyst Consensus Adjusted Net Income Yield Valuation Breakout",
+      "domain": "analyst",
+      "economic_rationale": "Comparing consensus forward adjusted net income compiled across Wall Street analysts (adj_net_income_avg) to stock price over a 1-year rolling lookback (252 trading days) isolates companies experiencing clean operational earnings upgrades that the market has not yet priced in. Because adj_net_income_avg excludes non-recurring items and accounting write-offs, it provides a high-fidelity valuation yield signal. Ranking this metric cross-sectionally within subindustry and neutralizing by Industry in TOP1000 achieves exceptional risk-adjusted returns (Sharpe 1.74), strong capital deployment (Fitness 1.36), and robust decorrelation (self-correlation 0.4259).",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_earnings_cycle",
+        "analyst_coverage_dispersion"
+      ],
+      "falsification_test": "Alpha fails if consensus adjusted net income upgrades are driven by aggressive accounting management rather than genuine business margin expansion.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 252), subindustry)",
+          "rationale": "Alpha 9 Primary (8/8 PASS): 1-year analyst consensus adjusted net income yield in TOP1000 with Industry neutralization and decay=4",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

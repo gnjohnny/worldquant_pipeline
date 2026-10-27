@@ -4,7 +4,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from worldquant_pipeline.storage.database import get_session
-from worldquant_pipeline.storage.models import AlphaCandidate, Decision, Experiment, ExperimentMetric
+from worldquant_pipeline.storage.models import (
+    AlphaCandidate,
+    Decision,
+    Experiment,
+    ExperimentMetric,
+)
 
 with get_session() as session:
     cand = session.query(AlphaCandidate).filter(AlphaCandidate.id.startswith("b63923ac")).first()
@@ -32,4 +37,4 @@ with get_session() as session:
         session.add(dec)
         cand.status = "APPROVED"
         session.commit()
-        print(f"Recorded TOP1000 run for b63923ac: Sharpe 1.75, Fitness 1.32, Sub-universe 1.73!")
+        print("Recorded TOP1000 run for b63923ac: Sharpe 1.75, Fitness 1.32, Sub-universe 1.73!")

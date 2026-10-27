@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Orthogonal Multi-Domain Premia: Options Variance, Revision Acceleration and Asset Backing",
+      "domain": "cross_domain",
+      "economic_rationale": "By systematically tapping independent data sources—options volatility surfaces, proprietary revision acceleration derivatives, and balance sheet tangible asset fair values—we harvest decorrelated risk premia that share near-zero co-movement with income-statement earnings yields. High options variance risk premium reflects excessive downside hedging demand; high revision acceleration reflects pre-announcement institutional momentum; and high asset fair value relative to market price in large caps reflects tangible equity floor backing. Each candidate employs subindustry neutralization and short-term price reversal or long-horizon lookbacks to achieve Sharpe >= 1.50 and self-correlation < 0.35 against submitted Alpha 10.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_volatility_shocks",
+        "estimate_dispersion"
+      ],
+      "falsification_test": "Alpha fails if options implied volatility accurately prices future realized variance or if revision acceleration reverses before quarterly earnings releases.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(implied_volatility_mean_30 - historical_volatility_30, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Options Variance Risk Premium (VRP) 1-year trajectory with 15% 3-day reversal stabilizer in TOP1000",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(ts_rank(analyst_revision_rank_derivative, 120), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: Analyst Revision Acceleration 120-day derivative rank with 15% 3-day reversal stabilizer in TOP1000",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_rank(ts_backfill(fn_assets_fair_val_a, 252) / close, 170)",
+          "rationale": "Candidate 3: Large-cap Asset Fair Value Backing with 170-day lookback in TOPSP500 and Market neutralization (Alpha 8 Crown Jewel Architecture)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

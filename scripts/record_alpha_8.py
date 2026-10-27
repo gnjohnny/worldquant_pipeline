@@ -4,7 +4,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from worldquant_pipeline.storage.database import get_session
-from worldquant_pipeline.storage.models import AlphaCandidate, Decision, Experiment, ExperimentMetric
+from worldquant_pipeline.storage.models import (
+    AlphaCandidate,
+    Decision,
+    Experiment,
+    ExperimentMetric,
+)
 
 with get_session() as session:
     # 1. Primary Approved Alpha 8: 1cb6d821

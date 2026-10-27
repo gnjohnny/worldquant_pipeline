@@ -4,7 +4,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from worldquant_pipeline.storage.database import get_session
-from worldquant_pipeline.storage.models import AlphaCandidate, Decision, Experiment, ExperimentMetric
+from worldquant_pipeline.storage.models import (
+    AlphaCandidate,
+    Decision,
+    Experiment,
+    ExperimentMetric,
+)
 
 with get_session() as session:
     cand = session.query(AlphaCandidate).filter(AlphaCandidate.id.startswith("df2c5ace")).first()

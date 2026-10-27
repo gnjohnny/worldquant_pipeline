@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Large-Cap Asset Fair Value Growth and Operating Earnings Yield Divergence",
+      "domain": "fundamental",
+      "economic_rationale": "Companies with high asset fair value (fn_assets_fair_val_a) relative to trailing domestic (fnd2_ebitdm) and foreign (fnd2_ebitfr) operating earnings represent firms that have aggressively invested in productive capacity that has not yet reached peak earnings maturity. In sizable large-cap equities (TOP1000/TOP500), high asset fair value relative to market price and operating earnings signifies asset backing and future expansion rather than financial distress. By incorporating subindustry neutralization, quadratic power conviction, and short-term price reversal stabilizers, we isolate intra-industry capital maturation alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "industry_capital_intensity",
+        "asset_impairment_charges"
+      ],
+      "falsification_test": "Alpha fails if high asset fair value stems from stranded or overvalued legacy assets that never generate operational cash flows.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((group_rank(fn_assets_fair_val_a, subindustry) > 0.5 ? 2.0 : 1.0) * (-group_rank(fnd2_ebitdm, subindustry) - group_rank(fnd2_ebitfr, subindustry)), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Subindustry-neutralized Alpha 5 compound blueprint applied to prompt's conditional asset-to-EBIT signal with 15% 3-day reversal stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank((ts_backfill(fnd2_ebitdm, 60) + ts_backfill(fnd2_ebitfr, 60)) / (ts_backfill(fn_assets_fair_val_a, 252) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: Continuous division-safe operating earning power per unit of asset fair value with 15% 3-day reversal stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(fn_assets_fair_val_a, 252) / close, 252), subindustry)",
+          "rationale": "Candidate 3: 1-year time-series fair value asset yield trajectory (Alpha 8/9 architecture)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

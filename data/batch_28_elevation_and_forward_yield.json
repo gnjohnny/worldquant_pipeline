@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Large-Cap Valuation Yield Acceleration and Forward Consensus Re-rating",
+      "domain": "analyst",
+      "economic_rationale": "Equity prices systematically underreact to persistent fundamental valuation yield discrepancies when scaled by institutional consensus earnings or balance sheet asset fair value. In large-cap equities (TOPSP500/TOP1000), sell-side consensus estimates (adj_net_income_avg, anl4_afv4_eps_mean) have universal coverage with zero sparse data drag. When normalized by market price or total market capitalization, companies trading at the top of their multi-month valuation yield distributions experience sustained post-earnings drift and institutional multiple expansion. By utilizing market and industry neutralization, 170-252 day lookbacks, and low decay rates, we isolate structural valuation momentum while keeping portfolio turnover strictly below 12.5% to maximize BRAIN Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "cyclical_earnings_peaks",
+        "value_trap_distress"
+      ],
+      "falsification_test": "Alpha fails if high valuation yield stems from permanent structural business impairment rather than temporary valuation discounts.",
+      "candidates": [
+        {
+          "expression": "ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 170)",
+          "rationale": "Candidate 1: Alpha 9 large-cap elevation in TOPSP500 with 170-day lookback and Market neutralization to minimize turnover (<8%) and push Fitness into EXCELLENT (>=1.80)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(fn_assets_fair_val_a, 252) / cap, 252), subindustry)",
+          "rationale": "Candidate 2: Dimensionally homogeneous Asset Fair Value to Market Cap Yield in TOP1000, refining Batch 27 Candidate 3 by eliminating per-share price distortions",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 252), subindustry)",
+          "rationale": "Candidate 3: 1-year forward consensus EPS yield trajectory (anl4_afv4_eps_mean / close) in TOP1000 with subindustry neutralization",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
