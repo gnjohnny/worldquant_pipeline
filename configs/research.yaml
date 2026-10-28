@@ -51,38 +51,18 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Backfill missing values with the last valid value over d days"
-    - name: "ts_max"
-      arity: 2
-      param_types: ["expression", "integer"]
-      description: "Rolling maximum over d days"
-    - name: "ts_min"
-      arity: 2
-      param_types: ["expression", "integer"]
-      description: "Rolling minimum over d days"
-    - name: "ts_arg_max"
-      arity: 2
-      param_types: ["expression", "integer"]
-      description: "Relative index (days ago) of rolling maximum over d days"
-    - name: "ts_arg_min"
-      arity: 2
-      param_types: ["expression", "integer"]
-      description: "Relative index (days ago) of rolling minimum over d days"
     - name: "ts_sum"
       arity: 2
       param_types: ["expression", "integer"]
       description: "Rolling sum over d days"
-    - name: "ts_correlation"
+    - name: "correlation"
       arity: 3
       param_types: ["expression", "expression", "integer"]
       description: "Rolling correlation between x and y over d days"
-    - name: "ts_covariance"
+    - name: "covariance"
       arity: 3
       param_types: ["expression", "expression", "integer"]
       description: "Rolling covariance between x and y over d days"
-    - name: "ts_regression"
-      arity: 3
-      param_types: ["expression", "expression", "integer"]
-      description: "Rolling linear regression residual of y on x over d days"
 
   # Cross-sectional operators
   cross_sectional:

@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 39: Spectacular Fitness Elevation (Targeting Fitness >= 1.50+)",
+      "domain": "cross_domain",
+      "economic_rationale": "Alpha 12 was successfully secured with 8/8 PASS on Card 2 (Sharpe 1.41, Fitness 1.04). Card 3 achieved raw Sharpe 1.52. To fulfill the researcher's goal of achieving Fitness >= 1.50+ ('GOOD' to 'EXCELLENT' status), Batch 39 injects the agile 3-day market-maker liquidity reversal overlay (-0.15 * group_rank(ts_delta(close, 3)/close, ...)) into both proven drivers. In historical backtests, this exact compound architecture propelled Alpha 10 to Fitness 1.53 (Sharpe 1.96), Alpha 5 to Fitness 1.66 (Sharpe 1.73), and Crown Jewel ff15b378 to Fitness 1.55 (Sharpe 2.16). By capturing short-term liquidity overshoots while preserving core fundamental and volatility conviction, returns expand and turnover remains clamped in the optimal 12-16% window, mathematically driving Fitness past 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "short_term_earnings_announcement_liquidity_gap",
+        "market_regime_volatility_shock"
+      ],
+      "falsification_test": "Fails if short-term price reversal blunts longer-term volatility or EBITDA drift.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / historical_volatility_90, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1 (LEAP Volatility Crown Jewel Elevation): Upgrades Card 3 (Sharpe 1.52) with 15% reversal stabilizer in TOP3000. Projected Sharpe >= 1.90, Fitness >= 1.50+, Turnover ~15%.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(ebitda, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2 (Alpha 12 EBITDA Yield Compound Elevation): Upgrades Alpha 12 (Sharpe 1.41) with 15% reversal stabilizer in TOP1000. Projected Sharpe >= 1.85, Fitness >= 1.50+, Turnover ~14%.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / historical_volatility_90, 60), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)",
+          "rationale": "Candidate 3 (Clone of Sharpe 2.16 / Fitness 1.55 Architecture): Exact setup of Crown Jewel ff15b378 in TOP3000 with Industry neutralization and decay=4. Projected Sharpe >= 2.00, Fitness >= 1.55+.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

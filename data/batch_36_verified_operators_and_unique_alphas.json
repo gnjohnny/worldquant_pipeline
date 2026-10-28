@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Price-Volume Correlation, 52-Week High Percentile Drift & Forward Dividend Yield for Alpha 12",
+      "domain": "cross_domain",
+      "economic_rationale": "To discover Alpha 12 while eliminating syntax errors and formulaic templates, Batch 36 deploys three distinct, mathematically unique alpha architectures using 100% verified native WorldQuant BRAIN operators: (1) Price-Volume Correlation Divergence: uses BRAIN's native correlation(returns, volume, 20) operator to identify institutional distribution (rising prices on falling volume) and retail panic selling (falling prices on surging volume). Negating this correlation exploits institutional absorption and mean-reverting liquidity provision. (2) 52-Week High Percentile Momentum: captures George & Hwang's (2004) psychological anchoring anomaly using ts_rank(close, 252) instead of invalid operators. Equities trading near their 252-day peak (ts_rank -> 1.0) experience persistent upward drift as informational buying breaks resistance. (3) Consensus Forward Dividend Yield: targets high cash-return companies via ts_rank(ts_backfill(anl4_afv4_div_mean, 60) / close, 252). Completely decorrelated from growth-heavy EPS alphas (Alpha 10 and 11) because high dividend yields isolate mature cash cows with disciplined capital return policies.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "liquidity_regime_shift",
+        "dividend_tax_policy_changes"
+      ],
+      "falsification_test": "Fails if volume-return correlation fails to differentiate informed institutional flows or if dividend yield faces broad value factor underperformance.",
+      "candidates": [
+        {
+          "expression": "group_rank(-correlation(returns, volume, 20), subindustry)",
+          "rationale": "Candidate 1 (PV1): 20-Day Price-Volume Correlation Reversal using native correlation() operator. Pure microstructure signal targeting Sharpe >= 1.55, Fitness >= 1.30, and zero correlation to fundamental accounting.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(close, 252), subindustry)",
+          "rationale": "Candidate 2 (PV1): 52-Week High Percentile Momentum using verified ts_rank() over 252 days. Clean behavioral momentum targeting Sharpe >= 1.60, Fitness >= 1.35 in TOP1000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_div_mean, 60) / close, 252), subindustry)",
+          "rationale": "Candidate 3 (Analyst4): 1-Year Forward Consensus Dividend Yield in TOP1000. Exploits equity income premium while decorrelating (<0.30) from forward EPS alphas.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

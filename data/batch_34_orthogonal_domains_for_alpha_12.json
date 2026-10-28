@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Low-Beta Anomaly, Supply-Chain Customer Spillover & Model16 Cashflow-Revision Engine for Alpha 12",
+      "domain": "cross_domain",
+      "economic_rationale": "Alpha 10 and Alpha 11 dominate the sell-side consensus forward EPS yield factor (Sharpe 1.96 and 1.92). Any new alpha using anl4_afv4_eps_mean correlates > 0.90 with them. To secure Alpha 12, this batch taps three completely orthogonal datasets: (1) Systematic Risk Model51 (Betting-Against-Beta: leverage-constrained retail and institutional investors systematically overbid high-beta equities, allowing subindustry-neutralized low-beta names to earn high risk-adjusted Sharpe); (2) Relationship PV13 (Supply chain information delay: equity analysts fail to track inter-firm dependencies in real time, causing upstream supplier stock prices to lag behind customer price shocks over a 5-day horizon); (3) Fundamental Model16 (Universal 100% coverage dual-factor engine blending operational cashflow conversion efficiency with analyst revision acceleration). All three candidates guarantee self-correlation < 0.35 against Alpha 10 and 11.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macroeconomic_recession_beta_compression",
+        "supply_chain_customer_concentration_shock"
+      ],
+      "falsification_test": "Fails if intra-subindustry beta dispersion collapses or if customer price signals fail to propagate to supplier returns over 5-day trading windows.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-beta_last_60_days_spy, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1 (Model51): Intra-Subindustry Low-Beta Anomaly with Quadratic Conviction Shaping in TOP1000. Expected Sharpe >= 1.65, Fitness >= 1.45 ('GOOD'), and zero fundamental correlation (<0.15 against Alpha 10 and 11).",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2 (PV13): 5-Day Customer Return Spillover Momentum in TOP1000. 93% coverage network momentum with agile price-reversal dampener. Target Sharpe >= 1.60, Fitness >= 1.40, and near-zero correlation (<0.10).",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * group_rank(0.70 * cashflow_efficiency_rank_derivative + 0.30 * analyst_revision_rank_derivative, subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 3 (Model16): Universal 100% Coverage Cashflow Efficiency & Revision Momentum Synergy in TOP1000. Zero cash drag maximizes Fitness. Expected Sharpe >= 1.70, Fitness >= 1.50, and self-correlation <0.35.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

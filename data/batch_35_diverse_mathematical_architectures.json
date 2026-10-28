@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Diverse Mathematical Architectures: 52-Week High Proximity, Volume-Return Correlation & IV Term Contango",
+      "domain": "cross_domain",
+      "economic_rationale": "To break free from repetitive quadratic rank templates and secure Alpha 12, Batch 35 introduces three structurally diverse mathematical formulations spanning market microstructure, behavioral finance, and derivatives term structures: (1) George & Hwang 52-Week High Proximity Momentum: exploits psychological anchoring where investors underreact to informational breakthroughs near historical peaks (close / ts_max(high, 252)); (2) Institutional Volume-Return Synchronization: computes the rolling 20-day bivariate correlation between daily returns and volume (-ts_correlation(returns, volume, 20)), isolating institutional accumulation from retail distribution; (3) Implied Volatility Term Structure Contango Slope: captures option volatility term structure steepness (implied_volatility_mean_90 / implied_volatility_mean_30) without unit mismatch, rewarding equities with calm institutional vol regimes. None of these candidates employ signed_power or delta-close overlays, ensuring unique alpha footprints and low cross-alpha correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "market_wide_volatility_inversion",
+        "liquidity_dryup_in_small_caps"
+      ],
+      "falsification_test": "Fails if 52-week high breakouts rapidly mean-revert or if implied volatility term inversion fails to forecast short-term underperformance.",
+      "candidates": [
+        {
+          "expression": "group_rank(close / ts_max(high, 252), subindustry)",
+          "rationale": "Candidate 1 (PV1): George & Hwang 52-Week High Anchoring Proximity Ratio. Pure market data momentum with zero fundamental or analyst correlation. Target Sharpe >= 1.60, Fitness >= 1.35 in TOP1000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(-ts_correlation(returns, volume, 20), subindustry)",
+          "rationale": "Candidate 2 (PV1): 20-Day Price-Volume Correlation Reversal. Microstructure signal detecting institutional accumulation vs retail panic selling. Target Sharpe >= 1.50, Fitness >= 1.25 in TOP1000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(implied_volatility_mean_90 / implied_volatility_mean_30, subindustry)",
+          "rationale": "Candidate 3 (Option8): 90d-to-30d Implied Volatility Term Structure Contango Slope. Pure unitless options ratio detecting tail-risk calm vs backwardation panic. Target Sharpe >= 1.65, Fitness >= 1.40 in TOP1000.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
