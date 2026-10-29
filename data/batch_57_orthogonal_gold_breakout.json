@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Orthogonal Gold Breakout: Mining model16, pv13, and option9 to Complete Daily Submissions #3 and #4",
+      "domain": "multi-dataset",
+      "economic_rationale": "Because the user's account portfolio now holds both Subindustry and Market variants of institutional call implied volatility (Alphas 83d5f74b and 7c3e864f), subsequent alphas must deploy completely orthogonal datasets to eliminate self-correlation (< 0.70) while targeting GOOD (Fitness >= 1.50) and EXCELLENT (Fitness >= 1.80) status: (1) Fundamental Cashflow Efficiency & Analyst Revision Synergy (model16): 100% coverage composite fusing operational cash generation with sell-side consensus revision momentum. (2) Customer Return Spillover Momentum (pv13): Exploits 5-10 day informational transmission friction across customer-supplier supply chains (93% coverage). (3) Put Breakeven Downside Support Floor (option9): Captures dealer gamma support when spot trades above open-interest put breakeven levels (98% coverage). (4) Cashflow Efficiency & Relative Valuation Synergy (model16): Pairs operational profitability with deep relative value discounts.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if fundamental revision signals or supply chain linkages have already been fully priced in by cash equity participants.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(0.60 * cashflow_efficiency_rank_derivative + 0.40 * analyst_revision_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: Fundamental Cashflow Efficiency & Analyst Revision Synergy (model16, 100% Coverage)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(ts_backfill(pv13_custretsig_retsig, 10), 10), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2: Supply Chain Customer Return Signal Spillover (pv13, 93% Coverage)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill((close - put_breakeven_60) / close, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: Put Breakeven Distance Downside Support Floor (option9, 98% Coverage)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(0.50 * cashflow_efficiency_rank_derivative + 0.50 * relative_valuation_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 4: Cashflow Efficiency & Relative Valuation Discount Quality (model16, 100% Coverage)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

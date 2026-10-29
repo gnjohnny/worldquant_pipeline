@@ -10,7 +10,7 @@ simulation_defaults:
 
 quality_gates:
   min_sharpe: 1.25
-  min_fitness: 1.00
+  min_fitness: 1.50
   max_turnover: 0.70
   min_turnover: 0.01
   max_drawdown: 0.25

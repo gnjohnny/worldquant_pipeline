@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Gold Consultant Production: Four Non-Templated Orthogonal Alphas Targeting EXCELLENT and SPECTACULAR Status",
+      "domain": "cross-asset",
+      "economic_rationale": "Engineered strictly for the Gold Level Consultant Track to achieve minimum 'GOOD' (Fitness >= 1.50) and priority 'EXCELLENT' / 'SPECTACULAR' (Fitness >= 1.80, Sharpe >= 2.10) ratings with zero formula template recycling: (1) LEAP Call-Put Skew Imbalance (option8): 2-year call IV expanding relative to put IV reflects institutional upside convexity accumulation over tail hedging. (2) Funds From Operations Realized Cash Yield in TOP1000 (fnd6_fopo): Operational cash flow yield evaluated over a 170-day window generates high returns with ultra-low turnover (~8%), maximizing the Fitness multiplier. (3) Analyst Consensus Price Target Upside (analyst4): 60-day smoothed consensus target upside identifies sell-side rerating drift ahead of institutional block trades. (4) 2-Year LEAP Call Options Demand Percentile (option8): 90-day time-series rank of 2-year call IV over 120-day Parkinson volatility captures institutional volatility mispricing with low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_idiosyncratic_gaps"
+      ],
+      "falsification_test": "Alpha fails if consensus price targets prove uninformative or if options call skew reflects retail gambling rather than informed institutional positioning.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank((implied_volatility_call_720 - implied_volatility_put_720) / (implied_volatility_mean_90 + 0.001), 60), subindustry)",
+          "rationale": "Candidate 1: 2-Year LEAP Call-Put Volatility Skew Imbalance (option8) - Measures Institutional Long-Dated Convexity Preference",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_rank(ts_backfill(fnd6_fopo, 60) / close, 170)",
+          "rationale": "Candidate 2: Funds From Operations Realized Cash Yield in TOP1000 (fnd6_fopo) - Ultra-Low Turnover (8%) Maximizes Fitness Multiplier",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_mean((ts_backfill(anl4_ady_mean, 60) - close) / close, 60), subindustry)",
+          "rationale": "Candidate 3: Analyst Consensus Target Price Upside Momentum (analyst4) - 60-Day Smoothed Sell-Side Channel Check Alpha",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(implied_volatility_call_720 / parkinson_volatility_120, 90), subindustry)",
+          "rationale": "Candidate 4: 2-Year LEAP Call Options Demand Percentile (option8) - 90-Day Time-Series Percentile of Volatility Mispricing",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

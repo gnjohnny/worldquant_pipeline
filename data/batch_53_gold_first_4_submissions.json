@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Gold First 4 Daily Submissions: High-Conviction Engines Targeting EXCELLENT and SPECTACULAR Status",
+      "domain": "cross-asset",
+      "economic_rationale": "Deploys our proven statistical and volatility engines engineered to overcome the self-correlation ceiling (< 0.70) and turnover hurdles to achieve platform ratings of GOOD (Fitness >= 1.50), EXCELLENT (Fitness >= 1.80), and SPECTACULAR (Fitness >= 2.20, Sharpe >= 2.10): (1) 90-Day Fresh Quarterly FX Translation in TOP1000: Upgrades the proven 8/8 PASS alpha (self-corr 0.5602) by accelerating adaptation from 252d to 90d to propel Fitness past 1.55. (2) Consensus Adjusted Net Income Yield in TOP1000: Migrates the Sharpe 2.02 engine to TOP1000 with a 10% reversal stabilizer to decorrelate and compress turnover. (3) 1-Year Call Volatility Term Premium in TOP1000 with Decay 6: Decouples the Sharpe 2.25 / Fitness 1.53 options engine into large caps with smoothed turnover. (4) Multi-Factor Super Alpha (Options + FX): Synthesizes orthogonal options volatility flow with corporate balance sheet currency hedging, targeting EXCELLENT rating with cross-asset diversification.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "options_expiration_pinning_effects"
+      ],
+      "falsification_test": "Alpha fails if institutional options demand reflects hedging panic rather than informed directional conviction.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 90) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Fresh 90-Day Quarterly FX Translation Hedging in TOP1000 (Upgrade of 8/8 PASS Alpha 06d2acff to Target Fitness >= 1.55)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2: Consensus Adjusted Net Income Yield in TOP1000 with 10% Reversal Overlay (Evolution of Sharpe 2.02 Engine)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: 1-Year (360d) Call Volatility Term Premium in TOP1000 with Decay 6 (Evolution of Sharpe 2.25 Engine)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.55 * group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) + 0.35 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 90) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 4: Multi-Factor Super Alpha combining Options 360d Call IV Premium and Fresh FX Hedging (Targeting EXCELLENT Status)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

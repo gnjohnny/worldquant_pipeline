@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Gold Elevation: Fine-Tuning Turnover and Lookback to Elevate 8-PASS Alphas to GOOD and EXCELLENT Status",
+      "domain": "cross-asset",
+      "economic_rationale": "Leverages our two breakthrough 8/8 PASS alphas from Batch 53 (Card 3: Sharpe 1.87, Fitness 1.50, Self-corr 0.6974; Card 4: Sharpe 1.89, Fitness 1.31, Self-corr 0.6448). Mathematically compresses turnover from 17-18% down to 10-13% to increase the Fitness multiplier (Fitness = Sharpe * sqrt(Returns / Turnover)) past 1.60 (GOOD) and into 1.80+ (EXCELLENT): (1) Card 3 with Decay=8: Smoothes weight decay to drop turnover to ~12% on the proven 8-PASS engine. (2) Card 3 with 10% 10-Day Reversal: Replaces weekly 15% reversal with biweekly 10% reversal to cut trading costs and lift Fitness. (3) Super Alpha with 252d FX Lookback and Decay=6: Upgrades Card 4 by restoring the proven annual 252d FX signal and applying quadratic conviction. (4) Proven FX Currency Hedging in TOP1000 with Decay=6: Compresses turnover on the low-correlation (0.5602) FX alpha to lift Fitness into the GOOD tier.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "options_expiration_pinning_effects"
+      ],
+      "falsification_test": "Alpha fails if institutional options demand reflects hedging panic rather than informed directional conviction.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: Elevated Batch 53 Card 3 (8 PASS, Sharpe 1.87) with Decay=8 to compress turnover into GOOD/EXCELLENT tier",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 10) / close, subindustry)",
+          "rationale": "Candidate 2: 1-Year Call Volatility in TOP1000 with Biweekly 10-Day Reversal (10% weight) to Maximize Fitness",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: Super Alpha (8 PASS Card 4 Evolution) with 252d FX Lookback, Quadratic Conviction, and Decay=6",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 4: Proven 252d FX Currency Hedging in TOP1000 with 10% Reversal and Decay=6 (Targeting Fitness >= 1.55)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

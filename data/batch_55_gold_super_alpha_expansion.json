@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Gold Super Alpha Expansion: 4 Orthogonal Multi-Factor Engines Targeting GOOD and EXCELLENT Status",
+      "domain": "cross-asset",
+      "economic_rationale": "Directly expands upon the proven mathematical architecture of Approved Alpha 83d5f74b (Sharpe 1.97, Fitness 1.60, Self-correlation 0.5393). Synthesizes institutional options volatility surfaces across four distinct horizons and asset types with orthogonal corporate balance-sheet hedging and customer-supplier supply chain lead-lag networks: (1) 1-Year Put Volatility + FX Hedging: Isolates institutional downside crash protection premia blended with currency translation hedging. (2) 3-Year LEAP Call Volatility + FX Hedging: Captures multi-year institutional strategic positioning with low turnover. (3) 2-Year Put Volatility + FX Hedging: Exploits 2-year structural put demand asymmetry against realized Parkinson volatility. (4) 1-Year Call Volatility + Supply Chain Customer Spillover (pv13): Fuses options flow with customer-to-supplier informational transmission friction.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "options_expiration_pinning_effects"
+      ],
+      "falsification_test": "Alpha fails if institutional options demand reflects hedging panic rather than informed directional conviction.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_put_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: 1-Year Put Volatility Downside Skew + 252d FX Currency Hedging Super Alpha",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2: 3-Year LEAP Call Volatility Term Structure + 252d FX Currency Hedging Super Alpha",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_put_720 / parkinson_volatility_180, 60), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: 2-Year Put Volatility Downside Skew + 252d FX Currency Hedging Super Alpha",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_decay_linear(ts_backfill(pv13_custretsig_retsig, 10), 10), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 4: 1-Year Call Volatility Term Structure + Supply Chain Customer Spillover (pv13) Super Alpha",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

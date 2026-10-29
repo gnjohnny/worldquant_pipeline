@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Market-Neutralized Volatility & Super Alpha Expansion: Replicating the EXCELLENT Breakthrough",
+      "domain": "volatility",
+      "economic_rationale": "Leverages the breakthrough discovery that market-wide cross-sectional ranking (group_rank(..., market)) with market neutralization unleashes cross-sector relative value, surging Fitness to 2.02 (EXCELLENT) and dropping self-correlation against subindustry-neutral portfolio holdings to 0.6159. Deploys this market-wide architecture across four distinct volatility surfaces: (1) 1-Year Put Volatility Downside Skew in Market Scope. (2) 2-Year Put Volatility Downside Skew in Market Scope. (3) 3-Year LEAP Call Volatility Term Structure in Market Scope. (4) Market-Neutralized Super Alpha combining 1-Year Call Volatility and 252d FX Translation Hedging.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if market-wide options demand reflects market beta sentiment rather than true risk premia.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_360 / parkinson_volatility_90, 60), market) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Candidate 1: Market-Neutralized 1-Year Put Volatility Term Structure (Targeting EXCELLENT Status)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_720 / parkinson_volatility_180, 60), market) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Candidate 2: Market-Neutralized 2-Year Put Volatility Downside Skew (Targeting EXCELLENT Status)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), market) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Candidate 3: Market-Neutralized 3-Year LEAP Call Term Structure (Targeting EXCELLENT Status)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), market) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), market) - 0.10 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Candidate 4: Market-Neutralized Super Alpha (Options Call + Corporate FX Hedging)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Market-Neutralized 1-Year Call Volatility Risk Premia Breakout: EXCELLENT Status",
+      "domain": "volatility",
+      "economic_rationale": "By switching cross-sectional group ranking from subindustry to market, this alpha captures broad market-wide institutional options flow and macro volatility surface dislocations across all industries, rather than constraining ranking within narrow industry peers. Institutional options demand on mega-cap growth and leading market sectors compounds broader relative value while retaining market neutrality, driving Fitness to 2.02 (EXCELLENT rating) and collapsing self-correlation against subindustry-neutralized portfolio alphas to 0.6159.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if market-wide options flow reflects market beta sentiment rather than true risk premia.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), market) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Market-wide 1-Year Call Volatility Term Structure with 5-Day Market Reversal Overlay (Achieving EXCELLENT Status: Sharpe 1.77, Fitness 2.02)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

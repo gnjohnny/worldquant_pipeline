@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Market-Neutralized Operating Income Yield & Audited Annual FX Super Alpha: 8/8 PASS",
+      "domain": "cross-asset",
+      "economic_rationale": "Combines operational cashflow yield (operating_income / close) with audited annual 10-K foreign currency translation adjustments (_a) across market scope, achieving 8/8 PASS with Sharpe 1.61, Fitness 1.55 (GOOD), Turnover 10.79%, and Self-correlation 0.6345.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if operating profitability is offset by heavy non-operating FX write-downs.",
+      "candidates": [
+        {
+          "expression": "0.55 * signed_power(group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), market) - 0.5, 2) + 0.35 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), market) - 0.10 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Market-Neutralized Operating Income Yield & Audited Annual FX Super Alpha",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

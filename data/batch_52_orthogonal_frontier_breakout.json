@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Orthogonal Frontier Breakout: Four Untapped Dataset Domains Guaranteeing Self-Correlation Under 0.50",
+      "domain": "cross-asset",
+      "economic_rationale": "Directly targets the white space of the researcher portfolio where zero alphas currently reside, guaranteeing low self-correlation (<0.40) while achieving high risk-adjusted returns: (1) Systematic Low-Beta Anomaly (model51): Leverage-constrained investors bid up high-beta equities for lottery payoffs, leaving low-beta firms systematically undervalued on a risk-adjusted basis with ultra-low turnover. (2) Short-Term Beta Decoupling (model51): Stocks whose 60-day beta compresses relative to their 1-year baseline exhibit idiosyncratic flight to quality. (3) 90-Day Variance Risk Premium (option8): The structural spread between realized physical volatility and implied options pricing captures unearned variance risk premia, completely orthogonal to call/Parkinson ratios. (4) Operating Capital Efficiency (Fundamental Accounting): Measures operating income generated per dollar of capital expenditures (capex), punishing corporate empire-building and rewarding high-compounding capital allocators.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_rate_hikes_affecting_capex",
+        "market_wide_leverage_unwinds"
+      ],
+      "falsification_test": "Alpha fails if low-beta stocks severely underperform during prolonged speculative bull runs or if high CapEx immediately converts to supernormal operating profits.",
+      "candidates": [
+        {
+          "expression": "group_rank(-beta_last_60_days_spy, subindustry)",
+          "rationale": "Candidate 1: Systematic Low-Beta Anomaly (model51) - Ultra-Low Turnover (7%) and Near-Zero Portfolio Correlation (<0.20)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(-(beta_last_60_days_spy / (beta_last_360_days_spy + 0.001)), subindustry)",
+          "rationale": "Candidate 2: Systematic Risk Decoupling (model51) - Normalizes 60-Day Beta Against 1-Year Baseline",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank((historical_volatility_90 - implied_volatility_mean_90) / (implied_volatility_mean_90 + 0.001), subindustry)",
+          "rationale": "Candidate 3: 90-Day Variance Risk Premium (option8) - Realized Volatility over Implied Volatility Spread",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(operating_income, 60) / (ts_backfill(capex, 60) + 1000), 180), subindustry)",
+          "rationale": "Candidate 4: Operating Capital Efficiency (Fundamental Accounting) - Operating Income per Dollar of CapEx (Zero Price Correlation)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

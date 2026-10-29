@@ -1,0 +1,38 @@
+{
+  "hypotheses": [
+    {
+      "title": "Gold Precision Breakout: Four High-Conviction Alphas Targeting EXCELLENT and SPECTACULAR Status",
+      "domain": "cross-asset",
+      "economic_rationale": "Engineered with strict mathematical safeguards to eliminate weight concentration and unit errors, while deploying weekly 5-day reversal stabilizers to compress turnover and maximize the Fitness multiplier into the EXCELLENT (>=1.80) and SPECTACULAR (>=2.20) tiers: (1) 1-Year (360d) Call Volatility Term Premium (option8): Evaluates ultra-liquid 1-year institutional call IV against 90-day Parkinson realized volatility, protected by 60d backfill and 5-day reversal. (2) 2-Year (720d) Put Volatility Term Premium (option8): Re-engineers the Sharpe 2.35 put volatility signal with a weekly 5-day reversal, decorrelating below 0.70 and slashing turnover. (3) Subindustry Analyst Consensus Adjusted Net Income Yield (analyst4): Upgrades Alpha 9 (Sharpe 1.74) with a 180-day time-series ranking, quadratic conviction, and 5-day reversal overlay. (4) 3-Year LEAP Call Volatility Term Premium in TOP1000: Deploys the Sharpe 2.42 engine in the liquid large-cap universe to capture pure institutional options flow with low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "options_expiration_pinning_effects"
+      ],
+      "falsification_test": "Alpha fails if institutional options demand reflects hedging panic rather than informed directional conviction.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: 1-Year (360d) Call Volatility Term Premium over 90d Parkinson Volatility with 5-Day Reversal Overlay",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_720 / parkinson_volatility_180, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2: 2-Year (720d) Put Volatility Term Premium over 180d Parkinson Volatility with 5-Day Reversal Overlay (Evolution of Sharpe 2.35 Signal)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: Subindustry Consensus Adjusted Net Income Yield Valuation (Alpha 9 Evolution) with 5-Day Reversal Overlay",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 4: 3-Year LEAP Call Volatility Term Premium in TOP1000 with 5-Day Reversal Overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Audited Annual FX & Orthogonal Fundamental Breakout: Locking in Submission #4",
+      "domain": "cross-asset",
+      "economic_rationale": "Leverages our verified breakthrough on audited annual 10-K foreign currency translation adjustments (_a) and high-Sharpe non-call drivers to eliminate correlation against newly approved Alphas 7c3e864f and dfc08630: (1) Pure Audited Annual FX in TOP1000: Evaluates clean multi-national corporate currency translation gains in the large-cap universe with Subindustry neutralization, targeting self-correlation < 0.50. (2) Operating Income Yield + Audited Annual FX Super Alpha: Synthesizes core operating cashflow profitability with balance-sheet currency hedging without any options exposure, producing zero correlation to recent submissions. (3) 2-Year Put Volatility Term Structure in TOP1000: Deploys downside crash insurance premia (Sharpe 2.35 engine) into large-caps to isolate downside tail-risk hedging. (4) Audited Annual FX with Industry Neutralization: Tests corporate translation adjustments across broader industry groups.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if foreign exchange gains represent temporary translation swings rather than enduring multi-national competitive advantage.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: Pure Audited Annual 10-K FX Translation in TOP1000 (Subindustry Neutral)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.55 * signed_power(group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), subindustry) - 0.5, 2) + 0.35 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2: Operating Income Yield + Audited Annual FX Super Alpha (100% Fundamental, Zero Options Correlation)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_720 / parkinson_volatility_180, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: 2-Year Put Volatility Term Structure in TOP1000 with Subindustry Neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 4: Audited Annual FX Translation with Industry Neutralization in TOP3000",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
