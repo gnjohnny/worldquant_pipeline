@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Completely Non-Templated Multi-Dataset Orthogonal Alphas",
+      "domain": "cross-asset",
+      "economic_rationale": "Break completely free of repetitive formula shells and eliminate self-correlation bottlenecks across three distinct economic phenomena: (1) Forward Cash Flow Per Share Valuation (analyst4): Cash flow is far harder to manipulate than accounting earnings. Dividing consensus cash flow forecasts by price over a 180-day time-series window captures pure fundamental valuation without any technical overlay. (2) Inverted Supply Chain Lead-Lag Rebound (pv13): Major customer return shocks induce short-term overreaction in suppliers. Inverting the signal and smoothing across 20 trading days captures supplier mean-reversion with low turnover and zero portfolio overlap. (3) Implied Volatility Term Structure Slope (option8): Contango in implied volatility (90d IV > 30d IV) captures institutional risk-premia harvesting and calm market conditions, while backwardation reflects event-driven distress.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_idiosyncratic_gaps"
+      ],
+      "falsification_test": "Alpha fails if consensus cash flow forecasts do not predict equity returns or if inverted supply chain signals face structural customer bankruptcy.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), subindustry)",
+          "rationale": "Candidate 1: Analyst Consensus Cash Flow Per Share Valuation Engine (analyst4) - Single-line Time-Series Valuation Rank",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(-ts_decay_linear(pv13_custretsig_retsig, 20), subindustry)",
+          "rationale": "Candidate 2: Inverted Supply Chain Lead-Lag Rebound Alpha (pv13) - 20-Day Smooth Decay Contrarian Rank",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank((implied_volatility_mean_90 - implied_volatility_mean_30) / implied_volatility_mean_30, subindustry)",
+          "rationale": "Candidate 3: Options Volatility Term Structure Slope Contango (option8) - Normalized Volatility Term Slope",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Decorrelated Quarterly Foreign Currency Translation Adjustments and Volatility-Scaled Hedging",
+      "domain": "fundamental",
+      "economic_rationale": "Multinational companies reporting consistently positive after-tax foreign currency translation adjustments (fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q) possess superior risk management infrastructure that protects international earnings against FX volatility. Evaluating quarterly reports over a 180-day semi-annual window (Alpha 11 architecture) or scaling against foreign operating income (fnd2_ebitfr) isolates operational treasury alpha. Blending with a 5-day weekly price reversal or volatility-scaled reversal overlay decorrelates the signal from existing 3-day reversal alphas (breaking self-correlation below 0.70) while optimizing turnover and lifting Fitness into the EXCELLENT tier.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_dollar_index_trends",
+        "foreign_operating_margin_compression"
+      ],
+      "falsification_test": "Alpha fails if foreign exchange gains stem from unhedged speculative currency swings rather than disciplined risk management.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90) / (ts_backfill(assets, 60) + 1000), 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: 180-Day Semi-Annual TS Rank on Quarterly FX with 5-Day Weekly Reversal Overlay (Solves Fitness & Decorrelates)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / (ts_std_dev(close, 20) + 0.01), subindustry)",
+          "rationale": "Candidate 2: 1-Year Average Quarterly FX with Volatility-Scaled 5-Day Reversal Overlay (Breaks Self-Correlation < 0.70)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 252) / (abs(ts_backfill(fnd2_ebitfr, 60)) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: Foreign Operating Hedging Ratio (Quarterly FX Translation normalized by Foreign EBIT fnd2_ebitfr) with 5-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

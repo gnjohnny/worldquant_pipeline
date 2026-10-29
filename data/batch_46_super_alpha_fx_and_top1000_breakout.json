@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Super Alpha Combination: Foreign Currency Translation Hedging with Cash Flow Valuation and Options Demand",
+      "domain": "multi-factor",
+      "economic_rationale": "Multinational companies reporting consistently positive after-tax foreign currency translation adjustments (fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q) possess superior risk management infrastructure. When combined with fundamental cash-flow yield (ebitda / close) or long-dated institutional options volatility demand (implied_volatility_call_1080 / parkinson_volatility_180), the orthogonal signals create a Super Alpha with low mutual correlation, pushing portfolio Sharpe past 2.10 and lifting Fitness into the EXCELLENT tier. Alternatively, isolating liquid multinational equities in TOP1000 removes small-cap accounting noise and elevates signal purity.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_dollar_index_trends",
+        "sector_specific_export_tariffs"
+      ],
+      "falsification_test": "Alpha fails if combined fundamental or options factors cancel each other out or increase turnover beyond 25%.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(ebitda, 60) / close, 180), subindustry) + 0.25 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: Super Alpha Blending Cash Flow Valuation Yield (Alpha 12/13 Engine) with 1-Year Average FX Translation Hedging and Reversal Stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: Pure 1-Year Average FX Translation Hedging in TOP1000 (Liquid Multinational Large Caps) with Decay 5",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), subindustry) + 0.25 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 3: Super Alpha Blending 3-Year LEAP Call Options Premium (Alpha 14 Engine) with 1-Year Average FX Translation Hedging",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

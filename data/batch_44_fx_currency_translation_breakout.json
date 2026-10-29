@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Multinational Foreign Currency Translation Risk Management and 1-Year Average Yield",
+      "domain": "fundamental",
+      "economic_rationale": "Multinational companies reporting higher gains on foreign currency transactions and tax translation adjustments (fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a / _q) possess superior treasury risk management and currency hedging capabilities. Observing average gains over a 1-year horizon filters out transient currency shocks, isolating persistent balance-sheet strength and operational hedging resilience. Subindustry neutralization removes macro currency beta, while quadratic power conviction and short-term reversal overlays optimize turnover and Sharpe.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_dollar_index_trends",
+        "multinational_foreign_revenue_mix"
+      ],
+      "falsification_test": "Alpha fails if foreign exchange translation gains stem entirely from unhedged speculative currency swings rather than disciplined risk management.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (cap + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 1: 1-Year Trailing Average FX Translation Gain normalized by Market Cap (FX Earnings Yield) with Reversal Stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252) / (ts_backfill(assets, 60) + 1000), 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 2: 1-Year Time-Series Percentile of Asset-Normalized FX Translation Gain with Reversal Stabilizer",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 90), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Candidate 3: Trailing 4-Quarter (1-Year) Rolling Average of Quarterly FX Translation Gains normalized by Assets with Reversal Stabilizer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

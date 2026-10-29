@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Non-Templated Multi-Dataset Orthogonal Alpha Breakout",
+      "domain": "cross-asset",
+      "economic_rationale": "Break free of repetitive price-reversal formula templates and eliminate self-correlation bottlenecks by harvesting three radically independent market structures: (1) Supply Chain Lead-Lag Momentum (pv13): Information diffuses slowly across inter-firm customer-supplier networks. Customer return shocks propagate to supplier revenues with a 5-day decay lag. (2) Options Put Breakeven Safety Margin (option9): Stocks trading well above open-interest weighted put breakeven levels have institutional support, while stocks nearing the floor face dealer gamma selling. (3) Institutional Volume-Return Rolling Correlation (pv1): Stocks exhibiting positive rolling correlation between daily returns and trading volume reflect sustained institutional accumulation rather than speculative noise.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_idiosyncratic_gaps"
+      ],
+      "falsification_test": "Alpha fails if customer return signals are immediately priced in or if put breakeven levels are disregarded during market drawdowns.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry)",
+          "rationale": "Candidate 1: Supply Chain Customer Return Spillover Momentum (pv13) - 100% Non-Templated Pure Decay Rank",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank((close - put_breakeven_30) / close, subindustry)",
+          "rationale": "Candidate 2: Options Downside Breakeven Support Cushion (option9) - Pure Open Interest Market Structure",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(correlation(returns, volume, 60), subindustry)",
+          "rationale": "Candidate 3: Institutional Volume-Return Rolling Correlation (pv1) - Native Statistical Accumulation Operator",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -55,14 +55,6 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Rolling sum over d days"
-    - name: "correlation"
-      arity: 3
-      param_types: ["expression", "expression", "integer"]
-      description: "Rolling correlation between x and y over d days"
-    - name: "covariance"
-      arity: 3
-      param_types: ["expression", "expression", "integer"]
-      description: "Rolling covariance between x and y over d days"
 
   # Cross-sectional operators
   cross_sectional:
