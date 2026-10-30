@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 70: Orthogonal Cashflow & Topline Sales Breakout (Targeting 5th Bonus Approved Alpha)",
+      "domain": "fundamental",
+      "economic_rationale": "Pivots completely away from saturated earnings multiples (operating income, EBIT, EBITDA) by deploying untouched fundamental cashflow and topline revenue metrics into our verified 3-term low-turnover multi-factor architecture: (1) Actual Cash Flow Per Share Yield in TOP2000 (Market Neutral): Captures pure operational cash generation per share without accounting accrual distortions. (2) Quarterly Topline Sales Yield in TOP2000 (Market Neutral): Exploits enterprise revenue yields that cannot be manipulated by depreciation or tax structuring. (3) Annual Topline Sales Yield in TOP1000 (Industry Neutral): Smoothed 252-day annual sales valuation in large-caps with intra-industry neutrality. (4) Short-Term Cash Cushion Yield in TOP1000 (Industry Neutral): Cash-to-price balance-sheet liquidity buffer protecting against market stress.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if topline revenue or balance-sheet cash reserves fail to generate positive cross-sectional risk premia over equity price.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 1: Actual Cash Flow Per Share Yield in TOP2000 Market Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2: Quarterly Topline Sales Yield in TOP2000 Market Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_sales_value_annual, 60) / close, 252), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 3: Annual Topline Sales Yield in TOP1000 Industry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(cash_st, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 4: Short-Term Cash Cushion Yield in TOP1000 Industry Neutral",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
