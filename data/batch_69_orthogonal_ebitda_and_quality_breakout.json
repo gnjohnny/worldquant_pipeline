@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 69: Orthogonal Fundamental EBITDA & Quality Breakout (Targeting 4th Daily Approved Alpha)",
+      "domain": "fundamental",
+      "economic_rationale": "Applies our battle-tested, low-turnover 3-term multi-factor architecture (which delivered Alpha 20, 21, and 22 with self-correlations of 0.59-0.63 and Fitness 1.61-1.85) to entirely unmined fundamental accounting domains: (1) Operating EBITDA Yield + Quarterly Audited FX Hedging in TOP2000 (Market Neutral): Captures pre-financing operating profitability before non-cash depreciation distortions. (2) EBIT Yield + Quarterly Audited FX Hedging in TOP1000 (Industry Neutral): Isolates enterprise operating earnings yield within large-caps. (3) Piotroski Fundamental Quality Score + Quarterly Audited FX Hedging in TOP2000 (Market Neutral): Exploits structural accounting health and balance-sheet quality from Model51. (4) 2-Year LEAP Call IV (720d) + Quarterly Audited FX Hedging in TOP2000 (Sector Neutral): Deploys intermediate 2-year institutional volatility risk premia across TOP2000.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if fundamental EBITDA or quality metrics correlate with momentum during cyclical earnings contractions.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(ebitda, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 1: Operating EBITDA Yield + Quarterly FX Hedging in TOP2000 Market Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(ebit, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2: Operating EBIT Yield + Quarterly FX Hedging in TOP1000 Industry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(fscore_bfl_quality, 60), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 3: Piotroski Fundamental Quality Score + Quarterly FX Hedging in TOP2000 Market Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / parkinson_volatility_180, 60), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 4: 2-Year LEAP Call IV (720d) + Quarterly FX Hedging in TOP2000 Sector Neutral",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
