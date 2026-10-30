@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 72: Cash Flow Per Share Scope & Delta Optimization Breakout (Targeting Bonus Alpha 24)",
+      "domain": "fundamental",
+      "economic_rationale": "Directly targets the remaining self-correlation margin on the proven Cash Flow Per Share engine (which achieved Sharpe 1.81 and Fitness 1.81 EXCELLENT in Batch 71): (1) Cash Flow Per Share Yield in TOP2000 (Industry Neutral): Shifts into TOP2000 Industry scope where zero active portfolio alphas exist. (2) Cash Flow Per Share Yield in TOP2000 (Sector Neutral): Expands cross-section by 1000 mid-caps to decouple from large-cap Alpha 22. (3) Cash Flow Per Share Yield in TOP1000 (Subindustry Neutral): Completely neutralizes subindustry factors within large-caps. (4) Cash Flow Per Share with 20-Day Delta Price Anchor in TOP1000 (Industry Neutral): Modifies short-term price reversal from 5-day to 20-day horizon to shave off the 0.0186 self-correlation margin against Alpha 20.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if cash flow per share correlates with cyclical earnings during macroeconomic rate adjustments.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 1: Cash Flow Per Share Yield in TOP2000 Industry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 2: Cash Flow Per Share Yield in TOP2000 Sector Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: Cash Flow Per Share Yield in TOP1000 Subindustry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 20) / close, industry)",
+          "rationale": "Candidate 4: Cash Flow Per Share with 20-Day Delta Anchor in TOP1000 Industry Neutral",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
