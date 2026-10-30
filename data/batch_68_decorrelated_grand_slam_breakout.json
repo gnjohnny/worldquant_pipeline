@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 68: Decorrelated Grand Slam Breakout (Targeting 4th Daily Approved Alpha)",
+      "domain": "cross-asset",
+      "economic_rationale": "Pivots the verified high-performance Card 4 engine (Sharpe 1.84, Fitness 1.58) and unmined long-term options datasets across decorrelated universes and neutralizations to overcome the self-correlation ceiling (< 0.70): (1) Consensus Net Income Yield + 5-Day VWAP Reversion in TOP2000 (Industry Neutral): Eliminates market-wide factor overlap with Alpha 19 by scoping to TOP2000 with intra-industry ranking. (2) Consensus Net Income Yield + 5-Day VWAP Reversion in TOP1000 (Sector Neutral): Captures pure large-cap earnings dislocation. (3) 3-Year LEAP Put IV (1080d) + Quarterly Audited FX Hedging in TOP1000 (Sector Neutral): Direct counterpart to Alpha 22 (Fitness 1.85 EXCELLENT), capturing multi-year institutional crash hedging premia with zero self-correlation. (4) Operating Income Yield + 5-Day VWAP Reversion in TOP2000 (Industry Neutral): Tests cash-flow operating yield within mid-to-large-cap industries.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if mid-cap earnings revisions align identically with broad-market index beta during quarterly earnings cycles.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), industry) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), industry)",
+          "rationale": "Candidate 1: Consensus Net Income Yield + 5-Day VWAP in TOP2000 with Industry Neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), sector) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), sector)",
+          "rationale": "Candidate 2: Consensus Net Income Yield + 5-Day VWAP in TOP1000 with Sector Neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_put_1080 / parkinson_volatility_180, 60), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 3: 3-Year LEAP Put IV (1080d) + Quarterly FX Hedging in TOP1000 with Sector Neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), industry) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), industry)",
+          "rationale": "Candidate 4: Operating Income Yield + 5-Day VWAP in TOP2000 with Industry Neutralization",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
