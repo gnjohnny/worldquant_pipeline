@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 71: Orthogonal Cashflow & Solvency Scope Shift (Targeting 5th Bonus Approved Alpha)",
+      "domain": "fundamental",
+      "economic_rationale": "Optimizes the high-statistical-power Cash Flow Per Share engine (which achieved Sharpe 1.75 and Fitness 1.57 in Batch 70) and the 8-PASS Cash Cushion engine (self-corr 0.6702) by shifting universes and neutralizations to decisively break the self-correlation threshold: (1) Cash Flow Per Share Yield in TOP1000 (Industry Neutral): Shifts the Sharpe 1.75 / Fitness 1.57 engine out of TOP2000 Market into large-caps with intra-industry ranking. (2) Short-Term Cash Cushion Yield in TOP2000 (Market Neutral): Expands the 8-PASS low-correlation engine into mid-caps where cash solvency confers higher informational edge. (3) Dividend Yield in TOP1000 (Industry Neutral): Capitalizes on cash distributed to shareholders, completely independent from accrual accounting multiples. (4) Cash Flow Per Share Yield in TOP1000 (Sector Neutral): Captures cross-industry cash flow ranking inside economic sectors.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if cash distribution or solvency reserves correlate positively with beta during earnings contraction periods.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 1: Cash Flow Per Share Yield in TOP1000 Industry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(cash_st, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2: Short-Term Cash Cushion Yield in TOP2000 Market Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_dividend_value_qua, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 3: Dividend Yield in TOP1000 Industry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 4: Cash Flow Per Share Yield in TOP1000 Sector Neutral",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
