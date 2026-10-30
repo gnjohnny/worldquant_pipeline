@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 63: Dual Breakthrough Targeting EXCELLENT/SPECTACULAR via Breadth and Orthogonal Cashflow",
+      "domain": "cross-asset",
+      "economic_rationale": "Deploys a two-pronged strategy to conquer the country challenge leaderboard: (1) Breadth Expansion on Candidate 2: Shifting the Fitness 1.88 engine to TOP3000 expands cross-sectional breadth by 3x, targeting Sharpe >= 2.15 to trigger the 10% platform improvement override. (2) Accrual-Clean Operating Cashflow Yield (fnd6_fopo) + VWAP in Sector Scope: Substitutes accounting income with physical operational cash inflows to eliminate portfolio correlation. (3) EBITDA Yield + VWAP Reversion in Market Scope: Capitalizes on cash enterprise valuation. (4) 1-Year Put Volatility Downside Skew in Sector Scope: Exploits downside crash protection premia, structurally decorrelated from call options.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if operational cashflow yields or put crash premia reflect distress rather than high quality.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), sector) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 3) / close, sector)",
+          "rationale": "Candidate 1: Fitness 1.88 Engine in TOP3000 (Targeting Sharpe >= 2.15 to Trigger 10% Improvement Pass with EXCELLENT/SPECTACULAR Rating)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(fnd6_fopo, 60) / close, 180), sector) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), sector)",
+          "rationale": "Candidate 2: Operating Cash Flow Yield (fnd6_fopo) + VWAP Reversion in Sector Scope (Accrual-Free Cashflow)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(ebitda, 60) / close, 180), market) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), market)",
+          "rationale": "Candidate 3: EBITDA Fundamental Yield + VWAP Reversion in Market Scope",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_backfill(implied_volatility_put_360 / parkinson_volatility_90, 60), sector) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 3) / close, sector)",
+          "rationale": "Candidate 4: 1-Year Put Volatility Downside Skew in Sector Scope (Structural Crash Insurance)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

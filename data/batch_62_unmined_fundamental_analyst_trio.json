@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Book-to-Price Value Anomaly with Short-Term Delta Reversion",
+      "domain": "fundamental",
+      "economic_rationale": "Classic Fama-French Value anomaly: stocks where book value per share is near its 1-year historical high relative to market equity price are fundamentally underpriced. Coupling with short-term price delta reversion cushions temporary liquidity overshoots while maintaining low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["value_trap_distress"],
+      "falsification_test": "Fails if high book-to-price firms face systemic insolvency write-downs.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Book-to-Price Value Anomaly with Price Delta Reversion",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Consensus Cash Flow Per Share Yield with Mean Reversion Overlay",
+      "domain": "analyst",
+      "economic_rationale": "Operating cash flow is resistant to aggressive accrual management. Equities where consensus forward cash flow per share trades at a historical premium relative to share price offer durable operational distribution capacity.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["analyst_optimism_bias"],
+      "falsification_test": "Fails if consensus cash flows fail to materialize into reported cash from operations.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Analyst Consensus Cash Flow Yield & Price Reversion",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Sales-to-Price Revenue Yield Anomaly with Short-Term Reversion",
+      "domain": "analyst",
+      "economic_rationale": "Top-line revenue is the hardest accounting metric to manipulate. Equities trading at deep discounts relative to their historical quarterly sales revenue deliver top-line insulation against margin compression, generating persistent cross-sectional outperformance.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["low_margin_retail_traps"],
+      "falsification_test": "Fails if sales expansion is driven entirely by unprofitable margin dumping.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Reported Quarterly Sales-to-Price Yield & Price Reversion",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

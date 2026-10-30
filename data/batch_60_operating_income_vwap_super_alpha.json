@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Market-Wide Operating Income Yield & VWAP Reversion Super Alpha: 8/8 PASS",
+      "domain": "cross-asset",
+      "economic_rationale": "Combines fundamental operational profitability (operating income yield) with microstructural execution dislocation (close discounted below intraday volume-weighted average price). By ranking across market scope, the alpha allocates capital to deeply undervalued cash-generating equities undergoing temporary intraday liquidity discounts, achieving an 8/8 PASS with Sharpe 1.80 and Fitness 1.51.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if intraday discount to VWAP indicates structural institutional distribution rather than transient liquidity friction.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), market) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), market)",
+          "rationale": "Market-Wide Operating Income Yield & VWAP Liquidity Reversion Super Alpha",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

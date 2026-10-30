@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Operating Income Yield & Intraday VWAP Dislocation Super Alpha",
+      "domain": "cross-asset",
+      "economic_rationale": "Combines a slow fundamental cashflow anchor (operating_income / close, 180d lookback, turnover ~8%) with the high-Sharpe 5-day VWAP intraday catalyst (which delivered Sharpe 1.47 in Batch 65). The fundamental anchor cuts turnover in half while the VWAP dislocation generates high information coefficient, targeting Sharpe >= 1.80 and Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["earnings_announcement_liquidity_gaps"],
+      "falsification_test": "Fails if high operating income firms suffer persistent intraday selling pressure.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), subindustry) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), subindustry)",
+          "rationale": "Operating Income Yield Anchor & 5-Day VWAP Catalyst",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Book-to-Price Value Dislocation & Intraday VWAP Dislocation Super Alpha",
+      "domain": "cross-asset",
+      "economic_rationale": "Pairs Fama-French Book-to-Price value (bookvalue_ps / close, 252d lookback) with the 5-day VWAP order flow catalyst. Deep value stocks suffering short-term intraday market-maker selling experience sharp mean-reverting rebounds with zero portfolio self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["book_value_impairment_shocks"],
+      "falsification_test": "Fails if high book-to-price stocks fail to rebound from VWAP discounts.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 252), subindustry) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), subindustry)",
+          "rationale": "Book Value Yield Anchor & 5-Day VWAP Catalyst",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "3-Year LEAP Market-Neutral Volatility Risk Premia (Linear Concentration Fix)",
+      "domain": "options",
+      "economic_rationale": "Direct fix for Batch 60 Alpha 2 which passed 6 gates with Sharpe 1.48, Sub-universe Sharpe 1.71, and Fitness 1.16. By replacing signed_power with pure linear group_rank across Market scope, instrument weights remain perfectly uniform, eliminating the weight concentration failure while preserving superior risk premia.",
+      "expected_direction": "positive",
+      "intended_horizon": "120d",
+      "confounders": ["macro_implied_volatility_inversion"],
+      "falsification_test": "Fails if 3-year implied volatility chronically underprices realized multi-year equity volatility.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_backfill(implied_volatility_call_1080, 20) / parkinson_volatility_120, market) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "1080-Day LEAP Market Neutral Premia with Uniform Linear Weights",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

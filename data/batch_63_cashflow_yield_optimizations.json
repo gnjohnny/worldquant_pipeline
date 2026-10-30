@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "5-Day Smoothed Delta & 180-Day Consensus Cash Flow Yield",
+      "domain": "analyst",
+      "economic_rationale": "Optimizes Candidate 2 from Batch 62 (Sharpe 1.27, Fitness 0.97) by tightening the fundamental lookback from 252 to 180 days and extending delta lookback from 3 to 5 days with lower 10% weight to curb turnover and push Fitness into the GOOD tier.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["earnings_season_gap_risk"],
+      "falsification_test": "Fails if 5-day delta exhibits strong momentum persistence instead of mean reversion.",
+      "candidates": [
+        {
+          "expression": "0.90 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "180-Day Cash Flow Yield with 5-Day Smoothed Reversion",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Market-Neutralized 180-Day Consensus Cash Flow Yield",
+      "domain": "analyst",
+      "economic_rationale": "Expands cash flow yield ranking to whole-market scope, capturing cross-industry relative value while maintaining zero market beta. Drives both Fitness and Uniqueness higher.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["cross_sector_valuation_disparities"],
+      "falsification_test": "Fails if structural sector shifts overwhelm market-wide cash flow yields.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), market) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "Market-Neutral 180-Day Cash Flow Yield with 5-Day Reversion",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Consensus Cash Flow Yield & Operational Cashflow Efficiency Multi-Dataset Synergy",
+      "domain": "cross-asset",
+      "economic_rationale": "Firms with high forward analyst cash flow yield (anl4_afv4_cfps_median / close) paired with top operational cash generation efficiency per unit of capital (cashflow_efficiency_rank_derivative) combine sell-side optimism with balance-sheet verification. 100% instrument coverage boosts Sharpe and compresses turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["cyclical_capex_surges"],
+      "falsification_test": "Fails if cash generation efficiency deteriorates amid rising inventory accumulation.",
+      "candidates": [
+        {
+          "expression": "0.55 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), subindustry) + 0.35 * group_rank(cashflow_efficiency_rank_derivative, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Forward Consensus CFPS Yield & Operational Cash Efficiency Synergy",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

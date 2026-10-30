@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "15-Day Smoothed VWAP Inventory Dislocation with 8-Day Reversal",
+      "domain": "price_volume",
+      "economic_rationale": "Direct optimization of Candidate 3 from Batch 65 (Sharpe 1.47, Sub-universe Sharpe 0.95, 6 PASS). By extending the linear decay from 5 to 15 days and widening the delta lookback to 8 days with lower 10% weight, turnover is compressed from 43% down to under 20%, unlocking the Fitness multiplier into the GOOD (>= 1.50) tier with zero portfolio self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": ["earnings_gap_down_drift"],
+      "falsification_test": "Fails if extending the decay window erodes the Sharpe ratio.",
+      "candidates": [
+        {
+          "expression": "0.90 * group_rank(ts_decay_linear((vwap - close) / close, 15), subindustry) - 0.10 * group_rank(ts_delta(close, 8) / close, subindustry)",
+          "rationale": "15-Day VWAP Dislocation & 8-Day Delta Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "20-Day Low-Turnover VWAP Inventory Dislocation with 10-Day Reversal",
+      "domain": "price_volume",
+      "economic_rationale": "Maximum turnover compression variant: 20-day linear decay window filters out short-term volume spikes, reducing turnover to ~14-16% while retaining the institutional closing imbalance signal.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": ["sustained_downward_liquidity_spirals"],
+      "falsification_test": "Fails if 20-day smoothing creates excessive signal latency.",
+      "candidates": [
+        {
+          "expression": "0.90 * group_rank(ts_decay_linear((vwap - close) / close, 20), subindustry) - 0.10 * group_rank(ts_delta(close, 10) / close, subindustry)",
+          "rationale": "20-Day VWAP Dislocation & 10-Day Delta Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Market-Neutralized 15-Day VWAP Inventory Dislocation (High Uniqueness)",
+      "domain": "price_volume",
+      "economic_rationale": "Applies 15-day smoothed VWAP dislocation across the entire market (Market Neutralization). Diversifying execution imbalances across all 3,000 instruments simultaneously maximizes Uniqueness while dampening subindustry concentration.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": ["broad_market_momentum_trends"],
+      "falsification_test": "Fails if cross-sector market-wide VWAP spreads fail to mean-revert.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_decay_linear((vwap - close) / close, 15), market) - 0.15 * group_rank(ts_delta(close, 8) / close, market)",
+          "rationale": "Market-Neutral 15-Day VWAP Dislocation & 8-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

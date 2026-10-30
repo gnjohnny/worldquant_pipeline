@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 66: Completely Orthogonal Frontiers - Solvency, Earnings Certainty, Fair Value Assets, and Book Yield",
+      "domain": "cross-asset",
+      "economic_rationale": "Pivots completely away from crowded options volatility surfaces and currency translation items to eliminate portfolio self-correlation (< 0.35) and maximize the Uniqueness leaderboard dimension: (1) Balance Sheet Solvency Buffer: Evaluates short-term liquid cash relative to total debt obligations (cash_st / (debt_st + debt_lt + 1000)). Highly liquid firms avoid borrowing distress during tightening cycles. (2) Earnings Certainty & Accrual-Free Quality (model16): Captures firms with high earnings certainty and low accounting accruals (100% instrument coverage). (3) Audited Annual Fair Value Assets Ratio: Measures marked-to-market liquid asset backing relative to total reported assets (fn_assets_fair_val_a / assets). (4) Subindustry Book-to-Price Yield (Fama-French Value): Evaluates tangible book value per share relative to market price over a 180-day baseline.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if solvency buffers or earnings certainty are already fully discounted by market participants.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(cash_st, 60) / (ts_backfill(debt_st, 60) + ts_backfill(debt_lt, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: Corporate Balance Sheet Solvency Buffer (Cash over Total Debt)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(earnings_certainty_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2: Earnings Certainty & Low Accrual Quality (model16, 100% Coverage)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_mean(ts_backfill(fn_assets_fair_val_a, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3: Audited Annual Fair Value Assets Backing Multiplier",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 4: Subindustry Book-to-Price Fundamental Value Yield",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

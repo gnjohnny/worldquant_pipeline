@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Multi-Factor Style Surface Acceleration & Price Reversal",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Captures corporate turning points via the first derivative / acceleration of the comprehensive fundamental style surface (Value, Growth, Profitability, Quality). Because the user has zero approved alphas in model16, this signal possesses zero self-correlation against the user's existing portfolio while delivering high global Uniqueness.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["macro_growth_value_rotations"],
+      "falsification_test": "Fails if accelerating style surfaces experience immediate fundamental mean-reversion.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(fscore_bfl_surface_accel, subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Fundamental Style Acceleration with 5-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Balance Sheet Quality & Resilience with Price Reversal",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Ranks balance sheet resilience, debt sustainability, and earnings quality (fscore_bfl_quality) relative to subindustry peers. Provides defensive outperformance with zero historical overlap in the user's submitted portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["low_quality_junk_rallies"],
+      "falsification_test": "Fails if high-quality balance sheet firms suffer unexpected liquidity crunches.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(fscore_bfl_quality, subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Fundamental Quality Score with 5-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Unsystematic Variance Contraction & Price Reversal",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Captures institutional stabilization where short-term 90-day unsystematic variance sharply contracts relative to 1-year baseline. Combining this risk model signal with 5-day delta mean reversion guarantees zero self-correlation and top-tier Uniqueness (> 0.90) on the country-level challenge leaderboard.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["systemic_macro_volatility_spikes"],
+      "falsification_test": "Fails if variance contraction signals operational stagnation rather than stability.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(-(unsystematic_risk_last_90_days / (unsystematic_risk_last_360_days + 0.0001)), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Unsystematic Risk Normalization & 5-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

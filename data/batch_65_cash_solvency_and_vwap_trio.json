@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Cash-to-Debt Solvency Coverage with Delta Reversal",
+      "domain": "fundamental",
+      "economic_rationale": "Measures corporate balance sheet solvency and liquidity cushion by ranking cash and short-term investments relative to long-term debt (cash_st / debt_lt). Fortress balance sheet firms resist credit tightening and generate superior risk-adjusted alpha. The user has zero approved alphas on cash_st.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["negative_real_rates_cash_drag"],
+      "falsification_test": "Fails if high cash balances represent idle unproductive capital rather than solvency protection.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_backfill(cash_st, 60) / (ts_backfill(debt_lt, 60) + 1000), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Balance Sheet Cash-to-Debt Solvency Ratio with 5-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Short-Term Cash Yield Dislocation with Delta Reversal",
+      "domain": "fundamental",
+      "economic_rationale": "When a firm's short-term cash and liquid reserves reach 1-year historical highs relative to its stock price (cash_st / close), the equity trades at deep net-cash discount valuation multiples. Zero prior exposure in the user's portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["cash_burn_acceleration"],
+      "falsification_test": "Fails if high cash yield is rapidly consumed by operational cash burn.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(cash_st, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Balance Sheet Cash Yield Dislocation with 5-Day Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Market Maker Inventory Dislocation via Volume-Weighted Average Price (VWAP)",
+      "domain": "price_volume",
+      "economic_rationale": "Captures institutional closing order imbalance: when closing price settles below the daily volume-weighted average price (vwap), market makers absorb overnight inventory imbalances that mean-revert over a 5-day decay window. The user has zero approved alphas using VWAP.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": ["earnings_after_hours_gap_down"],
+      "falsification_test": "Fails if VWAP discounts persist into multi-week downward trends.",
+      "candidates": [
+        {
+          "expression": "0.80 * group_rank(ts_decay_linear((vwap - close) / close, 5), subindustry) - 0.20 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Smoothed VWAP Dislocation with 5-Day Liquidity Reversal",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

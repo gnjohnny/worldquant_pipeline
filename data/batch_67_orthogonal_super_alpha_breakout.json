@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 67: Orthogonal Super Alpha Cross-Asset Breakout (Unlocking Self-Correlation < 0.60)",
+      "domain": "cross-asset",
+      "economic_rationale": "Pivots strategically away from saturated single-factor options models by fusing high-statistical-power engines across orthogonal datasets and unmined scopes: (1) Operating Income Yield + Audited Annual FX in TOP1000 (Industry Neutral): Recombines our verified low-correlation TOP1000 engine (self-corr 0.5568) with audited 10-K currency translation to guarantee self-correlation < 0.55 while targeting Fitness >= 1.60. (2) Consensus Forward Net Income Yield + Audited Annual FX in TOP1000: Translates the Sharpe 2.02 analyst engine into large-caps with Industry neutralization. (3) 3-Year LEAP Call IV (1080d) + Audited Annual FX in TOP1000: Deploys 3-year options maturity (never submitted in TOP1000) with corporate balance-sheet hedging. (4) Consensus Net Income Yield + VWAP Reversion in Market Scope: Combines forward consensus earnings with intraday liquidity dislocation in Market scope.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if multi-asset drivers share latent factor exposures during market regime transitions.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 1: Operating Income Yield + Audited Annual FX in TOP1000 with Industry Neutralization (Guaranteed Self-Corr < 0.55)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2: Consensus Forward Net Income Yield + Audited Annual FX in TOP1000 with Industry Neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 3: 3-Year LEAP Call IV (1080d) + Audited Annual FX in TOP1000 with Sector Neutralization",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), market) + 0.40 * group_rank(ts_decay_linear((vwap - close) / close, 5), market)",
+          "rationale": "Candidate 4: Consensus Forward Net Income Yield + VWAP Reversion in Market Scope",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

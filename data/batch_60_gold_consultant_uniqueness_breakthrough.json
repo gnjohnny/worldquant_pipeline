@@ -1,0 +1,84 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Return Spillover & 360-Day Implied Volatility Super Alpha",
+      "domain": "cross-asset",
+      "economic_rationale": "Information propagates with friction along economic supply chains. When major customers exhibit strong returns (pv13_custretsig_retsig), suppliers experience delayed earnings expansion over subsequent weeks. Combining this with 360-day institutional call implied volatility premia captures structural demand while maintaining low mutual correlation with standard price alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["sector_wide_liquidity_freeze", "customer_concentration_shock"],
+      "falsification_test": "Fails if supplier margins are squeezed despite strong customer demand signals.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) - 0.5, 1) + 0.40 * signed_power(group_rank(ts_backfill(implied_volatility_call_360, 20) / (parkinson_volatility_120 + 0.001), subindustry) - 0.5, 1)",
+          "rationale": "Supply Chain Customer Spillover & 360-Day Institutional Call IV",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "3-Year LEAP Institutional Volatility Risk Premia (Market-Neutralized)",
+      "domain": "options",
+      "economic_rationale": "Institutions pay substantial hedging premia for ultra-long 3-year LEAP options (1080 calendar days). Market-neutralized cross-sectional ranking extracts pure long-horizon volatility risk premia with zero net market equity beta.",
+      "expected_direction": "positive",
+      "intended_horizon": "120d",
+      "confounders": ["macro_implied_volatility_inversion"],
+      "falsification_test": "Fails if 3-year implied volatility chronically underprices realized multi-year equity volatility.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080, 20) / (parkinson_volatility_120 + 0.001), market) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, market)",
+          "rationale": "1080-Day 3-Year LEAP Market Neutral Volatility Risk Premia",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Revere PageRank Centrality & Cashflow Efficiency Alpha",
+      "domain": "alternative",
+      "economic_rationale": "Firms occupying high PageRank network centrality within the inter-company supply network possess pricing power, lower supplier switching risk, and superior cash conversion stability per unit of capital.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["network_rerouting_disruptions"],
+      "falsification_test": "Fails if central supply hub firms suffer systemic debt overhang.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_backfill(pv13_com_page_rank, 60), subindustry) + 0.40 * group_rank(cashflow_efficiency_rank_derivative, subindustry)",
+          "rationale": "PageRank Centrality Hub Power & Cashflow Conversion Efficiency",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Variance Contraction & Forward EPS Surprise Super Alpha",
+      "domain": "cross-asset",
+      "economic_rationale": "Equities experiencing a sharp contraction in unsystematic risk relative to their 1-year baseline paired with robust forward analyst consensus revisions indicate institutional de-risking and fundamental quality.",
+      "expected_direction": "positive",
+      "intended_horizon": "90d",
+      "confounders": ["analyst_revision_lag", "low_volatility_crowding"],
+      "falsification_test": "Fails if low unsystematic risk reflects corporate stagnation rather than stability.",
+      "candidates": [
+        {
+          "expression": "0.55 * group_rank(-(unsystematic_risk_last_90_days / (unsystematic_risk_last_360_days + 0.0001)), subindustry) + 0.45 * group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 252), subindustry)",
+          "rationale": "Unsystematic Risk Normalization & Trailing EPS Yield",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "180-Day Options Breakeven Asymmetry & Audited Annual FX Translation Super Alpha",
+      "domain": "cross-asset",
+      "economic_rationale": "Combines institutional gamma support / upside breakeven asymmetry at 180-day tenors with audited 10-K foreign currency gains/losses normalized by corporate assets, eliminating quarterly noise and delivering low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": ["rapid_dollar_devaluation_shocks"],
+      "falsification_test": "Fails if breakeven spreads collapse under systemic market-maker liquidity withdrawal.",
+      "candidates": [
+        {
+          "expression": "0.55 * group_rank((call_breakeven_180 - close) / (close - put_breakeven_180 + 0.001), subindustry) + 0.45 * signed_power(group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2)",
+          "rationale": "180-Day Breakeven Asymmetry & Audited Annual FX Translation",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
