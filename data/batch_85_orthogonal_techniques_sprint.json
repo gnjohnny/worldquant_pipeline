@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 85: Orthogonal Techniques Sprint (Targeting Alpha 28 & Uniqueness Recovery)",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly expands technique and domain diversification away from accounting fundamentals into three mathematically distinct quantitative paradigms: (1) Candidate 1: Trend Efficiency Ratio (ratio of net directional progress to total traversed path length in pv1). (2) Candidate 2: Abnormal Volume Absorption and Intraday Range Exhaustion Reversion in pv1. (3) Candidate 3: Intra-Industry Low-Beta / Betting-Against-Beta Quality Anomaly in model51. None of these use signed_power or linear polynomial scaffolds, guaranteeing complete decorrelation from recent fundamental alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "intraday_volatility_clustering",
+        "market_factor_rotation"
+      ],
+      "falsification_test": "Alpha fails if trend efficiency, volume absorption reversion, or low-beta factor premia fail to achieve Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_delta(close, 20) / (ts_sum(abs(ts_delta(close, 1)), 20) + close * 0.001), subindustry)",
+          "rationale": "Candidate 1 (Trend Efficiency Ratio): Implements Perry Kaufman's market efficiency ratio, measuring directional displacement divided by cumulative absolute path distance over 20 days. Isolates persistent, low-noise institutional trends. Zero accounting data, pure topological momentum.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank(((close - open) / (high - low + close * 0.001)) * (volume / adv20), subindustry)",
+          "rationale": "Candidate 2 (Abnormal Volume Absorption Reversion): Statistical arbitrage model fading extreme intraday range pushes accompanied by abnormal volume surges (volume / adv20). Exploits liquidity exhaustion and dealer inventory rebalancing.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank(ts_mean(beta_last_60_days_spy, 5), subindustry)",
+          "rationale": "Candidate 3 (Intra-Industry Low-Beta Anomaly): Classical empirical asset pricing anomaly (Frazzini-Pedersen Betting Against Beta). Long low-beta and short high-beta equities within each subindustry, capturing the leverage-constraint risk premium from model51.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
