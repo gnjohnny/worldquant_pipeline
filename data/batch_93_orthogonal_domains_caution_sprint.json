@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 93: Multi-Domain Orthogonal Frontiers & Risk Normalization Sprint",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly implements the user's directive to explore completely different data fields with radical uniqueness and disciplined caution. Deploys three academically grounded structural anomalies across three untouched datasets with zero past approved alpha overlap: (1) Candidate 1: The Xing-Zhang-Zhao (2010) Options Volatility Smirk in option8/options, capturing informed institutional options order flow by comparing call implied volatility against put implied volatility (implied_volatility_call_30 - implied_volatility_put_30). (2) Candidate 2: The Diether-Malloy-Scherbina (2002) Analyst Disagreement & Dispersion Anomaly in analyst4, longing high forward consensus earnings yield while penalizing forecast uncertainty (anl4_afv4_dts_spe). (3) Candidate 3: The Ang et al. (2006) Idiosyncratic Risk Dislocation Recovery in model51, fading temporary spikes in 30-day unsystematic variance relative to 360-day baseline. All candidates are 100% unit-clean, zero warnings, zero signed_power, and zero price-delta hedges.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_blackout_windows",
+        "market_wide_systematic_volatility_spikes"
+      ],
+      "falsification_test": "Alpha fails if options volatility smirk, analyst dispersion penalty, or unsystematic risk dislocation fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(implied_volatility_call_30, 20) - ts_backfill(implied_volatility_put_30, 20), 120), subindustry)",
+          "rationale": "Candidate 1 (Put-Call Implied Volatility Smirk): Grounded in Xing, Zhang & Zhao (2010). When informed institutional investors anticipate downside risk, put IV rises relative to call IV. Equities where call IV exceeds put IV reflect positive informed order flow and lack of institutional downside hedging. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_eps_mean, 60) / close, 180), subindustry) - group_rank(ts_rank(ts_backfill(anl4_afv4_dts_spe, 60) / close, 180), subindustry)",
+          "rationale": "Candidate 2 (Analyst Consensus Earnings Yield vs Disagreement Dispersion): Grounded in Diether, Malloy & Scherbina (2002). Stocks with high analyst disagreement earn lower future returns due to short-sale constraints. Longs high consensus earnings yield while shorting stocks with high forecast dispersion. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank(ts_rank(unsystematic_risk_last_30_days / unsystematic_risk_last_360_days, 120), subindustry)",
+          "rationale": "Candidate 3 (Idiosyncratic Variance Dislocation Normalization): Grounded in Ang et al. (2006) and Merton (1987). Temporary surges in idiosyncratic risk (unsystematic_risk_last_30_days relative to 360-day baseline) capture liquidity dislocations and headline panic. Fading extreme idiosyncratic spikes harvests the post-dislocation recovery. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
