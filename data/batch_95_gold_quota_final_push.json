@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 95: Gold Quota Elevation & Precision Factor Sprint",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly targets securing the 4th qualifying alpha submission of the day to fulfill the Gold Consultant daily quota. Deploys three refined, structurally orthogonal candidates across distinct datasets with verified low cross-alpha correlation and zero unit warnings: (1) Candidate 1: Cash Flow Per Share Yield & Cash Flow Momentum in analyst4/fundamental, refining the factor base that delivered 8 PASS and 1.51 Sharpe in Batch 82 by utilizing Decay 6 in TOP1000 Industry Neutral to elevate Fitness above 1.50. (2) Candidate 2: Domestic EBIT Convex Decile Yield in fundamental (fnd2_ebitdm), applying convex decile weighting to the domestic operating income factor that delivered a consistent 1.00 Sharpe and 1.05 Sub-universe Sharpe in Batches 91-92. (3) Candidate 3: Long-Horizon LEAP Variance Risk Premium (VRP) Contango in option8/options (implied_volatility_call_360 / parkinson_volatility_90), capturing institutional structural tail-risk demand under Market neutralization with Decay 6.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "corporate_earnings_announcement_blackouts",
+        "options_volatility_term_inversion"
+      ],
+      "falsification_test": "Alpha fails if cash flow yield, convex domestic EBIT, or 1-year LEAP VRP fail to produce Sharpe >= 1.25 and Fitness >= 1.50.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), industry) + 0.30 * group_rank(ts_delta(ts_backfill(actual_cashflow_per_share_value_quarterly, 60), 90) / close, industry)",
+          "rationale": "Candidate 1 (Cash Flow Per Share Yield & Momentum): Operating cash flow per share cannot be inflated by accounting accruals. Pairs 180-day historical percentile cash flow yield with 90-day cash flow growth momentum. Evaluated in TOP1000 Industry Neutral with Decay 6 to compress turnover and maximize Fitness.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.75 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), industry) - 0.5, 2) + 0.25 * group_rank(ts_delta(ts_backfill(fnd2_ebitdm, 60), 60) / close, industry)",
+          "rationale": "Candidate 2 (Domestic EBIT Convex Decile Yield): Domestic operating earnings (fnd2_ebitdm) delivered a baseline 1.00 Sharpe and 1.05 Sub-universe Sharpe in Batches 91-92. Applying convex decile weighting concentrates capital on the highest-conviction domestic operating income leaders and laggards. Evaluated in TOP1000 Industry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), market)",
+          "rationale": "Candidate 3 (1-Year LEAP VRP Contango): Exploits the institutional variance risk premium where asset managers systematically overpay for 1-year LEAP call protection relative to 90-day Parkinson realized volatility. Evaluated in TOP1000 Market Neutral with Decay 6.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
