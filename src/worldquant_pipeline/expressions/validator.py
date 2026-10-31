@@ -26,10 +26,39 @@ class ASTValidationResult:
     """Detailed result of static AST validation."""
     is_valid: bool
     errors: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
     node_count: int = 0
     max_depth: int = 0
     referenced_fields: set[str] = field(default_factory=set)
     referenced_operators: set[str] = field(default_factory=set)
+
+
+def extract_fields_from_node(node: ExpressionNode) -> set[str]:
+    """Helper to extract all field names referenced within an AST subtree."""
+    res: set[str] = set()
+
+    def _extract(n: ExpressionNode | None) -> None:
+        if n is None:
+            return
+        if isinstance(n, FieldNode):
+            res.add(n.name.lower())
+        elif isinstance(n, FunctionCallNode):
+            for a in n.args:
+                _extract(a)
+        elif isinstance(n, KeywordArgNode):
+            _extract(n.value)
+        elif isinstance(n, UnaryOperationNode):
+            _extract(n.operand)
+        elif isinstance(n, BinaryOperationNode):
+            _extract(n.left)
+            _extract(n.right)
+        elif isinstance(n, TernaryNode):
+            _extract(n.condition)
+            _extract(n.true_expr)
+            _extract(n.false_expr)
+
+    _extract(node)
+    return res
 
 
 class ExpressionValidator:
@@ -53,6 +82,7 @@ class ExpressionValidator:
     def validate_node(self, node: ExpressionNode) -> ASTValidationResult:
         """Traverse AST and collect all errors, fields, and operators."""
         errors: list[str] = []
+        warnings: list[str] = []
         fields: set[str] = set()
         operators: set[str] = set()
         node_count = 0
@@ -107,6 +137,25 @@ class ExpressionValidator:
                                         f"Argument {i+1} for '{op_name}' must be a string or keyword string parameter."
                                     )
 
+                    # Event-type compatibility checks (Operator ts_backfill does not support event inputs)
+                    if op_name in {"ts_backfill"} and len(current.args) > 0:
+                        first_arg_fields = extract_fields_from_node(current.args[0])
+                        for f_k in first_arg_fields:
+                            field_info = self.allowed_fields.get(f_k, {})
+                            if field_info.get("is_event", False) or f_k in {
+                                "anl4_buy",
+                                "anl4_sell",
+                                "anl4_hold",
+                                "anl4_strong_buy",
+                                "anl4_strong_sell",
+                                "anl4_underperform",
+                                "anl4_outperform",
+                            }:
+                                errors.append(
+                                    f"Operator '{op_name}' does not support event inputs ('{f_k}'). "
+                                    f"Event inputs require event-specific aggregations and cannot be directly backfilled."
+                                )
+
                 for arg in current.args:
                     sub_d = traverse(arg, depth + 1)
                     max_d = max(max_d, sub_d)
@@ -116,6 +165,28 @@ class ExpressionValidator:
                 max_d = max(max_d, sub_d)
 
             elif isinstance(current, BinaryOperationNode):
+                # Dimension / unit mismatch warning for addition and subtraction
+                if current.operator in {"+", "-"}:
+                    left_fields = extract_fields_from_node(current.left)
+                    right_fields = extract_fields_from_node(current.right)
+                    for lf in left_fields:
+                        for rf in right_fields:
+                            l_info = self.allowed_fields.get(lf, {})
+                            r_info = self.allowed_fields.get(rf, {})
+                            l_unit = l_info.get("unit") or l_info.get("unit_type")
+                            r_unit = r_info.get("unit") or r_info.get("unit_type")
+                            if (
+                                l_unit
+                                and r_unit
+                                and l_unit != r_unit
+                                and ("price" in l_unit.lower() or l_unit == "USD")
+                                and (r_unit in {"ratio", "count", "dimensionless"})
+                            ):
+                                warnings.append(
+                                    f"Unit mismatch warning in '{current.operator}': field '{lf}' has unit '{l_unit}', "
+                                    f"while '{rf}' has unit '{r_unit}'. Consider dividing or normalizing to dimensionless."
+                                )
+
                 d1 = traverse(current.left, depth + 1)
                 d2 = traverse(current.right, depth + 1)
                 max_d = max(max_d, d1, d2)
@@ -137,6 +208,7 @@ class ExpressionValidator:
         return ASTValidationResult(
             is_valid=len(errors) == 0,
             errors=errors,
+            warnings=warnings,
             node_count=node_count,
             max_depth=tree_depth,
             referenced_fields=fields,

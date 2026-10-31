@@ -68,9 +68,32 @@ class Settings:
         return result
 
     def get_allowed_fields(self) -> dict[str, dict[str, Any]]:
-        """Return all approved fields from data_sources.yaml."""
+        """Return all approved fields from data_sources.yaml with event and unit metadata."""
         cfg = self.data_sources_config.get("fields", [])
-        return {f["field_key"]: f for f in cfg if f.get("permitted_use", True)}
+        known_event_fields = {
+            "anl4_buy",
+            "anl4_sell",
+            "anl4_hold",
+            "anl4_strong_buy",
+            "anl4_strong_sell",
+            "anl4_underperform",
+            "anl4_outperform",
+        }
+        res: dict[str, dict[str, Any]] = {}
+        for f in cfg:
+            if f.get("permitted_use", True):
+                fk = f["field_key"]
+                field_dict = dict(f)
+                if "is_event" not in field_dict:
+                    field_dict["is_event"] = (
+                        fk in known_event_fields
+                        or f.get("category") == "events"
+                        or fk.startswith("event_")
+                    )
+                if "unit_type" not in field_dict:
+                    field_dict["unit_type"] = f.get("unit") or "dimensionless"
+                res[fk] = field_dict
+        return res
 
 
 @lru_cache(maxsize=1)

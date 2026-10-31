@@ -4,6 +4,8 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from worldquant_pipeline.evaluation.fingerprint import FactorFingerprintAuditor
+from worldquant_pipeline.evaluation.turnover_proxy import TurnoverProxyCalculator
 from worldquant_pipeline.exceptions import (
     ASTSyntaxError,
     WorldQuantPipelineError,
@@ -108,7 +110,11 @@ class HypothesisImporter:
                     })
                     continue
 
-                # 5. Register Valid Candidate
+                # 5. Pre-simulation Fingerprint & Turnover Audit
+                fp_res = FactorFingerprintAuditor.audit_against_database(expr_raw, self.session)
+                turnover_est = TurnoverProxyCalculator.estimate(expr_raw)
+
+                # 6. Register Valid Candidate
                 candidate = AlphaCandidate(
                     hypothesis_id=hypothesis.id,
                     expression_raw=expr_raw,
@@ -127,6 +133,8 @@ class HypothesisImporter:
                     "expression": expr_raw,
                     "canonical": canonical_expr,
                     "complexity": candidate.complexity_score,
+                    "correlation_risk": fp_res.risk_level,
+                    "estimated_turnover": turnover_est.estimated_turnover,
                 })
 
         self.session.commit()

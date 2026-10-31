@@ -3,7 +3,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from worldquant_pipeline.expressions.canonicalize import canonicalize_expression, compute_expression_hash
+from worldquant_pipeline.expressions.canonicalize import (
+    canonicalize_expression,
+    compute_expression_hash,
+)
 from worldquant_pipeline.expressions.validator import ExpressionValidator
 from worldquant_pipeline.storage.database import get_session
 from worldquant_pipeline.storage.models import (

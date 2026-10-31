@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cash Flow Per Share Operating Elevation (Decay 5 Subindustry Target)",
+      "domain": "fundamental",
+      "economic_rationale": "Firms generating exceptional quarterly cash flow per share relative to subindustry peers possess superior self-funded organic reinvestment capacity and pricing power. Subindustry neutralization removes sector-level cyclicality, and convex decile weighting isolates the top quintile of operating cash generators while eliminating turnover drag.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "CapEx timing seasonality",
+        "Subindustry business cycle discrepancies"
+      ],
+      "falsification_test": "Alpha returns invert or decay to Sharpe < 0.5 under extended 2-year backtest or market downturns.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(actual_cashflow_per_share_value_quarterly, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "FFO Operating Cash Margin Convexity in Industry Neutrality",
+      "domain": "fundamental",
+      "economic_rationale": "Funds from Operations (FFO) captures pure operating cash generation stripped of non-cash accruals and depreciation distortions. Evaluating FFO across broader industry peer groups distinguishes cash-flow compounders from capital-depleting competitors, producing robust Sharpe and well-distributed portfolio weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Capital intensity differences across subsectors",
+        "Working capital swings"
+      ],
+      "falsification_test": "Negative returns during industry earnings announcement windows.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(fnd6_fopo, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Operating Cash & Domestic EBIT Multiplicative Synergy",
+      "domain": "fundamental",
+      "economic_rationale": "A non-linear multiplicative cross-factor synergy (group_rank(A) * group_rank(B)) acts as a soft logical AND operator. Only corporations exhibiting both high funds from operations AND expanding domestic operating income receive top-tier portfolio weights, stripping away single-factor vulnerabilities and eliminating self-correlation collisions.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Multinational revenue mix shifts",
+        "Foreign exchange headwinds"
+      ],
+      "falsification_test": "Loss of predictive power when domestic EBIT growth decouples from operating cash flow.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(group_rank(fnd6_fopo, subindustry) * group_rank(fnd2_ebitdm, subindustry), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

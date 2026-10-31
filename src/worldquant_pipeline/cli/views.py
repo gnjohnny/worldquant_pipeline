@@ -101,10 +101,21 @@ def render_ingestion_report(report: IngestionReport) -> None:
         cand_table = Table(title="Registered Candidates", show_header=True, header_style="bold white")
         cand_table.add_column("ID", style="cyan")
         cand_table.add_column("Complexity", justify="right")
+        cand_table.add_column("Turnover Est.", justify="right")
+        cand_table.add_column("Corr Risk", justify="center")
         cand_table.add_column("Canonical Expression", style="green")
 
         for c in report.registered_candidates:
-            cand_table.add_row(c["id"][:8], str(c["complexity"]), c["canonical"])
+            risk = c.get("correlation_risk", "LOW")
+            risk_style = "green" if risk == "LOW" else "yellow" if risk == "MEDIUM" else "bold red"
+            turnover_str = f"{c.get('estimated_turnover', 0.12):.1%}" if "estimated_turnover" in c else "N/A"
+            cand_table.add_row(
+                c["id"][:8],
+                str(c["complexity"]),
+                turnover_str,
+                f"[{risk_style}]{risk}[/{risk_style}]",
+                c["canonical"][:60] + ("..." if len(c["canonical"]) > 60 else ""),
+            )
         console.print(cand_table)
         console.print()
 

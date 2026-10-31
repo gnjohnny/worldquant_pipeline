@@ -5,6 +5,7 @@ from typing import Annotated
 
 import typer
 from rich.prompt import Confirm, FloatPrompt, Prompt
+from rich.table import Table
 
 from worldquant_pipeline.brain.manual_adapter import ManualBrainAdapter
 from worldquant_pipeline.cli.views import (
@@ -212,6 +213,81 @@ def record(
         session.commit()
 
         console.print(f"\n[bold green][SUCCESS] Successfully recorded experiment and decision ({decision})![/bold green]\n")
+
+
+@app.command()
+def audit(
+    expression_or_id: Annotated[
+        str,
+        typer.Argument(help="Alpha expression string or candidate ID prefix to audit"),
+    ],
+    decay: Annotated[int, typer.Option("--decay", "-d", help="Simulation decay horizon")] = 4,
+    neutralization: Annotated[
+        str,
+        typer.Option("--neutralization", "-n", help="Group neutralization (subindustry/sector)"),
+    ] = "subindustry",
+) -> None:
+    """Run pre-simulation Gate G1 (AST/Event), Gate G2 (Turnover Proxy), and Gate G3+ (Collision Audit)."""
+    with get_session() as session:
+        cand = (
+            session.query(AlphaCandidate)
+            .filter(AlphaCandidate.id.startswith(expression_or_id))
+            .first()
+        )
+        expr = cand.expression_raw if cand else expression_or_id
+
+        console.print("\n[bold cyan]=== Pre-Simulation Alpha Audit (Gates G1, G2, G3+) ===[/bold cyan]")
+        console.print(f"[bold]Expression:[/bold] [green]{expr}[/green]")
+        console.print(f"[bold]Settings:[/bold] Decay = {decay}, Neutralization = {neutralization}\n")
+
+        gate_runner = QualityGateRunner()
+        res = gate_runner.evaluate_pre_simulation(
+            expr, session=session, decay=decay, target_grouping=neutralization
+        )
+
+        # Gate details table
+        table = Table(show_header=True, header_style="bold white")
+        table.add_column("Gate", style="bold")
+        table.add_column("Status", justify="center")
+        table.add_column("Details")
+
+        g1_ok = res.gate_details.get("G1_ast_validity", True)
+        table.add_row(
+            "Gate G1: AST & Event Typing",
+            "[green]PASS[/green]" if g1_ok else "[bold red]FAIL[/bold red]",
+            "Valid syntax & operator types" if g1_ok else "; ".join(res.failures),
+        )
+
+        g2_ok = res.gate_details.get("G2_turnover_proxy", True)
+        table.add_row(
+            "Gate G2: Turnover Proxy",
+            "[green]PASS[/green]" if g2_ok else "[bold red]FAIL[/bold red]",
+            "Turnover in acceptable bounds" if g2_ok else "Turnover risk outside bounds",
+        )
+
+        g3_ok = res.gate_details.get("G3_correlation_risk", True)
+        table.add_row(
+            "Gate G3+: Factor Overlap",
+            "[green]LOW RISK[/green]" if g3_ok else "[bold red]HIGH RISK[/bold red]",
+            "No dangerous overlap with approved alphas" if g3_ok else "Self-correlation collision risk",
+        )
+
+        console.print(table)
+        console.print()
+
+        if res.warnings:
+            console.print("[bold yellow]Audit Warnings & Advisories:[/bold yellow]")
+            for w in res.warnings:
+                console.print(f"  • [yellow]{w}[/yellow]")
+            console.print()
+
+        if res.failures:
+            console.print("[bold red]Audit Blocking Failures:[/bold red]")
+            for f in res.failures:
+                console.print(f"  • [red]{f}[/red]")
+            console.print()
+        else:
+            console.print("[bold green]Pre-simulation checks passed! Candidate is safe for BRAIN simulation.[/bold green]\n")
 
 
 def main() -> None:

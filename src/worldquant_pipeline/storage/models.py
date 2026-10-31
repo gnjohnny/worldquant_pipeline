@@ -61,7 +61,9 @@ class DataField(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     timing_delay: Mapped[int] = mapped_column(Integer, default=1)
     unit: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    unit_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
     region: Mapped[str] = mapped_column(String(50), default="USA")
+    is_event: Mapped[bool] = mapped_column(Boolean, default=False)
     permitted_use: Mapped[bool] = mapped_column(Boolean, default=True)
 
 
