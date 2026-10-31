@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 90: Orthogonal Frontiers & Unmined Factor Sprint",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly resolves the user's priority to maximize Leaderboard Uniqueness and eliminate formula template recycling by exploring three completely unmined data domains and novel mathematical structures: (1) Candidate 1: Equity Options Implied Borrow & Cost-of-Carry Term Slope (forward_price_90 - forward_price_30) in options, measuring institutional equity financing rates and short borrow stability. (2) Candidate 2: Balance Sheet Net Cash Solvency & Total Debt Cushion (cash_st / (debt_lt + debt_st + cash_st)) in fundamental, deploying structural credit risk modeling with zero unit warnings. (3) Candidate 3: Forward Cash Flow & Dividend Consensus Yield in analyst4, combining consensus forward CFPS (anl4_afv4_cfps_mean) with forward dividend yield (anl4_afv4_div_mean). Zero signed_power, zero price-delta hedges, and 100% unit-clean.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "corporate_credit_spread_widening",
+        "options_forward_term_inversion"
+      ],
+      "falsification_test": "Alpha fails if options forward slope, balance sheet solvency, or forward cash flow yield fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "group_rank((forward_price_90 - forward_price_30) / close, subindustry)",
+          "rationale": "Candidate 1 (Options Implied Borrow Rate & Cost of Carry Term Slope): Exploits the term structure of equity forward prices in options markets. In institutional derivatives, forward price F_T = S_0 * exp((r - q - b) * T), where b is the equity lending fee. Steep forward contango (forward_price_90 > forward_price_30) signals minimal shorting demand, zero inventory congestion, and positive risk-adjusted carry. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(cash_st, 60) / (ts_backfill(debt_lt, 60) + ts_backfill(debt_st, 60) + ts_backfill(cash_st, 60)), 252), subindustry)",
+          "rationale": "Candidate 2 (Balance Sheet Net Cash Solvency & Total Debt Cushion): Structural credit model isolating companies with dominant short-term liquid reserves (cash_st) relative to their aggregate debt stack (debt_lt + debt_st + cash_st). Evaluates the 1-year historical percentile ranking (ts_rank(..., 252)) to identify firms whose solvency buffer is at peak historical strength within their subindustry. Dimensionally clean with zero unit warnings. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 252), subindustry) + 0.40 * group_rank(ts_rank(ts_backfill(anl4_afv4_div_mean, 60) / close, 252), subindustry)",
+          "rationale": "Candidate 3 (Forward Cash Flow & Dividend Consensus Yield): Deploys sell-side forward consensus forecasts for Cash Flow Per Share (anl4_afv4_cfps_mean) and Dividend Per Share (anl4_afv4_div_mean) normalized by spot price close. Cash flows are impervious to accrual accounting manipulation, while dividends represent tangible equity return of capital. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
