@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cash Flow Return on Assets (CFROA) Operating Margin Convexity",
+      "domain": "fundamental",
+      "economic_rationale": "Scaling Funds from Operations by total balance sheet assets (fnd6_fopo / (assets + 1000)) yields Cash Flow Return on Assets (CFROA). This dimensionless operating efficiency metric eliminates market capitalization bias and isolates firms that generate maximum organic cash per unit of invested asset base. Quadratic decile weighting in broad TOP3000 market neutrality rewards capital-efficient compounders while stripping out systematic market beta.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Capital intensity variations across heavy industry sectors",
+        "Asset revaluation timing"
+      ],
+      "falsification_test": "Alpha returns decay to Sharpe < 0.8 during widespread industrial asset revaluations.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(fnd6_fopo / (assets + 1000), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Cash Flow Operating Efficiency Derivative in Market Neutrality",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "The cashflow efficiency rank derivative measures the high-frequency rate of change in a firm's operational cash conversion cycle. By ranking within broader industry cohorts in broad TOP3000 market neutrality, the signal captures firms whose operating cash generation efficiency is accelerating relative to sector peers, front-running earnings announcements.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Seasonality in working capital cycles",
+        "Intra-quarter inventory accumulation"
+      ],
+      "falsification_test": "Alpha returns fail to outperform during quarterly reporting windows.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(cashflow_efficiency_rank_derivative, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Earnings Certainty and Accounting Quality Derivative",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Firms with high earnings certainty and superior accounting sustainability exhibit lower return variance, minimal downside tail risk, and persistent return predictability. Evaluating earnings certainty in broad TOP3000 market neutrality dampens market drawdowns and maximizes information coefficient stability.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Guidance restatements",
+        "Audit delay announcements"
+      ],
+      "falsification_test": "Sharpe drops below 0.8 during periods of macroeconomic regime shifts.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(earnings_certainty_rank_derivative, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    }
+  ]
+}
