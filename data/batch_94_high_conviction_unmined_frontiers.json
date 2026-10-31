@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 94: High-Conviction Orthogonal Frontiers & Cautious Structural Yield Sprint",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly implements the user's suggestion to explore different data fields with radical uniqueness and disciplined caution. Formulates three high-conviction structural anomalies across three orthogonal domains with zero overlap against today's three approved alphas: (1) Candidate 1: Standardized Unexpected Cash Flow (CF-SUE) & Yield in analyst4, measuring the reported cash flow surprise relative to sell-side consensus (actual_cashflow_per_share_value_quarterly - anl4_afv4_cfps_mean) normalized by price. (2) Candidate 2: Structural Credit Deleveraging & Cash Reserves in fundamental, penalizing high liabilities-to-capital ratios while longing peak cash yields (cash_st / close). (3) Candidate 3: Long-Horizon LEAP Variance Risk Premium (720d call IV vs 120d Parkinson realized volatility) in option8/options, capturing institutional structural tail-risk demand. All candidates are 100% unit-clean, zero warnings, zero signed_power, and zero price-delta hedges.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "corporate_debt_refinancing_cycles",
+        "options_expiration_liquidity_dislocations"
+      ],
+      "falsification_test": "Alpha fails if cash flow surprise, balance sheet deleveraging, or 2-year LEAP VRP contango fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) + 0.40 * group_rank((ts_backfill(actual_cashflow_per_share_value_quarterly, 60) - ts_backfill(anl4_afv4_cfps_mean, 60)) / close, subindustry)",
+          "rationale": "Candidate 1 (Cash Flow SUE Surprise & Yield): Pairs 180-day historical percentile cash flow yield with the unexpected cash flow surprise relative to sell-side consensus forecasts. Cash flow is immune to accounting accrual manipulation, making CF-SUE a powerful fundamental driver of Post-Earnings Announcement Drift. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank(ts_rank(ts_backfill(liabilities, 60) / (ts_backfill(assets, 60) + ts_backfill(liabilities, 60)), 252), subindustry) + 0.50 * group_rank(ts_rank(ts_backfill(cash_st, 60) / close, 180), subindustry)",
+          "rationale": "Candidate 2 (Balance Sheet Deleveraging & Cash Solvency): Merton structural credit risk model. Fades companies with elevated balance sheet liabilities relative to total capital, while longing companies holding historically elevated cash reserves (cash_st / close). Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(implied_volatility_call_720 / parkinson_volatility_120, 60), 120), subindustry)",
+          "rationale": "Candidate 3 (Long-Horizon LEAP VRP Contango): Exploits the institutional volatility risk premium where asset managers systematically overpay for 2-year LEAP call protection relative to 120-day Parkinson realized volatility. Evaluated in TOP1000 Subindustry Neutral with Decay 6.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
