@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 83: Radical Uniqueness & Technique Diversification Push",
+      "domain": "multi_domain",
+      "economic_rationale": "Breaks entirely away from the linear polynomial scaffold and signed_power template to radically maximize Leaderboard Uniqueness and eliminate cross-alpha correlation. Introduces three pure, structurally distinct quantitative paradigms: (1) Supply chain customer return propagation in pv13. (2) Market maker gamma downside support buffer in option9. (3) Multiplicative interaction of operational cashflow efficiency and analyst revision velocity in model16.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "market_maker_gamma_rebalancing",
+        "inter_industry_supply_chain_bottlenecks"
+      ],
+      "falsification_test": "Alpha fails if customer return diffusion, option downside breakeven buffers, or multiplicative rank derivatives fail to achieve Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry)",
+          "rationale": "Candidate 1 (Supply-Chain Customer Return Diffusion): Quantifies the lead-lag spillover where major customer equity returns propagate upstream to suppliers over a 10-day decay window. Zero template recycling; completely unmined relationship network domain.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_mean((close - put_breakeven_30) / close, 5), subindustry)",
+          "rationale": "Candidate 2 (Market Maker Gamma Support Buffer): Measures the percentage buffer between spot price and the 30-day open-interest weighted put breakeven price. Stocks trading safely above put breakeven enjoy positive dealer gamma drift.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(cashflow_efficiency_rank_derivative * analyst_revision_rank_derivative, subindustry)",
+          "rationale": "Candidate 3 (Non-Linear Operational Cash & Revision Synergy): Pure multiplicative cross-sectional interaction isolating companies at the dual intersection of surging operational cashflow conversion and rapid sell-side consensus upgrades.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
