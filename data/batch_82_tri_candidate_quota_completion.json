@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 82: Tri-Candidate Quota Completion Sprint (Targeting Alphas 28, 29, & 30)",
+      "domain": "multi_domain",
+      "economic_rationale": "Executes the Gold Consultant daily quota completion sprint with three structurally orthogonal, unit-clean quantitative drivers across cash flows, operating leverage, and option volatility skew: (1) Candidate 1: Cash Flow Quality & 90-Day Free Cash Flow Acceleration in TOP2000 Subindustry Neutral. (2) Candidate 2: Unit-Clean Operating Leverage & Margin Convexity scaled to TOP2000 Industry Neutral. (3) Candidate 3: Option Volatility Skew Reversion & Volatility Risk Premium Fading in TOP1000 Subindustry Neutral.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_timing",
+        "implied_volatility_surface_distortions"
+      ],
+      "falsification_test": "Alpha fails if cash flow acceleration, margin convexity, or option skew relief fail to achieve Sharpe >= 1.25 and Fitness >= 1.50 under platform neutralization.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(actual_cashflow_per_share_value_quarterly, 60), 90) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1 (Cash Flow Yield & 90-Day Cash Flow Revision Momentum): Couples high free cash flow per share yield with 90-day cash flow acceleration, isolating firms with superior organic cash compounding. Evaluated in TOP2000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(operating_income, 60) / (ts_backfill(actual_sales_value_quarter, 60) * 4), 120), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2 (Unit-Clean Operating Leverage & Margin Convexity in TOP2000): Scales the proven 2.13 Sharpe operating leverage thesis across the broader 2,000 liquid equity universe with Industry Neutralization and Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_180 / parkinson_volatility_60, 60), subindustry) - 0.5, 2) - 0.25 * group_rank(ts_backfill(implied_volatility_put_30 / implied_volatility_call_30, 60), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 3 (Option Volatility Skew Reversion & VRP Fading): Exploits post-hedging relief by buying stocks where panic put skew has peaked relative to call surface pricing, neutralized by subindustry. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

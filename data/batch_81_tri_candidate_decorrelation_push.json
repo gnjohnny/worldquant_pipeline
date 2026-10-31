@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 81: Tri-Candidate Decorrelation Push (Targeting Alphas 27, 28, & 29)",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly resolves the remaining self-correlation margins from Batch 80 and deploys Playbook operating leverage: (1) Candidate 1: Shaves off the 0.0057 self-correlation margin on the 1.71 Sharpe SUE engine (c35563db) by shifting to 126-day SUE lookback and 10-day delta timing in TOP2000 Subindustry Neutral (Decay 6). (2) Candidate 2: Implements Operating Leverage & 120-Day Margin Expansion (Playbook H05) in TOP1000 Subindustry Neutral. (3) Candidate 3: Ports the 1.65 Sub-universe Sharpe LEAP Call Term Structure engine into TOP1000 Industry Neutral to break correlation against TOPSP500 Alpha 24.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_timing"
+      ],
+      "falsification_test": "Alpha fails if 126-day SUE surprise or 120-day margin expansion deteriorates under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) - ts_mean(ts_backfill(actual_eps_value_quarterly, 60), 126), 126), subindustry) - 0.10 * group_rank(ts_delta(close, 10) / close, subindustry)",
+          "rationale": "Candidate 1 (Decorrelated SUE Earnings Surprise Drift): Uses 126-day SUE lookback and 10-day delta timing in TOP2000 Subindustry Neutral with Decay 6 to clear the 0.70 self-correlation threshold against Alpha 26 and elevate Fitness >= 1.50.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(operating_income, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(operating_income, 60) / (ts_backfill(actual_sales_value_quarter, 60) * 4 + 1000), 120), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2 (Operating Leverage & Margin Expansion Super Alpha): Couples operational earnings yield with 120-day operating margin acceleration in TOP1000 Subindustry Neutral.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / parkinson_volatility_180, 60), industry) - 0.5, 2) - 0.15 * group_rank(ts_backfill(implied_volatility_mean_30 / parkinson_volatility_30, 60), industry) - 0.15 * group_rank(ts_delta(close, 10) / close, industry)",
+          "rationale": "Candidate 3 (2-Year LEAP Call Term Structure in TOP1000 Industry Neutral): Shifts scope to TOP1000 Industry Neutral and Decay 6 to decouple from TOPSP500 Alpha 24 while capturing the 1.65 Sub-universe Sharpe.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

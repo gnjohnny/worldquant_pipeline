@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 80: Tri-Candidate Quota Push (Alphas 27, 28, & 29)",
+      "domain": "multi_factor",
+      "economic_rationale": "Directly targets fulfilling today's 4-6 qualifying alpha daily quota with 3 orthogonal, decorrelated candidates across 3 distinct universes and domains: (1) SUE Unexpected Earnings Surprise Drift in TOP2000 Subindustry Neutral (targeting Alpha 27). (2) Cash Flow Per Share Yield & Capital Allocation Return on Assets in TOP1000 Subindustry Neutral (targeting Alpha 28). (3) 2-Year LEAP Call Term Structure & VRP Fading in TOPSP500 Sector Neutral (targeting Alpha 29).",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_timing"
+      ],
+      "falsification_test": "Alpha fails if sub-universe Sharpe deteriorates under sector/subindustry neutralization during monetary policy inflections.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) - ts_mean(ts_backfill(actual_eps_value_quarterly, 60), 252), 252), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1 (SUE Surprise Drift in TOP2000 Subindustry Neutral): Deploys the proven 8-PASS SUE surprise drift engine across 2,000 mid/large caps with subindustry neutralization.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(operating_income, 60), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2 (Cash Flow Yield & Capital Productivity in TOP1000 Subindustry Neutral): Couples cash flow per share yield with 1-year trailing operating return on assets and liquidity entry timing.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.80 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / parkinson_volatility_180, 60), sector) - 0.5, 2) - 0.10 * group_rank(ts_backfill(implied_volatility_mean_30 / parkinson_volatility_30, 60), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 3 (2-Year LEAP Call Term Structure & VRP Fading in TOPSP500 Sector Neutral): Exploits 720-day institutional call demand and 30-day variance risk premium fading in liquid mega-caps.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
