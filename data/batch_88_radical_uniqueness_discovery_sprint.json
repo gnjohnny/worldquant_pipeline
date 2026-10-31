@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 88: Radical Uniqueness & Novel Hypothesis Discovery Sprint",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly responds to the user's directive to eliminate shortcuts, cease template recycling, and research genuinely novel empirical anomalies across unmined data fields. Deploys three academically grounded, structurally orthogonal quantitative hypotheses: (1) Candidate 1: The Diether-Malloy-Scherbina (2002) Analyst Forecast Dispersion Anomaly in analyst4, longing positive consensus net income revisions while penalizing forecast uncertainty (adj_net_income_stddev). (2) Candidate 2: Options Put-Call Volume Flow Exhaustion in option9, fading short-term speculative put volume spikes (pcr_vol_10 / pcr_vol_30). (3) Candidate 3: The Sloan (1996) Accruals Quality & Growth Decoupling in model16, combining top-tier earnings certainty with growth acceleration derivatives. None of these use signed_power or price delta subtraction, guaranteeing maximum Leaderboard Uniqueness.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_blackout_windows",
+        "options_expiration_pinning_risk"
+      ],
+      "falsification_test": "Alpha fails if analyst dispersion, option volume flow exhaustion, or earnings certainty derivatives fail to achieve Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_delta(ts_backfill(adj_net_income_avg, 60), 60) / close, subindustry) - group_rank(ts_backfill(adj_net_income_stddev, 60) / close, subindustry)",
+          "rationale": "Candidate 1 (Analyst Consensus Revision vs Uncertainty Dispersion): Captures the academic finding that high forecast disagreement signals speculative retail overvaluation, while consensus upgrades accompanied by shrinking dispersion predict strong outperformance. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank((pcr_vol_10 - pcr_vol_30) / (pcr_vol_30 + 0.01), subindustry)",
+          "rationale": "Candidate 2 (Options Put-Call Volume Flow Exhaustion): Contrarian options market sentiment model that fades extreme short-term spikes in put trading volume relative to 30-day baseline, capturing market maker delta-hedging relief rallies. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * group_rank(earnings_certainty_rank_derivative, subindustry) + 0.40 * group_rank(growth_potential_rank_derivative, subindustry)",
+          "rationale": "Candidate 3 (Earnings Certainty vs Growth Acceleration): Exploits the quality-growth synergy by longing firms that exhibit both high sustainable earnings certainty (low accruals, clean accounting) and accelerating medium-term growth potential derivatives. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
