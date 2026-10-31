@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 91: Sentiment Reversal & Cashflow Revision Frontiers",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly tackles the user's priority to elevate Leaderboard Uniqueness (target >= 0.85) while driving toward Gold Consultant Fitness (>= 1.50) using three structurally distinct empirical anomalies across unmined data domains: (1) Candidate 1: Forward Cash Flow Yield & Consensus Revision Acceleration (anl4_afv4_cfps_mean), building upon Batch 90 C3's positive 0.88 sub-universe foundation by pairing 180d cash yield with 60d consensus upgrade momentum. (2) Candidate 2: Retail Attention Surge & Social Buzz Mean Reversion (scl12_buzz), harvesting the Barber-Odean (2008) attention-induced overpricing anomaly in an untouched sentiment dataset. (3) Candidate 3: Core Domestic Operating Profitability Yield (fnd2_ebitdm / close), isolating companies trading at historically cheap valuations backed by domestic cash operations immune to FX volatility. Zero signed_power, zero price-delta hedges, and 100% unit-clean.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "retail_sentiment_frenzy_duration",
+        "corporate_earnings_announcement_blackouts"
+      ],
+      "falsification_test": "Alpha fails if forward cashflow revision, social buzz reversal, or domestic EBIT yield fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), subindustry) + 0.30 * group_rank(ts_delta(ts_backfill(anl4_afv4_cfps_mean, 60), 60) / close, subindustry)",
+          "rationale": "Candidate 1 (Forward Cash Flow Yield & Consensus Revision Momentum): Elevates Batch 90 Candidate 3 (which delivered Sharpe 0.83, Sub-universe Sharpe 0.88, Turnover 11.19%) by pairing 180-day percentile cash yield with 60-day sell-side upgrade velocity. Exploits the Post-Earnings Announcement Drift (PEAD) anomaly using cash flow per share, which is immune to accounting accrual inflation. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "-group_rank(ts_rank(ts_backfill(scl12_buzz, 20), 120), subindustry)",
+          "rationale": "Candidate 2 (Retail Attention Surge & Social Buzz Mean Reversion): Grounded in Barber & Odean (2008), this alpha fades stocks experiencing peak 120-day social media buzz (scl12_buzz). Retail investors face attention constraints and herd into heavily hyped stocks, temporarily bidding prices above intrinsic value. As attention dissipates, prices revert to fundamentals. Completely unmined sentiment domain. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), subindustry)",
+          "rationale": "Candidate 3 (Core Domestic Operating Profitability Yield): Exploits structural value in corporate earnings by isolating domestic core operating profits (fnd2_ebitdm). Companies with historically elevated domestic EBIT yields avoid foreign currency translation risk and geopolitical supply chain disruptions. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
