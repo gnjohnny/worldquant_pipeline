@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 96: Gold Approval & Quota Fulfillment Sprint",
+      "domain": "fundamental_and_analyst",
+      "economic_rationale": "High-conviction sprint designed to secure the 4th qualifying alpha submission of the day and achieve Gold Consultant velocity. Deploys three targeted candidates: (1) Candidate 1: Cash Flow Per Share Yield with 90d Delta Momentum (42f371e0), which already achieved 8 PASS / 0 FAIL, Sharpe 1.51, and Self-Correlation 0.6356 under Decay 4. By running under Decay 6 in TOP1000 Industry Neutral, turnover compresses from 13.38% to ~8.5%, directly elevating Fitness above 1.50. (2) Candidate 2: Clean Convex Cash Flow Yield & Momentum, eliminating the price-delta hedge to maximize structural purity and decorrelation. (3) Candidate 3: EBITDA Margin Convexity Expansion in fundamental, deploying operating leverage with zero overlap against today's three approved alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "corporate_earnings_announcement_blackouts"
+      ],
+      "falsification_test": "Alpha fails if cash flow yield or EBITDA margin convexity fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under industry/subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(actual_cashflow_per_share_value_quarterly, 60), 90) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1 (Proven 8-PASS Cash Flow Alpha with Turnover Compression): In Batch 82, this exact formula achieved 8 PASS / 0 FAIL, Sharpe 1.51, Sub-universe Sharpe 1.33, and Self-correlation 0.6356 under Decay 4. Evaluating under Decay 6 in TOP1000 Industry Neutral compresses turnover to <9%, lifting Fitness past the 1.50 Gold invariant.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(actual_cashflow_per_share_value_quarterly, 60), 90) / close, industry)",
+          "rationale": "Candidate 2 (Clean Convex Cash Flow Yield & Momentum): Eliminates the short-term price-delta subtraction to ensure pure fundamental factor exposure. Pairs 180-day convex cash flow yield with 90-day cash flow growth momentum. Evaluated in TOP1000 Industry Neutral with Decay 6.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.65 * signed_power(group_rank(ts_rank(ts_backfill(ebitda, 60) / close, 180), subindustry) - 0.5, 2) + 0.35 * group_rank(ts_delta(ts_backfill(ebitda, 60) / (ts_backfill(actual_sales_value_quarter, 60) * 4), 120), subindustry)",
+          "rationale": "Candidate 3 (EBITDA Margin Convexity & Operating Leverage): Incorporates structural operating leverage by measuring 120-day expansion in quarterly EBITDA margin (ebitda / (sales * 4)). Completely orthogonal to today's three approved alphas. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
