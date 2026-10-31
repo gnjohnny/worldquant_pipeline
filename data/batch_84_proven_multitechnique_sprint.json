@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 84: Proven Multi-Technique Uniqueness Sprint (Targeting Alpha 28)",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly implements three structurally distinct, non-overengineered quantitative blueprints across orthogonal data domains: (1) Candidate 1: Cashflow efficiency and analyst revision derivative synergy in model16. (2) Candidate 2: Implied volatility term structure slope (contango vs backwardation) in option8. (3) Candidate 3: Standardized unexpected quarterly sales expansion (top-line SUR) in analyst4. None of these use signed_power or 5-day delta hedges, guaranteeing minimal cross-correlation and high uniqueness.",
+      "expected_direction": "positive",
+      "intended_horizon": "40d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "implied_volatility_term_inversion",
+        "quarterly_reporting_blackouts"
+      ],
+      "falsification_test": "Alpha fails if style derivative ranks, volatility contango slope, or top-line revenue Z-score fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(cashflow_efficiency_rank_derivative, subindustry) + 0.30 * group_rank(analyst_revision_rank_derivative, subindustry)",
+          "rationale": "Candidate 1 (Fundamental Style Derivatives Synergy): Pure linear combination of operational profitability rank derivative and institutional consensus upgrade velocity from model16. 100% coverage, low turnover, steady compounding.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank((implied_volatility_mean_90 - implied_volatility_mean_30) / (implied_volatility_mean_30 + 0.001), subindustry)",
+          "rationale": "Candidate 2 (Implied Volatility Term Structure Slope): Captures the term premium where equities with steep contango (IV90 > IV30) experience persistent calm drift while backwardated stocks underperform. Pure option8 volatility surface.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "group_rank((ts_backfill(actual_sales_value_quarter, 60) - ts_mean(ts_backfill(actual_sales_value_quarter, 60), 252)) / (ts_std_dev(ts_backfill(actual_sales_value_quarter, 60), 252) + close * 0.01), subindustry)",
+          "rationale": "Candidate 3 (Standardized Top-Line Sales Surprise): Post-earnings announcement drift driven by revenue expansion standardized by 1-year sales volatility. Unit-clean, immune to accrual manipulation.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
