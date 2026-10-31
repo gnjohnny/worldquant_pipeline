@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 79: Tri-Candidate SUE Surprise Drift & Options Term Structure Breakout",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly elevates the highest-performing orthogonal signals discovered in Batch 78 while eliminating all unit warnings: (1) Unit-safe Standardized Unexpected Earnings (SUE) Surprise Drift with 5-Day Liquidity Timing in TOP1000 Industry Neutral (elevating Candidate 2 from Batch 78, which already scored Sharpe 1.26 and Sub-universe 1.54). (2) SUE Surprise Drift with Subindustry Neutralization in TOP2000 to maximize cross-sectional diversification. (3) Dimensionless Pure Options Contango Slope (1080d / 30d IV) with 30-Day VRP Fading in TOPSP500 Sector Neutral (eliminating all scalar additions and unit warnings).",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "earnings_announcement_timing",
+        "macro_liquidity_regime_shifts"
+      ],
+      "falsification_test": "Alpha fails if post-earnings announcement drift vanishes across subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) - ts_mean(ts_backfill(actual_eps_value_quarterly, 60), 252), 252), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 1 (Unit-Safe SUE Earnings Surprise Drift): Replaces the unit-mismatched addition with unit-safe time-series ranking of unexpected quarterly EPS surprise, coupled with 5-day liquidity entry in TOP1000 Industry Neutral.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) - ts_mean(ts_backfill(actual_eps_value_quarterly, 60), 252), 252), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 2 (SUE Earnings Surprise Drift in TOP2000 Subindustry Neutral): Expands cross-section to 2,000 mid/large caps with complete subindustry neutrality to maximize portfolio capacity.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(implied_volatility_call_1080 / implied_volatility_call_30, 60), 180), sector) - 0.5, 2) - 0.15 * group_rank(ts_backfill(implied_volatility_mean_30 / parkinson_volatility_30, 60), sector) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 3 (Dimensionless Pure Options Contango Slope): Pure ratio of 3-year LEAP call IV to 30-day IV eliminating scalar addition and unit warnings in TOPSP500 Sector Neutral.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

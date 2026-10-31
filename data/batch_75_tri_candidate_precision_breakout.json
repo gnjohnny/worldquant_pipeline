@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 75: Tri-Candidate Precision Breakout (Calibrated Yield & Timing Convergence)",
+      "domain": "multi_factor",
+      "economic_rationale": "Applies the Tri-Candidate Batch Protocol (Batch Size Invariant: exactly 3 candidates) directly leveraging Batch 74 findings: (1) Cash Flow Per Share Yield with 1-Year CapEx Reinvestment Return on Assets in TOP1000 Subindustry Neutral. (2) Consensus Adjusted Net Income Yield with 60-Day Analyst EPS Revision Velocity and 5-Day Liquidity Timing Entry in TOP2000 Industry Neutral (elevating Candidate 2 from Sharpe 0.96 to >1.65). (3) Institutional 3-Year LEAP Call Term Structure coupled with 30-Day Variance Risk Premium Fading and Price Delta in TOPSP500 Sector Neutral (eliminating unit warnings and elevating Candidate 3 from Sharpe 1.12 to Spectacular).",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "corporate_announcement_timing"
+      ],
+      "falsification_test": "Alpha fails if fundamental yields or options variance premia deteriorate under subindustry/sector neutralization during monetary policy inflections.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(operating_income, 60) - ts_backfill(capex, 60), 252) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: Cash Flow Per Share Yield & CapEx Reinvestment Return on Assets in TOP1000 Subindustry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(anl4_afv4_eps_mean, 60), 60) / close, industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2: Consensus Net Income Yield & 60-Day EPS Revision Velocity with Timing Entry in TOP2000 Industry Neutral",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), sector) - 0.5, 2) - 0.15 * group_rank(ts_backfill(implied_volatility_mean_30 / parkinson_volatility_30, 60), sector) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 3: Institutional 3-Year LEAP Call Term Structure & 30-Day VRP Fading in TOPSP500 Sector Neutral",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

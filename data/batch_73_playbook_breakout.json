@@ -1,0 +1,48 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 73: Playbook Multi-Category Breakout (6-Alpha Production Push)",
+      "domain": "multi_factor",
+      "economic_rationale": "Directly implements the WorldQuant BRAIN Alpha Playbook production blueprints to overcome the 0.71 uniqueness bottleneck and achieve the daily 6-alpha quota across 4 orthogonal categories: (1) Sloan Accrual & Cash Flow Divergence (H01) isolating earnings quality in TOP3000. (2) Analyst Revision vs Dispersion Collapse (H11) scaling forecast velocity by uncertainty in TOP2000. (3) 30-Day Options Implied Volatility Smirk vs Realized Volatility (H15) harvesting tail risk in TOPSP500. (4) Capital Allocation vs Asset Bloat (H03) penalizing reckless asset expansion in TOP1000. (5) Supply Chain Customer-to-Supplier Information Diffusion (H13) in TOP2000. (6) Debt Refinancing Cliff Vulnerability (H18) shorting short-term debt burdens in TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "sector_rotation_cycles"
+      ],
+      "falsification_test": "Alpha fails if orthogonal signal families correlate with general market beta or exhibit excessive turnover under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "ts_decay_linear(group_neutralize(ts_rank((ts_backfill(anl4_cfo_value, 60) - ts_backfill(operating_income, 60)) / (ts_backfill(assets, 60) + 1000), 252), subindustry), 10)",
+          "rationale": "Candidate 1 (H01 Sloan Accrual Divergence): High cash flow relative to operating income reflects unmanipulated cash earnings; decayed over 10 days for minimal turnover.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(group_neutralize(ts_rank(ts_delta(ts_backfill(anl4_afv4_eps_mean, 60), 30) / (ts_backfill(anl4_afv4_eps_high, 60) - ts_backfill(anl4_afv4_eps_low, 60) + 0.05), 120), subindustry), 10)",
+          "rationale": "Candidate 2 (H11 Analyst Uncertainty Collapse): Upward EPS revisions scaled by tight analyst forecast dispersion reflect institutional high-conviction upgrades.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(group_neutralize(-ts_rank((ts_backfill(implied_volatility_put_30, 60) - ts_backfill(implied_volatility_call_30, 60)) / (ts_backfill(historical_volatility_30, 60) + 0.001), 120), sector), 8)",
+          "rationale": "Candidate 3 (H15 Options IV Smirk vs Realized): Fades excessive institutional put panic skew when realized volatility is subdued to harvest variance risk premia in TOPSP500.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(group_neutralize(group_rank(ts_backfill(ebit, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - group_rank(ts_delta(ts_backfill(assets, 60), 252) / (ts_backfill(assets, 60) + 1000), subindustry), subindustry), 10)",
+          "rationale": "Candidate 4 (H03 Asset Bloat vs Margin Productivity): Long asset-light firms with expanding operating margins while shorting empire-building asset dilutors in TOP1000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(group_neutralize(ts_backfill(pv13_custretsig_retsig, 10), subindustry), 5)",
+          "rationale": "Candidate 5 (H13 Supply Chain Information Diffusion): Exploits delayed customer economic shock propagation into supplier equity in TOP2000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(-group_neutralize(ts_rank(ts_backfill(debt_st, 60) / (ts_backfill(ebitda, 60) + 100), 252), subindustry), 10)",
+          "rationale": "Candidate 6 (H18 Debt Refinancing Cliff): Penalizes companies with burdensome short-term debt maturing relative to operational cash flow in TOP3000.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

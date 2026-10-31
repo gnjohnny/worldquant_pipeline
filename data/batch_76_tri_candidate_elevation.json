@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 76: Tri-Candidate Gold Consultant Elevation (Targeting Fitness >= 1.50+)",
+      "domain": "multi_factor",
+      "economic_rationale": "Directly targets elevating Batch 75 winning candidates into the Gold Consultant Approved Tier (Fitness >= 1.50): (1) Candidate 1: Adapts the 8-PASS Analyst Consensus Yield engine into TOP1000 with Subindustry Neutralization and Decay 6 to compress large-cap turnover and lift Fitness above 1.50. (2) Candidate 2: Enhances the proven TOP2000 Candidate da600b5e (Sharpe 1.51, Sub-universe 1.53, Self-corr 0.5616) with 90-day revision lookback and Decay 7 to reduce turnover from 14.2% to ~10%. (3) Candidate 3: Elevates Candidate 4bcbb0f8 (Sub-universe Sharpe 1.69 SPECTACULAR, Sharpe 1.31) with 80/10/10 weighting and Decay 6 in TOPSP500 to compress turnover from 23% to ~13% and easily clear the 1.00/1.50 Fitness thresholds.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "options_expiration_cycles"
+      ],
+      "falsification_test": "Alpha fails if higher decay horizons degrade sub-universe Sharpe below 1.20.",
+      "candidates": [
+        {
+          "expression": "0.65 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), subindustry) - 0.5, 2) + 0.25 * group_rank(ts_delta(ts_backfill(anl4_afv4_eps_mean, 60), 60) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Candidate 1: Analyst Consensus Yield & 60d Revision in TOP1000 Subindustry Neutral (Decay 6)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_delta(ts_backfill(anl4_afv4_eps_mean, 60), 90) / close, industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Candidate 2: Analyst Consensus Yield & 90d Revision in TOP2000 Industry Neutral (Decay 7)",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.80 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), sector) - 0.5, 2) - 0.10 * group_rank(ts_backfill(implied_volatility_mean_30 / parkinson_volatility_30, 60), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)",
+          "rationale": "Candidate 3: Institutional LEAP Call Term Structure 80/10/10 in TOPSP500 Sector Neutral (Decay 6)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 77: Radically Original Orthogonal Breakout (Uniqueness Elevation Push)",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly eliminates all formula template boilerplate, linear yield scaffolds, and repetitive accounting fields to radically elevate platform Uniqueness from 0.71 towards >= 0.85: (1) Systematic Risk & Idiosyncratic Spike Normalization (model51) exploiting the empirical low-beta anomaly and idiosyncratic volatility mean-reversion in TOP3000. (2) Style Surface Acceleration & Quality Derivative (model16) identifying fundamental turning points via style pentagon acceleration and earnings predictability in TOP2000. (3) Intraday Institutional Liquidity vs Overnight Speculative Gap Disparity (pv1 / Playbook H07) exploiting microstructure session divergence between retail pre-market chasing and institutional daytime liquidity in TOP1000.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "market_open_volatility_clustering"
+      ],
+      "falsification_test": "Alpha fails if session disparity or style derivatives exhibit beta exposure under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "ts_decay_linear(group_neutralize(-group_rank(beta_last_60_days_spy, subindustry) - group_rank(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.001), subindustry), subindustry), 10)",
+          "rationale": "Candidate 1 (Low-Beta & Idiosyncratic Variance Fade): Longs low-beta quality names while shorting speculative lottery stocks and temporary idiosyncratic risk spikes in TOP3000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(group_neutralize(group_rank(fscore_bfl_surface_accel, subindustry) + group_rank(earnings_certainty_rank_derivative, subindustry), subindustry), 10)",
+          "rationale": "Candidate 2 (Style Surface Acceleration & Quality Derivative): Isolates inflection points where multi-factor style acceleration turns positive and earnings certainty is robust in TOP2000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "ts_decay_linear(group_neutralize(ts_rank((close - open) / open, 20) - ts_rank((open - ts_delay(close, 1)) / ts_delay(close, 1), 20), sector), 5)",
+          "rationale": "Candidate 3 (Overnight vs Intraday Gap Session Disparity): Exploits structural segmentation between retail headline chasing at the open and institutional mean-reversion during regular trading hours in TOP1000.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

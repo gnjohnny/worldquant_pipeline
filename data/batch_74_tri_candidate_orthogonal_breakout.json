@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 74: Tri-Candidate Orthogonal Breakout (Playbook High-Conviction Yield Engines)",
+      "domain": "multi_factor",
+      "economic_rationale": "Applies the Tri-Candidate Batch Protocol (Batch Size Invariant: exactly 3 candidates) combining the Playbook's orthogonal economic hypotheses with valuation yield scaling (/ close) and non-linear decile concentration to eliminate community correlation and achieve Spectacular/Excellent ratings: (1) Sloan Accrual Yield & Free Cash Flow Reinvestment Rate (H01/H03) isolating unmanipulated cash generation in TOP1000. (2) Consensus Net Income Yield & 60-Day EPS Revision Velocity (H11) capturing institutional analyst upgrades in TOP2000. (3) LEAP Call Term Structure & 30-Day Put/Call Skew Exhaustion (H15) harvesting variance risk premia in TOPSP500.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_seasonality"
+      ],
+      "falsification_test": "Alpha fails if fundamental yields or options variance premia deteriorate under subindustry/sector neutralization during monetary policy inflections.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank((ts_backfill(anl4_cfo_value, 60) - ts_backfill(operating_income, 60)) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_cfo_value, 60) - ts_backfill(anl4_capex_value, 60), 252) / (ts_backfill(assets, 60) + 1000), industry)",
+          "rationale": "Candidate 1 (Sloan Accrual Yield & FCF Reinvestment Super Alpha): High cash flow relative to accounting operating income scaled by price isolates unadulterated cash earnings per share, paired with 1-year free cash flow return on assets.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 180), industry) - 0.5, 2) + 0.40 * group_rank(ts_delta(ts_backfill(anl4_afv4_eps_mean, 60), 60) / close, industry)",
+          "rationale": "Candidate 2 (Analyst Consensus Yield & 60-Day Revision Super Alpha): Combines consensus forward net income yield with 60-day analyst EPS revision velocity scaled by price to exploit institutional consensus drift in TOP2000.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_backfill(implied_volatility_call_1080 / parkinson_volatility_180, 60), sector) - 0.5, 2) + 0.30 * group_rank((ts_backfill(implied_volatility_call_30, 60) - ts_backfill(implied_volatility_put_30, 60)) / (ts_backfill(parkinson_volatility_30, 60) + 0.001), sector)",
+          "rationale": "Candidate 3 (LEAP Call Term Premium & 30-Day Skew Exhaustion Super Alpha): Couples long-term 3-year institutional call positioning with short-term put/call skew mean reversion in TOPSP500.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

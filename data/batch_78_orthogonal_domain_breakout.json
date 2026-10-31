@@ -1,0 +1,33 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 78: Orthogonal Domain Breakout (Sales Acceleration, PEAD SUE, & Volatility Term Structure)",
+      "domain": "multi_domain",
+      "economic_rationale": "Directly eliminates template recycling and shared factor crowding to maximize Uniqueness (targeting >= 0.85): (1) Top-Line Sales Acceleration & Revenue Yield (analyst4 / pv1) exploiting Post-Sales Announcement Drift in TOP2000 Subindustry Neutral. (2) Standardized Unexpected Earnings (SUE) Surprise Jump (analyst4) scaling quarterly EPS surprises by 1-year volatility in TOP1000 Industry Neutral. (3) Multi-Horizon Volatility Term Structure Contango Slope (option8) harvesting term premia between 3-year LEAP calls and 30-day options in TOPSP500 Sector Neutral.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "earnings_announcement_clustering"
+      ],
+      "falsification_test": "Alpha fails if top-line revenue momentum or volatility term slopes degrade under sector/subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(actual_sales_value_quarter, 60) / ts_mean(ts_backfill(actual_sales_value_quarter, 60), 252), subindustry) - 0.5, 2) + 0.40 * signed_power(group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) * 4 / close, 180), subindustry) - 0.5, 2)",
+          "rationale": "Candidate 1 (Post-Sales Announcement Drift Super Alpha): Longs equities exhibiting top-line sales acceleration over 1-year trailing baseline coupled with high annualized sales yield in TOP2000 Subindustry Neutral.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), industry) - 0.5, 2) + 0.40 * group_rank((ts_backfill(actual_eps_value_quarterly, 60) - ts_mean(ts_backfill(actual_eps_value_quarterly, 60), 252)) / (ts_std_dev(ts_backfill(actual_eps_value_quarterly, 60), 252) + 0.10), industry)",
+          "rationale": "Candidate 2 (Standardized Unexpected Earnings SUE Jump Super Alpha): Combines quarterly EPS yield with 1-year standardized unexpected earnings surprise drift in TOP1000 Industry Neutral.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(implied_volatility_call_1080 / (implied_volatility_call_30 + 0.001), 60), 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_backfill(parkinson_volatility_180 / (parkinson_volatility_30 + 0.001), 60), sector)",
+          "rationale": "Candidate 3 (Volatility Term Structure Contango Slope Super Alpha): Captures institutional steep term-structure contango between 3-year LEAP call IV and 30-day IV paired with realized volatility slope in TOPSP500 Sector Neutral.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
