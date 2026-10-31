@@ -1,0 +1,34 @@
+{
+  "hypotheses": [
+    {
+      "title": "Batch 92: Domestic EBIT Leverage & Operating Margin Convexity Sprint",
+      "domain": "fundamental_and_analyst",
+      "economic_rationale": "Directly capitalizes on the breakthrough empirical validation in Batch 91 where Domestic Core Operating Profitability (fnd2_ebitdm) delivered a baseline Sharpe of 1.00, Sub-universe Sharpe of 1.05, and ideal Turnover of 11.66% in an untouched dataset. Deploys three targeted enhancement vectors to push Sharpe past 1.25 and Fitness past 1.50: (1) Candidate 1: Domestic EBIT Yield paired with 60d Operating Growth Momentum (ts_delta(fnd2_ebitdm, 60) / close) to act as an active price discovery catalyst. (2) Candidate 2: Domestic Operating Margin Convexity, measuring 120d expansion in domestic EBIT margin (fnd2_ebitdm / (sales * 4)) to isolate structural operating leverage (the mechanism that propelled Alpha 27 to Sharpe 2.13). (3) Candidate 3: Orthogonal Synthesis of Domestic EBIT Yield with Consensus Forward Cash Flow Yield (anl4_afv4_cfps_mean), combining both breakthrough factors that delivered >1.05 Sub-universe Sharpes in Batch 91. All candidates are 100% unit-clean, zero warnings, zero signed_power, and zero price-delta hedges.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "macro_liquidity_regime_shifts",
+        "corporate_earnings_announcement_blackouts",
+        "domestic_macro_demand_shocks"
+      ],
+      "falsification_test": "Alpha fails if domestic EBIT momentum, margin convexity, or cashflow yield synthesis fail to produce Sharpe >= 1.25 and Fitness >= 1.50 under subindustry neutralization.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), subindustry) + 0.30 * group_rank(ts_delta(ts_backfill(fnd2_ebitdm, 60), 60) / close, subindustry)",
+          "rationale": "Candidate 1 (Domestic EBIT Yield & Operating Momentum): Enhances Batch 91 Candidate 3 (Sharpe 1.00, Sub-universe 1.05, Turnover 11.66%) by adding 60-day Domestic EBIT delta momentum (ts_delta / close). Couples 180-day historical valuation discount with active operating profit growth. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.65 * group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), subindustry) + 0.35 * group_rank(ts_delta(ts_backfill(fnd2_ebitdm, 60) / (ts_backfill(actual_sales_value_quarter, 60) * 4), 120), subindustry)",
+          "rationale": "Candidate 2 (Domestic Operating Margin Convexity Expansion): Incorporates the proven margin convexity driver from Alpha 27 (Sharpe 2.13). Measures 120-day expansion in domestic operating margin (fnd2_ebitdm / (sales * 4)), isolating companies demonstrating structural operating leverage while trading at attractive domestic earnings yields. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        },
+        {
+          "expression": "0.55 * group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), subindustry) + 0.45 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), subindustry)",
+          "rationale": "Candidate 3 (Domestic Core Profitability & Forward Cash Flow Yield Synergy): Orthogonal synthesis of our two strongest unmined signals from Batch 91: Domestic EBIT Yield (Sub-universe 1.05) and Consensus Forward Cash Flow Yield (Sub-universe 1.06). Blends SEC fundamental domestic earnings with sell-side consensus forward cash generation. Evaluated in TOP1000 Subindustry Neutral with Decay 5.",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
