@@ -1,0 +1,54 @@
+{
+  "hypotheses": [
+    {
+      "title": "Historical Variance Risk Premium Industry Neutral",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Comparing 6-month call implied volatility against 60-day historical realized volatility isolates the empirical variance risk premium. Neutralizing by Industry eliminates sector macro tides while isolating company-specific risk overpricing.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Impending earnings release dates",
+        "Biotech binary clinical trials"
+      ],
+      "falsification_test": "Alpha returns invert during unexpected broad equity market volatility shocks.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_180 / historical_volatility_60, 60), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Pure Call Volatility Premia Sector Neutral with Turnover Compression",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Evaluating call implied volatility against Parkinson high-low volatility in pure 2-term form removes multi-factor composite drag. Applying Decay 6 compresses turnover into single digits, maximizing Fitness above the 1.50 threshold.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden sector-wide rotation flows"
+      ],
+      "falsification_test": "Fails when Parkinson intraday range expands faster than implied volatility.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_180 / parkinson_volatility_60, 60), sector) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Operating Cash Generation to Long-Term Debt Coverage",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "Funds from operations (FOPO) scaled by long-term debt measures debt service solvency and credit safety. Firms with superior operational cash generation relative to debt burden trade at persistent quality premiums without income-statement earnings overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Debt refinancing schedules",
+        "Capital expenditure debt covenants"
+      ],
+      "falsification_test": "Alpha underperforms in distressed high-yield credit turnaround rallies.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(fnd6_fopo, 60) / (ts_backfill(debt_lt, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
