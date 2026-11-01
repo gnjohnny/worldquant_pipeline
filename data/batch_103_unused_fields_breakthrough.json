@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Put Option Downside Volatility Premium and Cash Balance Buffer",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "One-year put implied volatility (implied_volatility_put_360) reflects the structural premium institutions pay to hedge against equity market crashes. When normalized by trailing 90-day realized high-low volatility (parkinson_volatility_90), it isolates equities where downside hedging demand is abnormally high relative to actual volatility. Pairing this with balance sheet cash liquidity (cash_st / assets) and short-term price reversal extracts the uncrowded put variance risk premium while hedging out systematic equity beta.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden market-wide liquidity crunches",
+        "Earnings announcement volatility skew distortion"
+      ],
+      "falsification_test": "Alpha returns fail to outperform when put implied volatility flattens to parity with Parkinson volatility.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_put_360 / parkinson_volatility_90, 60), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(cash_st, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Consensus Median EPS Yield and Capex Reinvestment Rate",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Analyst consensus median EPS estimates (anl4_afv4_median_eps) provide an unpolluted gauge of forward operational earnings capacity. Ranking the forward earnings yield over the equity's 180-day historical distribution captures stocks trading at cyclically high earnings yields. Stabilizing with capital expenditure reinvestment intensity (anl4_capex_value / assets) selects capital-disciplined firms that compound organic shareholder value.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Analyst herd behavior and delayed forecast downgrades",
+        "Cyclical Capex peaks prior to economic downturns"
+      ],
+      "falsification_test": "Alpha Sharpe decays below 0.8 during macroeconomic recessions with widespread earnings downgrades.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_median_eps, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Book-to-Price Value Convexity and Balance Sheet Cash Solvency",
+      "domain": "fundamental_valuation",
+      "economic_rationale": "Book value per share (bookvalue_ps) scaled by price isolates traditional Fama-French value. Ranking book yield against its own 180-day historical range identifies temporarily depressed compounders. Backing the valuation signal with balance sheet cash and short-term liquid investments (cash_st / assets) prevents value traps by ensuring solvency resilience and debt service capability.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Intangible asset mismeasurement",
+        "Asset impairments and goodwill write-downs"
+      ],
+      "falsification_test": "Alpha underperforms during speculative growth regimes where unpriced intangibles dominate balance sheets.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(cash_st, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}

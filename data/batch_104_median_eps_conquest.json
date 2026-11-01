@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cash Flow Yield from Analyst Estimates and Capex Discipline",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Operating Cash Flow from announced analyst estimates (anl4_cfo_value) scaled by close provides a direct, unpolluted cash generation yield. Stabilizing with announced capital expenditure intensity (anl4_capex_value / assets) selects firms that compound cash flows while maintaining disciplined asset reinvestment.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Working capital seasonality",
+        "Discretionary capex deferral"
+      ],
+      "falsification_test": "Alpha returns fail during severe liquidity shocks.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_cfo_value, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Intra-Subindustry Median EPS Valuation and Revision Momentum Synergy",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Subindustry neutralization provides homogeneous peer comparison. Combining valuation level (historical percent rank of forward earnings yield) with 60-day consensus revision momentum (rate of change in median estimates) isolates equities that are both fundamentally cheap and experiencing institutional consensus upgrades.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Post-earnings revision delays",
+        "Small-cap analyst coverage dropouts"
+      ],
+      "falsification_test": "Sharpe drops below 1.0 during earnings seasons with broad estimate dispersion.",
+      "candidates": [
+        {
+          "expression": "0.65 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_median_eps, 60) / close, 180), subindustry) - 0.5, 2) + 0.25 * group_rank(ts_delta(ts_backfill(anl4_afv4_median_eps, 60), 60) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Convex Median EPS Yield in Broad Market Neutrality",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Applying quadratic conviction weighting to intra-industry median EPS yield in broad TOP3000 market neutrality unleashes optimizer capital allocation across industries while enforcing fair peer ranking within industries, mirroring the Alpha 28 architecture that delivered Sharpe 2.11 and Fitness 2.03.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Broad market liquidity shocks",
+        "Multiple contraction in high-duration industries"
+      ],
+      "falsification_test": "Alpha returns fail during severe market drawdowns with simultaneous estimate cuts.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_median_eps, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    }
+  ]
+}

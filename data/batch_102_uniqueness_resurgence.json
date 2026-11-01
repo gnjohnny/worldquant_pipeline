@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Implied Volatility Term Structure Slope and Reversal Overlay",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Under equilibrium market conditions, implied volatility displays contango (90-day IV exceeds 30-day IV) to compensate option writers for horizon uncertainty. When near-term market panics strike, 30-day IV spikes above 90-day IV (backwardation), reflecting irrational retail and institutional overpaying for short-term downside put protection. Intra-industry ranking of term structure slope isolates equities whose volatility curve is anomalously steep, harvesting variance risk premia while hedging out systematic equity beta.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Earnings announcement implied volatility crush",
+        "Dividend capture date shifts"
+      ],
+      "falsification_test": "Alpha returns fail to outperform when the VIX term structure collapses into prolonged flat regimes.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((implied_volatility_mean_90 - implied_volatility_mean_30) / (implied_volatility_mean_30 + 0.001), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Intra-Industry Systematic Low-Beta Anomaly in Market Neutrality",
+      "domain": "systematic_risk_metrics",
+      "economic_rationale": "Leverage-constrained market participants disproportionately buy high-beta equities to amplify market exposure without leverage, leading to systematic overvaluation of high-beta stocks and persistent risk-adjusted outperformance of low-beta stocks (Betting Against Beta). Ranking inverted 60-day rolling SPY beta (-beta_last_60_days_spy) within industry groups captures quality resilience while minimizing tail risk and portfolio drawdowns.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Abrupt macroeconomic regime shifts and liquidity shocks",
+        "Sector rotation into cyclical high-beta equities"
+      ],
+      "falsification_test": "Low-beta alpha delivers negative returns during extreme speculative liquidity surges.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-beta_last_60_days_spy, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Signal Diffusion and Spillover",
+      "domain": "supply_chain_relationships",
+      "economic_rationale": "Information propagates sluggishly along complex inter-firm supply chain networks. Shocks experienced by major customer firms are reflected in customer stock prices immediately, but transfer to upstream supplier equities with a multi-day delay due to investor inattention and delayed revenue recognition. Exploiting the decayed customer return signal (ts_decay_linear(pv13_custretsig_retsig, 5)) captures this unpriced economic spillover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Customer concentration shifts and supplier contract terminations",
+        "Disruptions in global logistics channels"
+      ],
+      "falsification_test": "Alpha returns decay to zero when supply chain disclosures become synchronous and automated.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    }
+  ]
+}

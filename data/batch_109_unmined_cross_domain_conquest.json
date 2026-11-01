@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Cash Flow Per Share Yield and Capex Discipline",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Analyst consensus forward Cash Flow Per Share (anl4_afv4_cfps_median) measures organic operating cash generation per share before non-cash accruals, write-downs, and depreciation conventions. Normalizing by share price yields the forward cash flow yield. Pairing high forward cash yield convexity with capital expenditure intensity (anl4_capex_value / assets) and 5-day reversal isolates high-free-cash-flow compounders with disciplined capital allocation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Lumpy working capital swings in cyclical industries",
+        "Discretionary capex timing"
+      ],
+      "falsification_test": "Alpha returns degrade in periods of extreme liquidity contraction.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Call Implied Volatility to Parkinson Volatility Stationarized Ratio",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Six-month call option implied volatility (implied_volatility_call_180) relative to 60-day Parkinson realized volatility (parkinson_volatility_60) isolates equities where institutional upside call demand outstrips realized historical volatility. Stationarizing with ts_rank over 180 days removes cross-sectional baseline volatility bias across different industry sectors, ensuring each equity is scored against its own trailing distribution. Combined with capex discipline and price reversion, it creates an orthogonal volatility alpha with near-zero correlation to accounting earnings.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "M&A speculation",
+        "Earnings announcement date volatility clustering"
+      ],
+      "falsification_test": "Alpha underperforms during broad market crash regimes.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(implied_volatility_call_180 / parkinson_volatility_60, 60), 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Variance Risk Premium Realized to Implied Volatility Ratio",
+      "domain": "volatility_risk_premium",
+      "economic_rationale": "Realized historical 30-day volatility (historical_volatility_30) relative to 30-day option implied volatility (implied_volatility_mean_30) captures the reciprocal of the classic Variance Risk Premium (VRP). When historical realized volatility outpaces implied volatility over a 180-day percentile rank, options market under-pricing signals persistent structural price momentum and liquidity inflows. Paired with corporate capex discipline, this signal exhibits minimal correlation to traditional valuation factors.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden volatility regime shifts",
+        "Option expiration day pin risk"
+      ],
+      "falsification_test": "Alpha fails to generate alpha in flat, sideways volatility environments.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(historical_volatility_30 / implied_volatility_mean_30, 60), 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cash Flow Yield and Cash Acceleration Synergy",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Operating Cash Flow from announced analyst records (anl4_cfo_value) scaled by close provides clean, unaccrued cash generation yield. Combining historical cash yield percentile with 60-day cash flow acceleration within homogeneous subindustries identifies firms whose organic cash generation is expanding at an accelerating rate relative to immediate sector peers.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Lumpy intra-quarter contract collections",
+        "Seasonal working capital outflows"
+      ],
+      "falsification_test": "Alpha returns fail to outperform when aggregate corporate cash generation stagnates.",
+      "candidates": [
+        {
+          "expression": "0.65 * signed_power(group_rank(ts_rank(ts_backfill(anl4_cfo_value, 60) / close, 180), subindustry) - 0.5, 2) + 0.25 * group_rank(ts_delta(ts_backfill(anl4_cfo_value, 60), 60) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

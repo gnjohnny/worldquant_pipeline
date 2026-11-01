@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Call Option Volatility Premium and Capex Discipline",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Six-month call option implied volatility (implied_volatility_call_180) relative to 60-day realized Parkinson volatility (parkinson_volatility_60) isolates equities where upside speculative option demand exceeds actual price volatility. Stabilizing with announced capital expenditure intensity (anl4_capex_value / assets) captures an orthogonal volatility risk premium with near-zero correlation to accounting earnings.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "M&A takeover rumors",
+        "Earnings volatility skew"
+      ],
+      "falsification_test": "Alpha returns fail during systemic market volatility spikes.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_180 / parkinson_volatility_60, 60), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Operating Cash Flow Yield in Broad Market Neutrality",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Operating Cash Flow from analyst estimates (anl4_cfo_value) ranked across the broader market rather than restricted to sectors unleashes full optimizer capital allocation, repeating the market-neutral architecture of Alpha 1 that delivered self-correlation of 0.5768.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Inter-industry cyclical capital flows",
+        "Discretionary working capital timing"
+      ],
+      "falsification_test": "Alpha fails to outperform during broad market liquidity shocks.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_cfo_value, 60) / close, 180), market) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), market) - 0.10 * group_rank(ts_delta(close, 5) / close, market)"
+        }
+      ]
+    },
+    {
+      "title": "Balance Sheet Cash Solvency Yield and Capex Discipline",
+      "domain": "fundamental_valuation",
+      "economic_rationale": "Cash and short-term liquid investments (cash_st) scaled by close measures pure solvency yield. Pairing cash reserves with ongoing capital expenditure reinvestment intensity isolates self-funding, high-liquidity compounders that resist refinancing crunches.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unproductive cash hoarding by mature firms",
+        "Repatriation tax shifts"
+      ],
+      "falsification_test": "Alpha underperforms during speculative junk-bond rallies.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(cash_st, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}

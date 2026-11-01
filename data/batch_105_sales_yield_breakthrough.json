@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quarterly Sales-to-Price Yield and Capex Reinvestment Rate",
+      "domain": "fundamental_valuation",
+      "economic_rationale": "Quarterly sales revenue (actual_sales_value_quarter) scaled by close provides a direct Price-to-Sales value signal unpolluted by non-operating accounting accruals or write-offs. Ranking sales yield over a trailing 180-day window captures firms trading at cyclically high revenue multiples relative to historical averages. Stabilizing with corporate capital expenditure intensity (anl4_capex_value / assets) selects capital-disciplined top-line compounders.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Gross margin compression during inflationary spikes",
+        "Discretionary revenue timing"
+      ],
+      "falsification_test": "Alpha returns fail to outperform when cost-of-goods-sold escalates across cyclical sectors.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Announced Actual EPS Yield and Capex Discipline",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Reported earnings per share (anl4_af_eps_value) from announced analyst records scaled by close isolates confirmed accounting profitability. Ranking the trailing earnings yield over 180 days rewards companies at valuation extremes, while stabilizing with capital expenditure reinvestment intensity filters for high-quality balance sheets.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Non-recurring gains/losses",
+        "Tax rate seasonality"
+      ],
+      "falsification_test": "Sharpe drops below 1.0 during periods of broad accounting restatements.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_eps_value, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Book-to-Price Valuation and Capex Reinvestment Rate",
+      "domain": "fundamental_valuation",
+      "economic_rationale": "Book value per share (bookvalue_ps) scaled by close captures traditional balance sheet value. Pairing book-to-price with capital expenditure reinvestment intensity (anl4_capex_value / assets) separates active value compounders from stagnant, deteriorating value traps.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Asset impairments and restructuring charges",
+        "Intangible assets omission"
+      ],
+      "falsification_test": "Alpha underperforms during speculative tech growth bubbles.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}
