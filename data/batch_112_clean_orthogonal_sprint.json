@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Idiosyncratic Risk Dislocation Alpha",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Stocks experiencing low trailing 30-day unsystematic variance relative to their 360-day baseline capture the low-idiosyncratic-volatility premium while avoiding severe firm-specific event risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden sector-wide regulatory shocks",
+        "Earnings report announcements"
+      ],
+      "falsification_test": "Alpha underperforms during severe systemic market liquidations.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.001), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Spillover Alpha",
+      "domain": "relationship",
+      "economic_rationale": "Information propagates with friction through supply chains. Positive customer return shocks predict supplier performance with a 1-5 day lag due to delayed institutional updates.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Supplier customer concentration risk",
+        "Contract dispute renegotiations"
+      ],
+      "falsification_test": "Alpha returns degrade when customer and supplier earnings reports coincide.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Put Breakeven Downside Support Alpha",
+      "domain": "options",
+      "economic_rationale": "Stocks trading comfortably above open-interest weighted 30-day put breakeven levels have institutional gamma support, while those below face market-maker hedging headwinds.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Low options liquidity in illiquid names",
+        "Expiration week pin risk"
+      ],
+      "falsification_test": "Alpha fails when implied volatility crushes post-earnings.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill((close - put_breakeven_30) / close, 20), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
