@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Consensus Cash Flow Per Share Yield with Capex Discipline (Industry Neutral)",
+      "domain": "analyst_cashflow",
+      "economic_rationale": "Sell-side consensus forward Cash Flow Per Share (CFPS) mean represents institutional expectations of cash generation. Normalizing by close price captures forward cash flow yield before headline earnings prints. Industry neutralization isolates firm-specific cash generation relative to sector and market peers with zero options correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unscheduled revisions after earnings misses"
+      ],
+      "falsification_test": "Alpha fails if consensus cash flow forecasts consistently lag actual quarterly cash flow statements.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Pure Consensus Cash Flow Yield Convexity (Industry Neutral)",
+      "domain": "analyst_cashflow",
+      "economic_rationale": "Focusing solely on consensus forward cash flow yield without multi-factor composite weighting eliminates factor dilution. Following approved benchmark 50f24c6e, 2-term signed power ranking captures pure cash flow conviction with low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Short-term working capital swings"
+      ],
+      "falsification_test": "Alpha inverts during speculative rallies in cash-burning unprofitable equities.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Pure Forecast Dividend Yield Convexity (Subindustry Neutral)",
+      "domain": "analyst_dividends",
+      "economic_rationale": "Forecast annual dividend yield represents tangible cash distributions to equity holders. Subindustry neutralization filters out structural high-yield utility biases while isolating firms with expanding cash payouts relative to peers.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Ex-dividend price drop adjustments"
+      ],
+      "falsification_test": "Alpha fails in zero-interest-rate speculative growth regimes.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_div_value, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
