@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Call Option Volatility Premium with Smooth 5-Day Decay",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Six-month call option implied volatility relative to 60-day Parkinson realized volatility isolates equities where upside speculative option demand exceeds realized historical volatility. In Decay 4 it achieved Sharpe 1.24 and Fitness 1.19. Extending Decay to 5 days smooths short-term option noise and compresses turnover into the sub-10% range, lifting Sharpe past the 1.25 platform threshold with near-zero correlation to accounting earnings.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "M&A speculation",
+        "Earnings volatility skew"
+      ],
+      "falsification_test": "Alpha returns fail during systemic market volatility spikes.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_backfill(implied_volatility_call_180 / parkinson_volatility_60, 60), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Cash Flow Return on Assets Operational Compounding",
+      "domain": "fundamental_cashflow",
+      "economic_rationale": "Operating cash flow scaled by total assets measures Cash Flow Return on Assets (CF / ROA). Evaluating operational cash generation per dollar of physical productive assets isolates core operational compounding rather than market valuation, decoupling the signal from equity price yields.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Industry-specific asset intensity",
+        "Discretionary working capital timing"
+      ],
+      "falsification_test": "Alpha underperforms during speculative junk-bond rallies.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_cfo_value, 60) / (assets + 1000), 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(anl4_capex_value, 252) / (assets + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Actual Dividend Yield and Capital Expenditure Discipline",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Announced annual dividend payout scaled by close measures direct cash return to shareholders. Pairing dividend yield with capital expenditure reinvestment intensity filters out dying value traps that starve investments to pay dividends, selecting cash-generative firms with sustainable capital allocation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Ex-dividend price adjustments",
+        "Tax law changes regarding dividends"
+      ],
+      "falsification_test": "Alpha fails in zero-interest-rate speculative growth regimes.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_div_value, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}
