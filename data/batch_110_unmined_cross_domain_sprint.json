@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Cash Flow Per Share Yield in Broad Market Neutrality",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Analyst consensus forward Cash Flow Per Share (anl4_afv4_cfps_median) measures organic operating cash generation per share before non-cash accruals. In Sector Neutral it scored Sharpe 1.18 and Fitness 1.00; shifting to Market Neutral frees the portfolio to allocate across high-cash-generating sectors, mirroring the structural jump seen in Alpha 1 (Sharpe 1.43, Fitness 1.51, Self-correlation 0.5768).",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Cyclical capital rotation",
+        "Discretionary working capital timing"
+      ],
+      "falsification_test": "Alpha returns fail during systemic credit market freezes.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), market) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), market) - 0.10 * group_rank(ts_delta(close, 5) / close, market)"
+        }
+      ]
+    },
+    {
+      "title": "Consensus Forward Book-to-Price Tangible Asset Growth",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Consensus forward Book Value Per Share (anl4_bvps_median) reflects Wall Street's forward projection of tangible net worth per share after factoring in retained earnings. Unlike historical static book value, forward BVPS captures anticipated equity compounding. Pairing forward book value yield with capex discipline isolates asset-heavy compounders expanding physical plant at disciplined reinvestment rates.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Goodwill write-offs",
+        "Accounting convention shifts across subindustries"
+      ],
+      "falsification_test": "Alpha underperforms during speculative asset-light tech surges.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) / close, 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Options Put-Call Open Interest Sentiment Asymmetry",
+      "domain": "options_open_interest",
+      "economic_rationale": "The 30-day put-to-call open interest ratio (-pcr_oi_30) is an institutional options sentiment indicator. Extremely high put open interest signals excessive hedging and retail panic, setting up a structural mean-reverting squeeze. Inverting the ratio and stationarizing over a 180-day percentile rank isolates equities transitioning from peak bearish hedging to institutional accumulation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unusual directional hedging around binary clinical or earnings events",
+        "Options market liquidity shifts"
+      ],
+      "falsification_test": "Alpha returns fail during protracted multi-quarter bear markets.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(-pcr_oi_30, 60), 180), sector) - 0.5, 2) + 0.30 * group_rank(ts_mean(ts_backfill(anl4_capex_value, 252), 252) / (ts_backfill(assets, 60) + 1000), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}
