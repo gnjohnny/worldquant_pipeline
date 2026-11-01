@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quarterly Sales Yield with Short-Term Liquidity Reversal",
+      "domain": "analyst_revenue",
+      "economic_rationale": "Actual quarterly sales annualized relative to market price isolates fundamental revenue yield (inverse price-to-sales). Companies with high top-line revenue relative to equity value are protected against earnings accrual noise and trade at persistent value premia.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Low gross margin retail distributors",
+        "Commodity price cyclicality"
+      ],
+      "falsification_test": "Alpha returns fail during hyper-growth tech bubbles.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(actual_sales_value_quarter, 60) * 4 / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Cash and Liquid Assets Buffer Solvency",
+      "domain": "balance_sheet_liquidity",
+      "economic_rationale": "Cash and short-term investments scaled by total assets measures liquid solvency cushions. Firms with high cash buffers maintain strategic optionality and avoid distress during tight monetary cycles, outperforming leveraged peers with zero income-statement correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cash burn in early-stage pre-revenue biotech",
+        "Foreign currency repatriation friction"
+      ],
+      "falsification_test": "Fails during low-interest speculative junk rallies.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(cash_st, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Volume-Weighted Price Exhaustion Reversal",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Stocks experiencing rapid price appreciation accompanied by abnormal volume surges suffer institutional buying exhaustion and inventory imbalance. Linearly decaying volume-weighted returns captures market maker mean-reversion profits with zero fundamental correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Merger and acquisition tender offers",
+        "Hostile takeover volume spikes"
+      ],
+      "falsification_test": "Alpha inverts during sustained parabolic multi-week momentum breakouts.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear(ts_delta(close, 5) / close * (volume / ts_mean(volume, 60)), 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}
