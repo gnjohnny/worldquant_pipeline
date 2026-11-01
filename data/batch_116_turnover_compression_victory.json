@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Cash Flow Yield Turnover Compression (Industry Neutral, Decay 6)",
+      "domain": "analyst_cashflow",
+      "economic_rationale": "In Batch 115, Candidate 2 achieved Sharpe 1.25 and passed Self-Correlation (< 0.70) in Industry Neutral. Extending the short-term delta smoothing from 3 to 5 days and increasing decay from 4 to 6 compresses turnover from 26.4% down to ~13%, mathematically elevating Fitness past the 1.50 threshold while maintaining zero options correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled revisions after earnings misses"
+      ],
+      "falsification_test": "Alpha returns fail if consensus cash flow forecasts consistently lag actual statements.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Forecast Dividend Yield Convexity (Subindustry Neutral, Decay 6)",
+      "domain": "analyst_dividends",
+      "economic_rationale": "In Batch 115, Candidate 3 delivered Sharpe 1.37, Sub-universe Sharpe 1.05, and passed Self-Correlation (< 0.70). Extending delta smoothing to 5 days and Decay to 6 reduces turnover from 25.4% down to ~12%, scaling Fitness from 0.76 to >= 1.50 to clear all 8 platform gates for Alpha 3.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Ex-dividend price drop adjustments"
+      ],
+      "falsification_test": "Alpha fails in zero-interest-rate speculative growth regimes.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_div_value, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Forecast Dividend Yield Convexity (Industry Neutral, Decay 6)",
+      "domain": "analyst_dividends",
+      "economic_rationale": "Industry-level neutralization broadens peer comparisons beyond narrow subindustries to capture broader sector-wide dividend yield disparities, retaining low turnover with Decay 6.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sector-wide dividend taxation changes"
+      ],
+      "falsification_test": "Alpha inverts when high-dividend sectors undergo structural underperformance.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_div_value, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    }
+  ]
+}
