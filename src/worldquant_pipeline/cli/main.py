@@ -1,20 +1,29 @@
 """Typer CLI application for worldquant_pipeline."""
 import json
+import re
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 import typer
 from rich.prompt import Confirm, FloatPrompt, Prompt
 from rich.table import Table
 
 from worldquant_pipeline.brain.manual_adapter import ManualBrainAdapter
+from worldquant_pipeline.cli.metric_parser import (
+    evaluate_consultant_track_decision,
+    parse_brain_paste,
+)
+from worldquant_pipeline.cli.submission import generate_submission_metadata
 from worldquant_pipeline.cli.views import (
     console,
     render_dashboard,
+    render_discovered_fields,
     render_gate_results,
     render_ingestion_report,
+    render_parsed_metrics,
     render_prompt_export,
     render_simulation_card,
+    render_submission_card,
 )
 from worldquant_pipeline.config.settings import get_settings
 from worldquant_pipeline.evaluation.gates import QualityGateRunner
@@ -23,6 +32,7 @@ from worldquant_pipeline.hypotheses.prompts import generate_copilot_prompt
 from worldquant_pipeline.storage.database import get_session
 from worldquant_pipeline.storage.models import (
     AlphaCandidate,
+    DataField,
     Decision,
     Experiment,
     ExperimentMetric,
@@ -288,6 +298,173 @@ def audit(
             console.print()
         else:
             console.print("[bold green]Pre-simulation checks passed! Candidate is safe for BRAIN simulation.[/bold green]\n")
+
+
+@app.command("record-paste")
+def record_paste(
+    candidate_id: Annotated[
+        str,
+        typer.Argument(help="Candidate ID (or first 8 characters of UUID)"),
+    ],
+    text: Annotated[
+        str | None,
+        typer.Option("--text", "-t", help="Raw backtest output pasted from WorldQuant BRAIN"),
+    ] = None,
+    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP1000",
+    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "Sector",
+    decay: Annotated[int, typer.Option("--decay", "-d")] = 4,
+) -> None:
+    """Instantly parse raw text pasted from BRAIN platform, evaluate gates, and record to DB."""
+    raw_content = text
+    if not raw_content:
+        console.print("[cyan]Paste raw text from WorldQuant BRAIN backtest card (end with empty line or EOF):[/cyan]")
+        lines: list[str] = []
+        try:
+            while True:
+                line = input()
+                if not line and lines:
+                    break
+                lines.append(line)
+        except EOFError:
+            pass
+        raw_content = "\n".join(lines)
+
+    if not raw_content.strip():
+        console.print("[red]No text provided. Aborting.[/red]")
+        raise typer.Exit(code=1)
+
+    with get_session() as session:
+        candidate = (
+            session.query(AlphaCandidate)
+            .filter(AlphaCandidate.id.startswith(candidate_id))
+            .first()
+        )
+        if not candidate:
+            console.print(f"[bold red]Candidate with ID prefix '{candidate_id}' not found.[/bold red]")
+            raise typer.Exit(code=1)
+
+        metrics = parse_brain_paste(raw_content)
+        decision, reason = evaluate_consultant_track_decision(metrics)
+
+        exp = Experiment(
+            candidate_id=candidate.id,
+            universe=universe,
+            neutralization=neutralization,
+            decay=decay,
+            truncation=0.0100,
+            status="COMPLETED",
+        )
+        session.add(exp)
+        session.flush()
+
+        for m_name, m_val in metrics.to_metric_dict().items():
+            session.add(
+                ExperimentMetric(
+                    experiment_id=exp.id,
+                    metric_name=m_name,
+                    metric_value=m_val,
+                    source="BRAIN_PLATFORM",
+                )
+            )
+
+        session.add(
+            Decision(
+                candidate_id=candidate.id,
+                decision=decision,
+                reason=reason,
+                reviewer="RECORD_PASTE_AUTO",
+            )
+        )
+        candidate.status = decision
+        session.commit()
+
+        render_parsed_metrics(candidate.id[:8], metrics, decision, reason)
+
+        if decision == "APPROVED":
+            meta = generate_submission_metadata(
+                candidate,
+                universe=universe,
+                neutralization=neutralization,
+                decay=decay,
+            )
+            render_submission_card(meta)
+
+
+@app.command("prepare-submission")
+def prepare_submission(
+    candidate_id: Annotated[
+        str,
+        typer.Argument(help="Candidate ID (or first 8 characters of UUID)"),
+    ],
+    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP1000",
+    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "Sector",
+    decay: Annotated[int, typer.Option("--decay", "-d")] = 4,
+) -> None:
+    """Generate standardized Invariant 6 submission card for an alpha candidate."""
+    with get_session() as session:
+        candidate = (
+            session.query(AlphaCandidate)
+            .filter(AlphaCandidate.id.startswith(candidate_id))
+            .first()
+        )
+        if not candidate:
+            console.print(f"[bold red]Candidate with ID prefix '{candidate_id}' not found.[/bold red]")
+            raise typer.Exit(code=1)
+
+        meta = generate_submission_metadata(
+            candidate,
+            universe=universe,
+            neutralization=neutralization,
+            decay=decay,
+        )
+        render_submission_card(meta)
+
+
+@app.command("discover-fields")
+def discover_fields(
+    category: Annotated[str | None, typer.Option("--category", "-c", help="Filter by category")] = None,
+    keyword: Annotated[str | None, typer.Option("--keyword", "-k", help="Search keyword in name or description")] = None,
+    unmined_only: Annotated[bool, typer.Option("--unmined-only/--all", help="Show only fields never used in approved alphas")] = True,
+    limit: Annotated[int, typer.Option("--limit", "-l", help="Maximum fields to display")] = 25,
+) -> None:
+    """Discover unmined, high-coverage data fields across WorldQuant BRAIN datasets."""
+    with get_session() as session:
+        approved = session.query(AlphaCandidate).filter(AlphaCandidate.status == "APPROVED").all()
+        used_fields: set[str] = set()
+        for c in approved:
+            expr_lower = c.expression_raw.lower()
+            for token in re.findall(r"[a-z0-9_]+", expr_lower):
+                used_fields.add(token)
+
+        query = session.query(DataField)
+        if category:
+            query = query.filter(DataField.category.ilike(f"%{category}%"))
+        fields = query.all()
+
+        results: list[dict[str, Any]] = []
+        for f in fields:
+            is_used = f.field_key.lower() in used_fields
+            if unmined_only and is_used:
+                continue
+
+            if keyword:
+                kw = keyword.lower()
+                if kw not in f.field_key.lower() and kw not in (f.description or "").lower():
+                    continue
+
+            results.append({
+                "field_key": f.field_key,
+                "category": f.category,
+                "timing_delay": f.timing_delay,
+                "used_in_approved": is_used,
+                "description": f.description or "N/A",
+            })
+
+            if len(results) >= limit:
+                break
+
+        title = f"Discovered Data Fields (Category: {category or 'All'}, Unmined Only: {unmined_only})"
+        render_discovered_fields(results, title=title)
 
 
 def main() -> None:

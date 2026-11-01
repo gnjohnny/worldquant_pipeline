@@ -175,3 +175,121 @@ def render_gate_results(result: GateEvaluationResult) -> None:
         for warn in result.warnings:
             console.print(f"  - [yellow]{warn}[/yellow]")
     console.print()
+
+
+def render_parsed_metrics(
+    candidate_id: str,
+    metrics: Any,
+    decision: str,
+    reason: str,
+) -> None:
+    """Render summary table of metrics parsed from raw BRAIN text."""
+    console.print()
+    console.print(f"[bold cyan]Simulation Metrics Recorded for Candidate `{candidate_id}`[/bold cyan]\n")
+
+    table = Table(show_header=True, header_style="bold white")
+    table.add_column("Metric", style="bold")
+    table.add_column("Value", justify="right")
+    table.add_column("Benchmark Cutoff", justify="right")
+    table.add_column("Status", justify="center")
+
+    def add_row(name: str, val: float | None, cutoff: str, passed: bool | None, fmt: str = "{:.2f}") -> None:
+        val_str = fmt.format(val) if val is not None else "N/A"
+        st_str = "[green]PASS[/green]" if passed else "[red]FAIL[/red]" if passed is False else "[dim]INFO[/dim]"
+        table.add_row(name, val_str, cutoff, st_str)
+
+    add_row("Sharpe Ratio", metrics.sharpe, ">= 1.25", metrics.sharpe >= 1.25 if metrics.sharpe is not None else None)
+    add_row("Fitness Score", metrics.fitness, ">= 1.50 (GOOD)", metrics.fitness >= 1.50 if metrics.fitness is not None else None)
+    add_row(
+        "Turnover",
+        metrics.turnover,
+        "1.0% - 70.0%",
+        (0.01 <= metrics.turnover <= 0.70) if metrics.turnover is not None else None,
+        fmt="{:.2%}",
+    )
+    add_row(
+        "Sub-Universe Sharpe",
+        metrics.sub_universe_sharpe,
+        ">= 0.00",
+        metrics.sub_universe_sharpe >= 0.0 if metrics.sub_universe_sharpe is not None else None,
+    )
+    if metrics.self_correlation is not None:
+        add_row(
+            "Self-Correlation",
+            metrics.self_correlation,
+            "< 0.70",
+            metrics.self_correlation < 0.70,
+        )
+
+    console.print(table)
+    console.print()
+
+    dec_color = "green" if decision == "APPROVED" else "yellow" if decision == "NEEDS_REVIEW" else "red"
+    console.print(f"[bold]Decision:[/bold] [{dec_color}]{decision}[/{dec_color}]")
+    console.print(f"[bold]Reason:[/bold] {reason}\n")
+
+
+def render_submission_card(meta: Any) -> None:
+    """Render standardized Invariant 6 submission card for approved alphas."""
+    console.print()
+    console.print("[bold green]===============================================================[/bold green]")
+    console.print("[bold green]   WORLDQUANT BRAIN STANDARDIZED SUBMISSION METADATA (INV-6)   [/bold green]")
+    console.print("[bold green]===============================================================[/bold green]\n")
+
+    info_table = Table(show_header=True, header_style="bold white")
+    info_table.add_column("Field", style="bold cyan")
+    info_table.add_column("Submission Value", style="bold yellow")
+
+    info_table.add_row("Candidate ID", meta.candidate_id)
+    info_table.add_row("Name", meta.name)
+    info_table.add_row("Category", meta.category)
+    info_table.add_row("3 Tags", ", ".join(meta.tags))
+    info_table.add_row("Universe", meta.universe)
+    info_table.add_row("Neutralization", meta.neutralization)
+    info_table.add_row("Decay", str(meta.decay))
+    info_table.add_row("Delay", str(meta.delay))
+    info_table.add_row("Truncation", f"{meta.truncation:.4f}")
+
+    console.print(info_table)
+    console.print()
+
+    desc_panel = Panel(
+        Text(meta.description, style="white"),
+        title="Short Precise Description (1-2 sentences)",
+        border_style="cyan",
+    )
+    console.print(desc_panel)
+    console.print()
+
+    expr_panel = Panel(
+        Text(meta.expression, style="bold green on black"),
+        title="Formula Expression",
+        border_style="green",
+    )
+    console.print(expr_panel)
+    console.print()
+
+
+def render_discovered_fields(fields: list[dict[str, Any]], title: str) -> None:
+    """Render table of discovered data fields."""
+    console.print(f"\n[bold cyan]{title}[/bold cyan]\n")
+    table = Table(show_header=True, header_style="bold white")
+    table.add_column("Field Key", style="bold cyan")
+    table.add_column("Category", style="yellow")
+    table.add_column("Timing Delay", justify="center")
+    table.add_column("Approved Overlap", justify="center")
+    table.add_column("Description")
+
+    for f in fields:
+        overlap_str = "[red]USED[/red]" if f.get("used_in_approved") else "[bold green]UNMINED (0)[/bold green]"
+        table.add_row(
+            f["field_key"],
+            f.get("category", "N/A"),
+            f"{f.get('timing_delay', 1)}d",
+            overlap_str,
+            f.get("description", "")[:60],
+        )
+
+    console.print(table)
+    console.print()
+
