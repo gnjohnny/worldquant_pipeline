@@ -293,3 +293,60 @@ def render_discovered_fields(fields: list[dict[str, Any]], title: str) -> None:
     console.print(table)
     console.print()
 
+
+
+def render_cross_dataset_batch(candidates: list[Any], batch_path: str | None = None) -> None:
+    """Render v2 Cross-Dataset Alpha Engine generated batch report and simulation cards."""
+    console.print()
+    console.print("[bold cyan]===============================================================[/bold cyan]")
+    console.print("[bold cyan]       v2 CROSS-DATASET ALPHA ENGINE: TRI-CANDIDATE BATCH      [/bold cyan]")
+    console.print("[bold cyan]===============================================================[/bold cyan]\n")
+
+    if batch_path:
+        console.print(f"[bold green]Saved batch file:[/bold green] [yellow]{batch_path}[/yellow]\n")
+
+    summary_table = Table(title="Generated Cross-Dataset Candidates (Audited & Screened)", show_header=True, header_style="bold white")
+    summary_table.add_column("#", justify="center", style="bold")
+    summary_table.add_column("Archetype", style="bold cyan")
+    summary_table.add_column("Datasets Paired", style="yellow")
+    summary_table.add_column("Depth", justify="right")
+    summary_table.add_column("Turnover Est.", justify="right")
+    summary_table.add_column("Corr Risk", justify="center")
+
+    for i, c in enumerate(candidates, 1):
+        risk_style = "bold green" if c.correlation_risk_score <= 0.40 else "yellow" if c.correlation_risk_score <= 0.65 else "bold red"
+        summary_table.add_row(
+            str(i),
+            c.title.split("(")[0].strip(),
+            f"{c.primary_dataset} x {c.secondary_dataset}",
+            str(c.ast_depth),
+            f"{c.turnover_proxy_score:.1%}",
+            f"[{risk_style}]{c.correlation_risk_score:.2f}[/{risk_style}]",
+        )
+
+    console.print(summary_table)
+    console.print()
+
+    # Render Simulation Cards
+    for i, c in enumerate(candidates, 1):
+        console.print(f"[bold white on blue] Candidate {i}: {c.title} [/bold white on blue]")
+        console.print(f"[bold]Economic Rationale:[/bold] {c.economic_rationale}")
+        console.print(f"[bold]Datasets:[/bold] {c.primary_dataset} (Primary) x {c.secondary_dataset} (Secondary)")
+        console.print(f"[bold]Turnover Proxy:[/bold] {c.turnover_proxy_score:.1%} | [bold]Max Correlation Risk:[/bold] {c.correlation_risk_score:.2f}")
+
+        expr_panel = Panel(
+            Text(c.expression, style="bold green"),
+            title="Formula Expression (Copy & Paste to Platform)",
+            border_style="green",
+        )
+        console.print(expr_panel)
+
+        settings_table = Table(show_header=True, header_style="bold white", box=None)
+        settings_table.add_column("Universe", style="cyan")
+        settings_table.add_column("Neutralization", style="cyan")
+        settings_table.add_column("Decay", style="cyan")
+        settings_table.add_column("Delay", style="cyan")
+        settings_table.add_column("Truncation", style="cyan")
+        settings_table.add_row("TOP1000", "SUBINDUSTRY", "5", "1", "0.08")
+        console.print(settings_table)
+        console.print()

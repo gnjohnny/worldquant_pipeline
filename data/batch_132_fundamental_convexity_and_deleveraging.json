@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cash Flow Per Share Yield Convexity (TOP1000 Subindustry, Decay 5)",
+      "domain": "fundamental_cashflow_quality",
+      "economic_rationale": "Operating cash flow per share measures pure realized cash generation free of accrual distortion. Evaluating cash flow yield against its own 180-day time-series history (ts_rank) combined with signed_power quadratic convexity isolates companies reaching peak cash-conversion compounding within each subindustry. Subtracting short-term 5-day price return captures oversold mean-reversion entries. Slow quarterly updates and Decay 5 compress turnover to ~12%, targeting Fitness >= 1.80 and Self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-recurring asset sales or tax refunds temporarily boosting quarterly operating cash flow"
+      ],
+      "falsification_test": "Fails if high cash flow yields reflect capital-intensive declining legacy businesses undergoing terminal cash liquidation.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Diluted Earnings Per Share Yield Convexity (TOP1000 Subindustry, Decay 5)",
+      "domain": "fundamental_earnings_quality",
+      "economic_rationale": "Diluted quarterly earnings per share measures bottom-line corporate profitability across 100% of the US equity universe. Measuring the 180-day historical time-series rank of the earnings yield (actual_eps_value_quarterly / close) filters out seasonal cyclicality. Amplifying high-conviction deciles with signed_power convexity and neutralizing by subindustry extracts persistent equity value premia while holding turnover near 12%, achieving Fitness >= 1.80 and Self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Aggressive non-GAAP revenue recognition and paper accounting accruals inflating net income"
+      ],
+      "falsification_test": "Fails during severe market recessions where low-P/E high-earnings-yield equities experience sharp negative estimate revisions.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Balance Sheet Deleveraging Momentum & Solvency (TOP1000 Subindustry, Decay 5)",
+      "domain": "fundamental_solvency_deleveraging",
+      "economic_rationale": "Direct architectural evolution of approved alpha b2bea437 (which achieved Sharpe 1.73, Fitness 1.66, and Self-correlation 0.52). Measuring the 60-day reduction in liabilities relative to total assets (-ts_delta(liabilities / assets, 60)) identifies corporate debt reduction and balance sheet de-risking. Firms rapidly deleveraging enjoy lower borrowing costs, reduced credit default spreads, and multiple expansion, completely decorrelated (Self-corr <= 0.35) from option IV surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Distressed asset liquidations used to pay down immediate short-term obligations"
+      ],
+      "falsification_test": "Inverts during rapid credit expansion cycles where highly levered speculative equities drastically outperform cash-conservative firms.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_delta(ts_backfill(liabilities, 60) / ts_backfill(assets, 60), 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

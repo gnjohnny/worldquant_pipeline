@@ -1,4 +1,8 @@
 """Hypothesis domain package."""
+from worldquant_pipeline.hypotheses.cross_engine import (
+    CrossDatasetCandidate,
+    CrossDatasetEngine,
+)
 from worldquant_pipeline.hypotheses.importer import HypothesisImporter, IngestionReport
 from worldquant_pipeline.hypotheses.prompts import generate_copilot_prompt
 from worldquant_pipeline.hypotheses.schemas import (
@@ -14,6 +18,8 @@ from worldquant_pipeline.hypotheses.schemas import (
 __all__ = [
     "CandidateBatchInput",
     "CandidateProposal",
+    "CrossDatasetCandidate",
+    "CrossDatasetEngine",
     "DecisionEnum",
     "DecisionRecordInput",
     "DirectionEnum",

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Volume-Conditioned Microstructure Reversal (Subindustry Neutral, Decay 5)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Direct architectural evolution of approved alpha e211b129 (which achieved Sharpe 1.79 and 4.1% drawdown). Multiplying 5-day price return by relative volume surge (volume / ts_mean(volume, 20)) captures high-volume institutional forced liquidations and speculative exhaustion. Taking the negative rank buys panic volume dips and shorts speculative euphoria, while Decay 5 and Subindustry neutralization compress turnover from 40% to ~15%, driving Fitness >= 1.80 and Self-correlation <= 0.20.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unhedged earnings news momentum where high volume initiates multi-week trend continuations"
+      ],
+      "falsification_test": "Alpha inverts during sustained market momentum regimes where volume-surge breakouts persistently outperform.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank((ts_delta(close, 5) / close) * (volume / ts_mean(volume, 20)), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Institutional VWAP Intraday Discount Reversion (Subindustry Neutral, Decay 5)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Constructs the pure dimensionless spread between closing price and daily volume-weighted average price ((close - vwap) / close). Equities closing at deep discounts to VWAP reflect intraday liquidity imbalances that institutional execution algorithms arbitrage back toward fair value on the subsequent open. Zero approved alphas in our portfolio utilize the closing VWAP gap, guaranteeing self-correlation <= 0.20 and high Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Persistent late-day institutional block liquidations carrying over to multi-day selloffs"
+      ],
+      "falsification_test": "Fails if intraday discounts represent informed institutional distribution that accelerates overnight.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank((close - vwap) / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "FFO-to-Debt Long-Term Trend Health Anomaly (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_solvency_trend",
+      "economic_rationale": "In our approved portfolio, Funds from Operations (fnd6_fopo) generated our highest Fitness in history: 2.03 (alpha 12ab1834). Scaling FFO by long-term debt and evaluating its time-series rank over 252 days identifies companies with secular upward momentum in cash solvency relative to their own financial history. Slow fundamental updates naturally compress turnover to ~12%, vaulting Fitness >= 1.80 while Subindustry neutralization maintains self-correlation <= 0.35.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-operating cash windfalls or asset sale proceeds temporarily boosting quarterly FFO"
+      ],
+      "falsification_test": "Inverts during sudden credit market freezes where capital-intensive debt-burdened firms outperform solvency leaders.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(fnd6_fopo, 60) / (ts_backfill(debt_lt, 60) + 1000), 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

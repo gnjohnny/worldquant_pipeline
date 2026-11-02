@@ -1,6 +1,7 @@
 """Typer CLI application for worldquant_pipeline."""
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -16,6 +17,7 @@ from worldquant_pipeline.cli.metric_parser import (
 from worldquant_pipeline.cli.submission import generate_submission_metadata
 from worldquant_pipeline.cli.views import (
     console,
+    render_cross_dataset_batch,
     render_dashboard,
     render_discovered_fields,
     render_gate_results,
@@ -27,6 +29,7 @@ from worldquant_pipeline.cli.views import (
 )
 from worldquant_pipeline.config.settings import get_settings
 from worldquant_pipeline.evaluation.gates import QualityGateRunner
+from worldquant_pipeline.hypotheses.cross_engine import CrossDatasetEngine
 from worldquant_pipeline.hypotheses.importer import HypothesisImporter
 from worldquant_pipeline.hypotheses.prompts import generate_copilot_prompt
 from worldquant_pipeline.storage.database import get_session
@@ -465,6 +468,49 @@ def discover_fields(
 
         title = f"Discovered Data Fields (Category: {category or 'All'}, Unmined Only: {unmined_only})"
         render_discovered_fields(results, title=title)
+
+
+@app.command("generate-v2")
+def generate_v2(
+    output: Annotated[
+        str | None,
+        typer.Option("--output", "-o", help="Custom JSON path to save the generated Tri-Candidate batch"),
+    ] = None,
+    max_risk: Annotated[
+        float,
+        typer.Option("--max-risk", "-r", help="Maximum allowable correlation risk against approved alphas"),
+    ] = 0.65,
+    auto_ingest: Annotated[
+        bool,
+        typer.Option("--ingest/--no-ingest", help="Automatically register candidates into PostgreSQL memory"),
+    ] = True,
+) -> None:
+    """Generate a high-fitness, low-correlation Tri-Candidate Batch using the v2 Cross-Dataset Engine."""
+    with get_session() as session:
+        engine = CrossDatasetEngine(db_session=session)
+        
+        # Determine filepath
+        if output:
+            batch_path = Path(output)
+        else:
+            ts_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+            batch_path = Path("data") / f"batch_v2_{ts_str}.json"
+
+        batch_path, candidates = engine.export_batch_json(
+            filepath=batch_path,
+            session=session,
+            max_correlation_risk=max_risk,
+        )
+
+        render_cross_dataset_batch(candidates, batch_path=str(batch_path))
+
+        if auto_ingest:
+            console.print("[bold cyan]Auto-Ingesting batch into PostgreSQL research memory...[/bold cyan]")
+            importer = HypothesisImporter(session=session)
+            with open(batch_path, "r", encoding="utf-8") as f:
+                batch_data = json.load(f)
+            report = importer.ingest_data(batch_data)
+            render_ingestion_report(report)
 
 
 def main() -> None:
