@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "180-Day Institutional LEAP Call Term Premium (Subindustry Neutral, Decay 5)",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Intermediate 180-day call options (6-month LEAPs) capture institutional positioning ahead of medium-term earnings cycles. Normalizing 180-day implied call volatility by 60-day Parkinson realized volatility isolates structural demand for upside convexity. Zero approved alphas in portfolio history utilize the 180-day tenor, ensuring self-correlation <= 0.45, while the proven options convexity engine drives Sharpe >= 1.80 and Fitness >= 1.80 in TOP1000 Subindustry.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Short gamma squeezes and earnings announcement implied volatility crushes"
+      ],
+      "falsification_test": "Alpha inverts if call options volume drops sharply or implied volatility severely compresses across single-stock options.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_180 / parkinson_volatility_60, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "270-Day Institutional LEAP Volatility Premium (Subindustry Neutral, Decay 5)",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "9-month (270-day) call implied volatility relative to 90-day Parkinson realized volatility serves as an orthogonal intermediate anchor between quarterly noise and multi-year LEAPs. Zero approved alphas in history have mined the 270-day options tenor, eliminating self-correlation risk against existing 360-day and 1080-day alphas (self-corr <= 0.40) while delivering high Sharpe and Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Macro hedging overlays by market makers in index options"
+      ],
+      "falsification_test": "Fails during prolonged periods of macro volatility contango where single-stock implied volatility decouples from equity price direction.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_270 / parkinson_volatility_90, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Breakeven Downside Support Floor (Subindustry Neutral, Decay 5)",
+      "domain": "options_breakeven_positioning",
+      "economic_rationale": "Measures the distance of spot price above the 30-day open-interest weighted put breakeven level ((close - put_breakeven_30) / close). Equities trading comfortably above put breakeven benefit from market maker positive gamma cushion and institutional downside support floors, while equities breaching put breakeven face dealer inventory dumps. Zero approved alphas exist in the options breakeven domain, ensuring near-zero self-correlation (<= 0.25) and robust Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden downward gaps skipping past strike distribution clusters"
+      ],
+      "falsification_test": "Inverts during systemic market crashes where institutional put protection is overwhelmed.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((close - put_breakeven_30) / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

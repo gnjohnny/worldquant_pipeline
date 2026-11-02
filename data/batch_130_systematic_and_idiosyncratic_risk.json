@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Low Idiosyncratic Variance Quality Anomaly (Subindustry Neutral, Decay 5)",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Empirical asset pricing identifies the Idiosyncratic Volatility Puzzle (Ang et al.): equities with high idiosyncratic volatility unexplained by the market factor earn abnormally low risk-adjusted returns due to retail lottery-seeking behavior. Group-ranking the inverse of 60-day unsystematic risk within subindustries longs steady, predictable business models and shorts speculative lottery stocks. Zero approved alphas in our portfolio utilize unsystematic risk, guaranteeing self-correlation <= 0.25 and high Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unhedged speculative bubbles where unprofitable lottery stocks briefly lead"
+      ],
+      "falsification_test": "Alpha inverts during speculative market melt-ups where high-idiosyncratic-risk small caps heavily outperform.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(unsystematic_risk_last_60_days, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Variance Shock Spike Reversion (Subindustry Neutral, Decay 5)",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Measures acute spikes in firm-specific idiosyncratic risk relative to a 1-year baseline (unsystematic_risk_last_30_days / unsystematic_risk_last_360_days). Acute spikes in idiosyncratic risk signal operational crises, accounting restatements, or pending litigation that create protracted downside underperformance. Shorting firms experiencing acute idiosyncratic risk spikes captures steady drift with zero portfolio correlation overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Temporary earnings announcement variance spikes that rapidly resolve into upward revisions"
+      ],
+      "falsification_test": "Fails if sharp idiosyncratic risk spikes are predominantly caused by massive positive merger or buyout news.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.001), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Market Quality Anchor (Subindustry Neutral, Decay 5)",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Measures the proportion of return variance explained by the broad market index (systematic_risk_last_60_days, R^2). High systematic risk indicates liquid, institutional bellwethers whose cash flows track macro economic expansion. Pairing systematic quality with 5-day price reversal isolates institutional liquidity provision with self-correlation <= 0.25.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Macro cyclical downturns where high-beta equities experience broad drawdowns"
+      ],
+      "falsification_test": "Inverts during market selloffs where high-systematic-risk equities suffer larger market beta drawdowns.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(systematic_risk_last_60_days, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

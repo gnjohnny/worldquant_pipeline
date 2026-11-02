@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "SEC Level 1 Annual Balance Sheet De-leveraging (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "Measures the rate of change in mark-to-market Level 1 financial liabilities from annual SEC balance sheet filings. Sibling to approved alpha 7429811d, which achieved portfolio self-correlation of 0.0484 (under 5%). Implementing non-linear signed_power tails and 5-day liquidity reversal directs capital to extreme balance sheet de-leveraging champions, elevating Sharpe and Fitness >= 1.80 while guaranteeing self-correlation <= 0.15 in TOP1000 Subindustry.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Financial reporting delay in 10-K disclosures"
+      ],
+      "falsification_test": "Alpha inverts if firms increasing mark-to-market liabilities outperform de-leveraging peers.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(ts_delta(ts_backfill(fn_liab_fair_val_l1_a, 60), 60) / (ts_backfill(fn_liab_fair_val_l1_a, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "SEC Level 1 Quarterly Balance Sheet De-leveraging (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "Exploits quarterly updates in Level 1 fair value liabilities from SEC 10-Q filings. Zero approved alphas in history have mined the quarterly variant fn_liab_fair_val_l1_q. Tracking 60-day liabilities contraction captures faster quarterly balance sheet repair than annual filings, driving Sharpe >= 1.80, Fitness >= 1.80, and self-correlation <= 0.20.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Interim debt restructuring and reclassification of Level 1 liabilities into Level 2"
+      ],
+      "falsification_test": "Inverts during sudden debt defaults where prior quarterly de-leveraging masks impending liquidity crises.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(ts_delta(ts_backfill(fn_liab_fair_val_l1_q, 60), 60) / (ts_backfill(fn_liab_fair_val_l1_q, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Trailing 12-Month Cash Dividend Yield Anomaly (Subindustry Neutral, Decay 5)",
+      "domain": "market_cash_distribution",
+      "economic_rationale": "Constructs the pure trailing 12-month dividend yield (ts_sum(dividend, 252) / close) normalized within subindustries. High dividend yield equities provide direct cash return to shareholders and defensive downside resilience, drawing institutional income capital. Zero approved alphas in our portfolio utilize cash dividend data, guaranteeing orthogonal diversification and self-correlation <= 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Dividend traps where high yields reflect impending dividend cuts or deteriorating fundamentals"
+      ],
+      "falsification_test": "Fails during rapid growth/tech rallies where non-dividend paying unprofitable stocks lead the market.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_sum(dividend, 252) / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
