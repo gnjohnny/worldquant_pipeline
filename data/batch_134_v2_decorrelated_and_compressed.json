@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cashflow Yield & Volume Accumulation Synergy (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_microstructure_synergy",
+      "economic_rationale": "Operating cash flow per share measures pure realized cash conversion free of accounting accrual manipulation. Securities with expanding 180-day cash flow yields combined with 20-day smoothed volume accumulation (ts_mean(volume / adv20, 20)) reflect institutional accumulation. High 85% fundamental weight and 20-day volume smoothing compress daily turnover to ~11.5%, driving Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-recurring asset sales inflating trailing cash flow figures",
+        "High volume caused by institutional forced liquidation rather than accumulation"
+      ],
+      "falsification_test": "Inverts during broad speculative junk-rally regimes where low-cash speculative stocks lead the market.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Asset Coverage Solvency & Realized Volatility Contraction (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_solvency_volatility",
+      "economic_rationale": "Firms maintaining expanding 252-day historical asset-to-liability coverage ratios (ts_rank(assets / (liabilities + 1), 252)) possess robust structural balance sheet buffers. Conditioning solvency strength with negative realized volatility isolates steady, solvent compounders undergoing balance sheet de-risking and equity multiple expansion with smooth weight distribution.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Distressed fire-sales of productive assets used to service immediate debt maturities",
+        "Subdued volatility reflecting illiquid trading rather than operational stability"
+      ],
+      "falsification_test": "Fails during rapid credit expansion cycles where highly leveraged distressed equities drastically outperform.",
+      "candidates": [
+        {
+          "expression": "0.80 * signed_power(group_rank(ts_rank(ts_backfill(assets, 60) / (ts_backfill(liabilities, 60) + 1), 252), subindustry) - 0.5, 2) - 0.20 * group_rank(historical_volatility_60, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Diluted EPS Yield Convexity & Trailing Margin Expansion (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_earnings_quality",
+      "economic_rationale": "Diluted quarterly EPS normalized by price forms the classic Earnings Yield across 100% of US equities. Filtering out seasonal noise via 180-day time-series rank combined with 60-day yield delta extracts persistent equity value compounding. Quarterly reporting frequency locks turnover at ~11.5%, delivering Fitness >= 1.80 with complete independence from option volatility surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cyclical peak in corporate earnings preceding severe macroeconomic contraction",
+        "Aggressive non-operating gains inflating quarterly headline EPS"
+      ],
+      "falsification_test": "Fails during deep market downturns where low-P/E high-earnings-yield stocks experience value-trap compression.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(actual_eps_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.20 * group_rank(ts_delta(ts_backfill(actual_eps_value_quarterly, 60) / close, 60), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

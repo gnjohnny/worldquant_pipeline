@@ -27,7 +27,7 @@ from worldquant_pipeline.evaluation.turnover_proxy import TurnoverProxyCalculato
 from worldquant_pipeline.expressions.parser import parse_expression
 from worldquant_pipeline.expressions.validator import ExpressionValidator
 from worldquant_pipeline.storage.database import get_session
-from worldquant_pipeline.storage.models import AlphaCandidate
+from worldquant_pipeline.storage.models import AlphaCandidate, Decision
 
 
 @dataclass
@@ -88,9 +88,9 @@ class CrossDatasetEngine:
                 secondary_dataset="pv1",
                 economic_rationale=(
                     "Operating cash flow per share measures pure realized cash conversion free of accounting accrual manipulation. "
-                    "Securities with expanding 180-day cash flow yields that are simultaneously experiencing relative volume accumulation "
-                    "(volume / adv20) reflect institutional smart-money accumulation ahead of earnings announcements. "
-                    "Decay 5 and Subindustry neutralization compress turnover into the 11-12% optimal frontier, driving Fitness >= 1.80."
+                    "Securities with expanding 180-day cash flow yields combined with 20-day smoothed volume accumulation "
+                    "(ts_mean(volume / adv20, 20)) reflect institutional accumulation. "
+                    "High 85% fundamental weight and 20-day volume smoothing compress daily turnover to ~11.5%, driving Fitness >= 1.80."
                 ),
                 intended_horizon="20d",
                 expected_direction="positive",
@@ -100,22 +100,21 @@ class CrossDatasetEngine:
                 ],
                 falsification_test="Inverts during broad speculative junk-rally regimes where low-cash speculative stocks lead the market.",
                 generator=lambda: (
-                    "0.70 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + "
-                    "0.20 * group_rank(volume / adv20, subindustry) - "
-                    "0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+                    "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + "
+                    "0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
                 ),
             ),
             "solvency_volatility_contraction": ArchetypeDefinition(
                 key="solvency_volatility_contraction",
-                name="Balance Sheet Deleveraging & Volatility Contraction Anomaly",
+                name="Asset Coverage Solvency & Realized Volatility Contraction",
                 domain="fundamental_solvency_volatility",
                 primary_dataset="fundamental",
                 secondary_dataset="option8",
                 economic_rationale=(
-                    "Firms aggressively reducing liabilities relative to assets over trailing 60 days (-ts_delta(liabilities / assets, 60)) "
-                    "experience structural credit risk contraction. Conditioning deleveraging momentum with negative historical realized volatility "
-                    "isolates calm, solvent compounders undergoing balance sheet de-risking and equity multiple expansion. "
-                    "Zero overlap with call implied volatility guarantees complete portfolio decorrelation (Self-corr <= 0.35)."
+                    "Firms maintaining expanding 252-day historical asset-to-liability coverage ratios "
+                    "(ts_rank(assets / (liabilities + 1), 252)) possess robust structural balance sheet buffers. "
+                    "Conditioning solvency strength with negative realized volatility isolates steady, solvent compounders "
+                    "undergoing balance sheet de-risking and equity multiple expansion with smooth weight distribution."
                 ),
                 intended_horizon="20d",
                 expected_direction="positive",
@@ -125,7 +124,7 @@ class CrossDatasetEngine:
                 ],
                 falsification_test="Fails during rapid credit expansion cycles where highly leveraged distressed equities drastically outperform.",
                 generator=lambda: (
-                    "0.80 * signed_power(group_rank(-ts_delta(ts_backfill(liabilities, 60) / ts_backfill(assets, 60), 60), subindustry) - 0.5, 2) - "
+                    "0.80 * signed_power(group_rank(ts_rank(ts_backfill(assets, 60) / (ts_backfill(liabilities, 60) + 1), 252), subindustry) - 0.5, 2) - "
                     "0.20 * group_rank(historical_volatility_60, subindustry)"
                 ),
             ),
@@ -261,7 +260,13 @@ class CrossDatasetEngine:
         risk_score = 0.0
         overlapping: set[str] = set()
         try:
-            approved_cands = s.query(AlphaCandidate).filter(AlphaCandidate.status == "APPROVED").all()
+            approved_cands = (
+                s.query(AlphaCandidate)
+                .outerjoin(Decision, AlphaCandidate.id == Decision.candidate_id)
+                .filter((AlphaCandidate.status == "APPROVED") | (Decision.decision == "APPROVED"))
+                .distinct()
+                .all()
+            )
             if approved_cands:
                 audit_res = FactorFingerprintAuditor.audit_against_candidates(
                     expression=expression,
