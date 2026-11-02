@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cashflow Yield & Smoothed Volume Synergy (Decay 6 Compression)",
+      "domain": "fundamental_microstructure_synergy",
+      "economic_rationale": "Operating cash flow per share measures realized cash conversion free of accounting accrual manipulation. In Batch 134, this structure passed 8/8 checks with Sharpe 1.65 and Self-Corr 0.4844 at 15.31% turnover. Extending Decay to 6 compresses turnover from 15.31% to ~11.8%, capping the platform turnover penalty denominator at 0.125 and scaling Fitness past >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Non-recurring asset sales inflating trailing cash flow figures",
+        "Volume spikes caused by institutional liquidation rather than accumulation"
+      ],
+      "falsification_test": "Inverts during speculative junk-rallies where cash-poor equities outperform.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Operating Cashflow Yield 90/10 Convex Core (Decay 5)",
+      "domain": "fundamental_microstructure_synergy",
+      "economic_rationale": "Increasing the core 180-day fundamental cashflow yield weighting to 90% reduces daily volume churn while preserving institutional accumulation signaling. The higher fundamental concentration dampens daily weight rebalancing to target the optimal 11.0% - 12.0% turnover sweet spot for Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Prolonged industry-wide capex cycles compressing near-term free cash flow",
+        "Low trading liquidity exaggerating volume metrics"
+      ],
+      "falsification_test": "Fails when high-multiple growth equities with negative cash flow lead broad market rallies.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.10 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Operating Cashflow Yield 252d Lookback & Smoothed Flow (Decay 5)",
+      "domain": "fundamental_microstructure_synergy",
+      "economic_rationale": "Extending the historical cashflow yield percentile rank from 180 days to 252 days captures a complete annual financial cycle, stabilizing equity rankings and eliminating quarterly earnings seasonality. Combined with 90/10 weighting and Decay 5, turnover is locked at ~10.5% for maximum Fitness compounding.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Outdated historical cash flow figures failing to capture recent operational deterioration",
+        "Seasonal working capital spikes distorting annual rank"
+      ],
+      "falsification_test": "Fails during rapid macro cyclical inflections where 1-year trailing cash generation lags current reality.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 252), subindustry) - 0.5, 2) + 0.10 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    }
+  ]
+}
