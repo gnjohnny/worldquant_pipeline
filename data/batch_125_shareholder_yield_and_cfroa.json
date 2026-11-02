@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Share Buyback & Capital Return Yield Turnover Compressed (TOP3000 Subindustry, Decay 8)",
+      "domain": "analyst_capital_return",
+      "economic_rationale": "In Batch 124, Candidate 1 cleared all 8 platform gates on BRAIN with Sharpe 1.61, Sub-universe Sharpe 1.44, and Self-Correlation 0.5381. Trimming the delta reversal weight from 0.15 to 0.10 and extending Decay from 6 to 8 compresses turnover from 15.9% down to ~10.5%, mathematically multiplying the Fitness ratio by 1.25x to elevate Fitness from 1.06 past 1.50 - 1.80 for Alpha 1.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unfavorable leverage accumulation from aggressive debt-financed buybacks"
+      ],
+      "falsification_test": "Alpha inverts if companies conducting heavy share buybacks suffer from subsequent liquidity shortages.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(-ts_backfill(anl4_cff_value, 60) / close, 252), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Capital Investment Intensity Yield (TOP3000 Subindustry, Decay 8)",
+      "domain": "analyst_investment",
+      "economic_rationale": "Measures capital reinvestment intensity by scaling announced Cash Flow from Investing (anl4_cfi_value) against equity price. Companies aggressively deploying cash into productive plant, equipment, and strategic acquisitions build durable competitive advantages. Zero approved alphas in database ensure self-correlation <= 0.35, and Decay 8 ensures low turnover (~10.5%) for Fitness >= 1.80 for Alpha 2.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Value-destroying capital overinvestment in declining industries"
+      ],
+      "falsification_test": "Alpha fails if capital-intensive expanding firms generate negative return on invested capital.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(-ts_backfill(anl4_cfi_value, 60) / close, 252), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Cash Flow Return on Assets CFROA (TOP3000 Subindustry, Decay 8)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "Evaluates pure operational cash profitability per unit of asset base by ranking fnd6_fopo / (assets + 1000) over 252 days. Completely decoupled from price volatility, this isolates capital efficiency compounders within each subindustry. Zero approved alphas in database for fnd6_fopo / assets, ensuring low correlation (<= 0.45) and turnover ~10% for Fitness >= 1.80 for Alpha 3.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-operating asset write-downs"
+      ],
+      "falsification_test": "Alpha inverts if asset-heavy low-margin utilities persistently outperform cash compounders.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fnd6_fopo, 60) / (ts_backfill(assets, 60) + 1000), 252), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
