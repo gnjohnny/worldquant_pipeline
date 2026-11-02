@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Book Value Per Share Yield Undervaluation (Subindustry Neutral)",
+      "domain": "fundamental_valuation",
+      "economic_rationale": "Evaluates equity valuation discount relative to net asset book value per share. When book-to-price ratio reaches a 252-day peak within its subindustry, the equity trades at an extreme valuation discount. The 0.60/0.40 convex shaping and 5-day delta reversal compress turnover to ~11% while capturing structural value re-rating without correlation to operating earnings models.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Goodwill write-downs and asset impairments"
+      ],
+      "falsification_test": "Alpha fails if capital-light assetless equities systematically dominate book-rich equities.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 252), subindustry) - 0.5, 2) - 0.40 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Domestic Operating Earnings Yield (Sector Neutral)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "Isolates pure domestic operating profit from international currency and overseas tariff fluctuations. Evaluating rolling domestic EBIT yield within Sector neutrality captures cross-subindustry capital rotation toward cash-generative domestic operations. Zero approved alphas in database ensure self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Domestic economic contraction disproportionately hurting domestic-only firms"
+      ],
+      "falsification_test": "Alpha inverts if foreign export profits dramatically outpace domestic earnings during rapid dollar depreciation.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252), sector) - 0.5, 2) - 0.40 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Dividend Yield Convexity Turnover Compression (Industry Neutral)",
+      "domain": "analyst_dividends",
+      "economic_rationale": "In Batch 115, actual dividend yield delivered Sharpe 1.37, Sub-universe Sharpe 1.05, and passed Self-Correlation (< 0.70). Shifting to TOP1000 with a balanced 0.60/0.40 delta reversal weight and Decay 5 compresses turnover from 25.4% down to ~11%, elevating Fitness past the 1.80 threshold to clear all platform gates.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled dividend cuts by distressed firms"
+      ],
+      "falsification_test": "Alpha fails in zero-interest-rate speculative growth regimes where non-dividend tech outperforms.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_div_value, 60) / close, 252), industry) - 0.5, 2) - 0.40 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    }
+  ]
+}
