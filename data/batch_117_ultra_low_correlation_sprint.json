@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cashflow Conversion Efficiency Derivative with Microstructure Reversal",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Ranks equities cross-sectionally by their ability to generate free cash flow and operational profitability per unit of capital. High cash-conversion equities possess structural pricing power and protection against macroeconomic tightening. Paired with 5-day mean-reversion liquidity buffer to capture short-term microstructure reversals.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-operating cash windfalls"
+      ],
+      "falsification_test": "Alpha fails if capital-intensive unprofitable companies outperform during speculative liquidity bubbles.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(cashflow_efficiency_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Low-Beta Anomaly with Liquidity Reversion",
+      "domain": "model_systematic_risk",
+      "economic_rationale": "Structural Betting-Against-Beta (BAB) phenomenon. Leverage-constrained institutional and retail market participants overpay for high-beta equities to attain lottery-like payoffs, systematically depressing their risk-adjusted returns relative to low-beta equities. Group-ranking low-beta names within subindustries captures this risk premium without taking unhedged sector tilts.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unhedged market rallies where high-beta violently leads"
+      ],
+      "falsification_test": "Alpha fails during speculative market melt-ups where high beta heavily outperforms.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-beta_last_60_days_spy, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Flow Put-Call Volume Ratio Exhaustion Reversion",
+      "domain": "option_analytics",
+      "economic_rationale": "Informed options order flow dynamics (Pan & Poteshman 2004). Abnormally high put-to-call trading volume signals institutional hedging against impending adverse downside events, depressing forward stock performance. Conversely, low put/call volume indicates constructive institutional call demand. Neutralizing within subindustry isolates directional options positioning from broad market sentiment.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Market maker delta hedging flow distortions"
+      ],
+      "falsification_test": "Alpha fails if speculative put buyers are persistently wrong and suffer theta decay without price drops.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-pcr_vol_30, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
