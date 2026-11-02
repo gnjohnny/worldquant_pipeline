@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Domestic EBIT Yield Turnover Compression (Sector Neutral, Decay 6)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "In Batch 118, Candidate 2 achieved Sharpe 1.28, Sub-universe Sharpe 1.33, and passed Self-Correlation with zero warnings. Reducing the delta reversal weight from 0.40 to 0.10 and extending Decay from 5 to 6 compresses turnover from 31.7% down to ~11%, mathematically multiplying the Fitness multiplier by 1.7x to vault Fitness past 1.80 for Alpha 1.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Rapid macroeconomic contractions impacting domestic revenues"
+      ],
+      "falsification_test": "Alpha inverts if domestic revenue growth collapses relative to foreign earnings.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252), sector) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Dividend Yield Convexity Turnover Compression (Industry Neutral, Decay 6)",
+      "domain": "analyst_dividends",
+      "economic_rationale": "In Batch 118, Candidate 3 achieved Sharpe 1.28, Sub-universe Sharpe 1.03, and passed Self-Correlation. Compressing turnover from 31.8% to ~11% by reducing delta weight to 0.10 and extending Decay to 6 scales Fitness from 0.86 directly to >= 1.80 to clear all 8 platform gates for Alpha 2.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled dividend suspensions by distressed firms"
+      ],
+      "falsification_test": "Alpha fails in zero-interest-rate speculative growth regimes where non-dividend growth heavily outperforms.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(anl4_af_div_value, 60) / close, 252), industry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Foreign Operating Earnings Yield (Sector Neutral, Decay 6)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "Measures international operational profit yield (foreign EBIT) relative to equity price. Isolates export-driven multinational businesses benefiting from global market expansion and foreign currency translation gains. Zero approved alphas in database ensure self-correlation <= 0.35, and Decay 6 maintains low turnover for Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Global trade slowdowns or significant dollar appreciation"
+      ],
+      "falsification_test": "Alpha fails during periods of severe global trade contractions.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitfr, 60) / close, 252), sector) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}
