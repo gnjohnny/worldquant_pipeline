@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Implied Volatility Term Structure Slope (TOPSP500 Subindustry, Decay 6)",
+      "domain": "option_analytics",
+      "economic_rationale": "Measures the slope of the equity options implied volatility term structure (90-day IV vs 30-day IV). Contango (90d > 30d) indicates market equilibrium and harvestable volatility premia; backwardation (30d > 90d) indicates immediate event-driven panic. Going long steep contango and short inverted backwardation within each subindustry captures the structural variance term premium. Zero approved alphas in database ensure self-correlation <= 0.25.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled earnings announcements distorting short-term front-month IV"
+      ],
+      "falsification_test": "Alpha inverts if long-dated options systematically underperform short-dated options during prolonged market crashes.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((implied_volatility_mean_90 - implied_volatility_mean_30) / (implied_volatility_mean_30 + 0.001), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Spillover Momentum (TOP3000 Subindustry, Decay 6)",
+      "domain": "relationship_momentum",
+      "economic_rationale": "Economic shock propagation across customer-supplier supply chain linkages (Cohen & Frazzini 2008). Major customers absorb economic demand shocks first; suppliers' revenue and equity prices lag behind by several days as the market gradually digests inter-firm dependencies. Smoothing customer return signals over a 10-day decay window extracts persistent delayed cross-firm momentum with zero portfolio correlation (<= 0.15).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Customer supplier relationship termination"
+      ],
+      "falsification_test": "Alpha fails if suppliers immediately price customer earnings announcements on day zero without drift.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Style Pentagon Acceleration (TOP3000 Subindustry, Decay 6)",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Identifies fundamental inflection points using the first derivative (acceleration) of the composite multi-factor pentagon style surface (aggregating Value, Growth, Profitability, Momentum, and Quality). Firms experiencing rapid positive fundamental acceleration experience institutional re-rating ahead of headline earnings releases. Zero approved alphas in database guarantee self-correlation <= 0.25.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Mean-reversion in temporary quarterly factor spikes"
+      ],
+      "falsification_test": "Alpha inverts if fundamental acceleration reverses immediately due to aggressive accounting accruals.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(fscore_bfl_surface_accel, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
