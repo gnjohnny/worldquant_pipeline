@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cashflow Yield & Volume Accumulation Synergy (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_microstructure_synergy",
+      "economic_rationale": "Operating cash flow per share measures pure realized cash conversion free of accounting accrual manipulation. Securities with expanding 180-day cash flow yields that are simultaneously experiencing relative volume accumulation (volume / adv20) reflect institutional smart-money accumulation ahead of earnings announcements. Decay 5 and Subindustry neutralization compress turnover into the 11-12% optimal frontier, driving Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-recurring asset sales inflating trailing cash flow figures",
+        "High volume caused by institutional forced liquidation rather than accumulation"
+      ],
+      "falsification_test": "Inverts during broad speculative junk-rally regimes where low-cash speculative stocks lead the market.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(actual_cashflow_per_share_value_quarterly, 60) / close, 180), subindustry) - 0.5, 2) + 0.20 * group_rank(volume / adv20, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Balance Sheet Deleveraging & Volatility Contraction Anomaly (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_solvency_volatility",
+      "economic_rationale": "Firms aggressively reducing liabilities relative to assets over trailing 60 days (-ts_delta(liabilities / assets, 60)) experience structural credit risk contraction. Conditioning deleveraging momentum with negative historical realized volatility isolates calm, solvent compounders undergoing balance sheet de-risking and equity multiple expansion. Zero overlap with call implied volatility guarantees complete portfolio decorrelation (Self-corr <= 0.35).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Distressed fire-sales of productive assets used to service immediate debt maturities",
+        "Subdued volatility reflecting illiquid trading rather than operational stability"
+      ],
+      "falsification_test": "Fails during rapid credit expansion cycles where highly leveraged distressed equities drastically outperform.",
+      "candidates": [
+        {
+          "expression": "0.80 * signed_power(group_rank(-ts_delta(ts_backfill(liabilities, 60) / ts_backfill(assets, 60), 60), subindustry) - 0.5, 2) - 0.20 * group_rank(historical_volatility_60, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Consensus EPS Revision Acceleration & Value Convexity (Subindustry Neutral, Decay 5)",
+      "domain": "analyst_forecast_momentum",
+      "economic_rationale": "Sell-side analysts adjust earnings estimates gradually due to anchoring bias, producing post-earnings announcement drift. Evaluating the 180-day historical time-series rank of consensus median EPS (anl4_afv4_median_eps / close) combined with 60-day forecast revision delta isolates equities undergoing accelerating institutional consensus upgrades. Convex signed_power decile weighting concentrates capital into top conviction consensus upgrades.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sell-side herd mentality where consensus estimates lag turning points at market tops",
+        "One-off accounting write-downs distorting consensus comparison baselines"
+      ],
+      "falsification_test": "Fails during macro shocks where headline earnings guidance is rendered obsolete across entire sectors.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_median_eps, 60) / close, 180), subindustry) - 0.5, 2) + 0.20 * group_rank(ts_delta(ts_backfill(anl4_afv4_median_eps, 60), 60) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
