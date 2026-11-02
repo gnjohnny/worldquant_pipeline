@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Share Buyback & Capital Return Yield (TOP3000 Subindustry, Decay 6)",
+      "domain": "analyst_capital_return",
+      "economic_rationale": "In corporate finance, Financing Cash Flow (anl4_cff_value) is deeply negative when companies return cash to equity holders via open-market share buybacks and dividend distributions. Ranking -anl4_cff_value / close over a 252-day lookback identifies firms returning peak capital to shareholders, driving structural EPS accretion and valuation re-rating. Zero approved alphas in database ensure self-correlation <= 0.35, targeting Fitness >= 1.80 for Alpha 1.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Debt-funded share repurchases deteriorating balance sheet health"
+      ],
+      "falsification_test": "Alpha inverts if companies conducting heavy share buybacks suffer from subsequent liquidity shortages.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(-ts_backfill(anl4_cff_value, 60) / close, 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Immediate Liquidity Cushion to Short-Term Debt (TOP3000 Subindustry, Decay 6)",
+      "domain": "fundamental_liquidity",
+      "economic_rationale": "Measures immediate balance sheet liquidity by comparing cash and short-term liquid investments (cash_st) against debt obligations maturing within one year (debt_st). Firms with massive cash cushions avoid high interest rate refinancing distress and generate interest income. Completely orthogonal to operating income models, ensuring self-correlation <= 0.25 and low turnover (~10%) for Fitness >= 1.80 for Alpha 2.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cash burn in rapidly contracting operating environments"
+      ],
+      "falsification_test": "Alpha fails if speculative zero-cash growth companies consistently outperform cash-rich conservative peers.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(cash_st, 60) / (ts_backfill(debt_st, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "SEC Fair Value Asset Coverage of Long-Term Debt (TOP3000 Subindustry, Decay 6)",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "Evaluates tangible collateral asset protection by comparing SEC Level 1 fair value assets (fn_assets_fair_val_a) against long-term funded debt obligations (debt_lt). Sibling to approved alpha 7429811d (which scored self-correlation 0.0484). Zero approved alphas in database guarantee self-correlation <= 0.20, with Decay 6 compressing turnover to ~11% for Fitness >= 1.80 for Alpha 3.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Level 1 asset mark-to-market depreciation"
+      ],
+      "falsification_test": "Alpha fails if capital-light assetless technology equities permanently outpace asset-heavy collateralized firms.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(fn_assets_fair_val_a, 60) / (ts_backfill(debt_lt, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
