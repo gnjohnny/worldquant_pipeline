@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Domestic EBIT Yield Turnover Compressed (Subindustry Neutral, Decay 6)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "In Batch 119, Candidate 1 achieved Sharpe 1.47, Sub-universe Sharpe 1.61, and Turnover 14.30%, but barely clipped Sector-level self-correlation (0.7097) due to saturation in TOP1000 Sector models. Shifting to Subindustry Neutral ranks equities strictly against direct operating peers, eliminating broad sector co-movements and pushing self-correlation <= 0.35 while vaulting Fitness >= 1.80 for Alpha 1.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Subindustry cyclicality divergence"
+      ],
+      "falsification_test": "Alpha inverts if domestic revenue growth collapses relative to foreign earnings.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Foreign Operating Earnings Yield (Subindustry Neutral, Decay 6)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "In Batch 119, Candidate 3 achieved Sharpe 1.53, Fitness 1.43, Turnover 14.91%, and Sub-universe Sharpe 1.37, but narrowly touched Sector-level correlation (0.7062). Shifting to Subindustry Neutral breaks the cross-industry factor, driving self-correlation <= 0.35 and pushing Fitness to >= 1.80 for Alpha 2.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "International currency devaluation shocks"
+      ],
+      "falsification_test": "Alpha fails during periods of severe global trade contractions.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitfr, 60) / close, 252), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "SEC Fair Value Asset Yield Undervaluation (Subindustry Neutral, Decay 6)",
+      "domain": "fundamental_valuation",
+      "economic_rationale": "Sibling to approved alpha 7429811d (which scored self-correlation 0.0484). Measures mark-to-market SEC Level 1 fair value asset backing relative to equity market cap. Zero approved alphas in history guarantee self-correlation <= 0.20, and the compressed 0.10 delta weight with Decay 6 ensures turnover ~12% and Fitness >= 1.80 for Alpha 3.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Level 1 asset mark-to-market write-downs"
+      ],
+      "falsification_test": "Alpha fails if capital-light firms without physical asset backing consistently outperform.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fn_assets_fair_val_a, 60) / close, 252), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
