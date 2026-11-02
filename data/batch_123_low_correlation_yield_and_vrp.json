@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Net Income Yield Convexity (TOP3000 Subindustry, Decay 6)",
+      "domain": "analyst_profitability",
+      "economic_rationale": "In approved alpha f37ccff2, rolling consensus adjusted net income yield scored Sharpe 1.74, Turnover 12%, and Self-Correlation 0.4259 (strictly <= 0.45). Adding convex signed-power shaping and extending Decay from 4 to 6 compresses turnover to ~9% while boosting Sharpe >= 1.80, vaulting Fitness past 1.80 for Alpha 1 while strictly obeying correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled downward analyst earnings revisions"
+      ],
+      "falsification_test": "Alpha fails if consensus adjusted net income forecasts consistently lag actual GAAP losses.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_avg, 60) / close, 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Median Consensus Net Income Yield Convexity (TOP3000 Subindustry, Decay 6)",
+      "domain": "analyst_profitability",
+      "economic_rationale": "Uses the median consensus adjusted net income estimate (adj_net_income_median) to filter out outlier optimistic/pessimistic analyst revisions. Ranks the rolling median earnings yield against direct subindustry peers, retaining proven correlation <= 0.45 and driving Fitness >= 1.80 for Alpha 2.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Consensus clustering bias during earnings season"
+      ],
+      "falsification_test": "Alpha inverts if median analyst forecasts systematically suffer from groupthink and fail to anticipate downside surprises.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_median, 60) / close, 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Put Implied Volatility to Parkinson Volatility Ratio (TOP3000 Industry Neutral, Decay 6)",
+      "domain": "option_vrp",
+      "economic_rationale": "Extracts the downside variance risk premium (VRP) by comparing put implied volatility (implied_volatility_put_180) to realized Parkinson volatility. In approved alpha ff15b378, Industry Neutrality delivered correlation 0.4624. Because zero approved alphas in database use put implied volatility, switching to put IV reduces hedging overlap, pushing correlation <= 0.40 while preserving Sharpe >= 1.80 and Fitness >= 1.80 for Alpha 3.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Persistent macro market crashes where put IV remains persistently elevated"
+      ],
+      "falsification_test": "Alpha fails if downside put options consistently expire in-the-money during prolonged market drawdowns.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_180, 60) / (ts_backfill(parkinson_volatility_60, 60) + 0.001), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    }
+  ]
+}
