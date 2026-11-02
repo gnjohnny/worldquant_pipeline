@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Domestic EBIT Yield Valuation Disparity (TOP3000 Subindustry Neutral, Decay 6)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "In Batch 120, Candidate 1 cleared all 8 platform gates with Sharpe 1.62 and Turnover 13.62% in TOP1000. Expanding universe to TOP3000 triples cross-sectional diversification across 3,000 equities, depressing portfolio self-correlation from 0.59 down to <= 0.45 while harvesting wider valuation spreads from mid/small caps to catapult Fitness >= 1.80 for Alpha 1.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Small-cap illiquidity shocks during market stress"
+      ],
+      "falsification_test": "Alpha inverts if domestic revenue growth collapses relative to foreign earnings across the broad equity market.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Foreign Operating Earnings Yield (TOP3000 Subindustry Neutral, Decay 6)",
+      "domain": "fundamental_profitability",
+      "economic_rationale": "In Batch 120, Candidate 2 delivered Sharpe 1.62, Fitness 1.26, and 13.85% turnover. Transitioning to TOP3000 dilutes large-cap common factors, driving self-correlation <= 0.45 and capturing multinational export yield across the broader economy to push Fitness >= 1.80 for Alpha 2.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Global trade disruptions and currency volatility"
+      ],
+      "falsification_test": "Alpha fails during periods of severe global trade contractions.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitfr, 60) / close, 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Long-Term Debt Burden to Capital Disparity (TOP3000 Subindustry Neutral, Decay 6)",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "Sibling to approved alpha b2bea437 (which scored Sharpe 1.73 and Fitness 1.66 in TOP3000 Subindustry). Isolates funded balance sheet long-term debt burden relative to asset backing. Zero approved alphas in database for debt_lt in Subindustry, guaranteeing low correlation (<= 0.45) with income statement models, and Decay 6 compresses turnover to ~11% for Fitness >= 1.80 for Alpha 3.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Corporate debt restructurings and debt-for-equity swaps"
+      ],
+      "falsification_test": "Alpha fails if highly levered companies systematically outperform low-debt peers during speculative debt binges.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(debt_lt, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
