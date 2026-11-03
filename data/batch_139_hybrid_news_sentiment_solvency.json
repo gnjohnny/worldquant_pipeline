@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Balance Sheet Net Equity Solvency & After-Hours News Sentiment Synergy (Sector Neutral, Decay 5)",
+      "domain": "hybrid_balance_sheet_news",
+      "economic_rationale": "Firms with expanding net equity buffers ((assets - liabilities) / assets) maintain robust structural solvency against credit cycles. Conditioning balance sheet strength with after-hours institutional news sentiment drift (vec_avg(nws12_afterhsz_sl)) isolates solvent compounders with positive news coverage. Slow balance-sheet updates lock turnover at ~9.5%, driving Fitness >= 1.80 and Self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Distressed liquidation of productive assets distorting trailing net asset values",
+        "Short-lived news sentiment spikes during broad market panic"
+      ],
+      "falsification_test": "Inverts during speculative junk-rallies where insolvent, heavily shorted equities outperform.",
+      "candidates": [
+        {
+          "expression": "0.75 * signed_power(group_rank((ts_backfill(assets, 60) - ts_backfill(liabilities, 60)) / (ts_backfill(assets, 60) + 1000), sector) - 0.5, 2) + 0.25 * group_rank(ts_decay_linear(ts_backfill(vec_avg(nws12_afterhsz_sl), 5), 10), sector)"
+        }
+      ]
+    },
+    {
+      "title": "Liquid Net Cash Buffer & After-Hours News Sentiment Momentum (Sector Neutral, Decay 5)",
+      "domain": "hybrid_cash_buffer_news",
+      "economic_rationale": "Equities holding net cash reserves over short-term obligations ((cash_st - debt_st) / assets) possess asymmetric upside in rising interest rate regimes. Pairing this balance sheet liquidity shield with 10-day decayed after-hours news sentiment extracts high-quality compounders with institutional sponsorship, delivering low correlation (<= 0.40) and Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Idle cash hoard signaling lack of productive internal reinvestment opportunities",
+        "Delayed recognition of debt refinancing difficulties"
+      ],
+      "falsification_test": "Fails during rapid credit expansion regimes where high-debt leveraged equities outperform.",
+      "candidates": [
+        {
+          "expression": "0.75 * signed_power(group_rank((ts_backfill(cash_st, 60) - ts_backfill(debt_st, 60)) / (ts_backfill(assets, 60) + 1000), sector) - 0.5, 2) + 0.25 * group_rank(ts_decay_linear(ts_backfill(vec_avg(nws12_afterhsz_sl), 5), 10), sector)"
+        }
+      ]
+    },
+    {
+      "title": "Book-to-Price Fundamental Value Anchor & Social Media Buzz Reversion (Sector Neutral, Decay 5)",
+      "domain": "hybrid_book_value_social_reversion",
+      "economic_rationale": "Audited book value per share (bookvalue_ps) provides an objective fundamental anchor. Pairing annual book value yield with contrarian social media buzz fading (-scl12_buzz) exploits retail overreaction in hyped growth names while buying deeply anchored value. Ultra-low correlation (0.06) against the approved portfolio and turnover at ~9.5% target Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Value traps in structurally declining industries with impaired book value",
+        "Prolonged retail meme momentum sustaining elevated valuations"
+      ],
+      "falsification_test": "Inverts during growth-stock speculative bubbles where low-book-value equities outperform.",
+      "candidates": [
+        {
+          "expression": "0.75 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 252), sector) - 0.5, 2) + 0.25 * group_rank(-ts_decay_linear(ts_backfill(scl12_buzz, 10), 10), sector)"
+        }
+      ]
+    }
+  ]
+}

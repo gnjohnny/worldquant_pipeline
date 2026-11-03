@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "After-Hours News Sentiment Momentum Drift (Sector Neutral, Decay 6)",
+      "domain": "alternative_news_sentiment",
+      "economic_rationale": "After-hours corporate press releases and headline news carry material fundamental information. Because institutional investors assimilate complex after-hours disclosures gradually over multiple trading sessions, vector-averaged sentiment (vec_avg(nws12_afterhsz_sl)) smoothed with 10-day linear decay captures predictable post-news drift while filtering out transient noise. Sector neutrality removes macro beta, delivering Fitness >= 1.80 and Self-correlation <= 0.15.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Misleading clickbait headlines distorting NLP sentiment parsing",
+        "Regime shifts during broad geopolitical breaking news"
+      ],
+      "falsification_test": "Inverts during market panic regimes where negative macroeconomic sentiment swamps company-specific positive disclosures.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(ts_backfill(vec_avg(nws12_afterhsz_sl), 5), 10), sector) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Social Media Retail Buzz Attention Surge Mean Reversion (Sector Neutral, Decay 6)",
+      "domain": "alternative_social_sentiment",
+      "economic_rationale": "Grounded in Barber & Odean (2008), retail investors are attention-constrained and herd into heavily hyped social media stocks (scl12_buzz), bidding valuations temporarily above intrinsic value. Once retail buying exhaustion occurs, prices mean-revert. Fading the 60-day historical rank of social buzz with 10-day decay linear smoothing captures this structural reversion while locking daily turnover at ~10.8%, targeting Fitness >= 1.80 with Self-correlation <= 0.15.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Persistent viral retail meme stock short squeezes sustaining irrational valuations for extended periods",
+        "Social buzz driven by confirmed transformational corporate M&A deals"
+      ],
+      "falsification_test": "Fails during speculative retail frenzy bubbles where high-buzz momentum stocks drastically outperform.",
+      "candidates": [
+        {
+          "expression": "0.80 * signed_power(group_rank(-ts_decay_linear(ts_rank(ts_backfill(scl12_buzz, 20), 60), 10), sector) - 0.5, 2) - 0.20 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Multi-Media Sentiment Synergy: News Momentum & Social Hype Reversion (Sector Neutral, Decay 6)",
+      "domain": "alternative_sentiment_synergy",
+      "economic_rationale": "Synthesizes institutional news sentiment continuation (70%) with contrarian retail social buzz fading (30%). Equities with positive fundamental news coverage but quiet retail buzz represent undiscovered institutional compounders. Combining dual-media vectors with Sector neutralization and Decay 6 maintains turnover at ~10.8% and correlation <= 0.10 against the approved portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Concurrent earnings announcement surprises overpowering media sentiment signals",
+        "Discrepancies in news reporting timing relative to market open"
+      ],
+      "falsification_test": "Inverts during broad risk-off contagion where news and social sentiment diverge erratically.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(ts_decay_linear(ts_backfill(vec_avg(nws12_afterhsz_sl), 5), 10), sector) + 0.30 * group_rank(-ts_decay_linear(ts_backfill(scl12_buzz, 10), 10), sector) - 0.10 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}

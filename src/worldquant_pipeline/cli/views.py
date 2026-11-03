@@ -342,11 +342,19 @@ def render_cross_dataset_batch(candidates: list[Any], batch_path: str | None = N
         console.print(expr_panel)
 
         settings_table = Table(show_header=True, header_style="bold white", box=None)
+        settings_table.add_column("Region", style="cyan")
         settings_table.add_column("Universe", style="cyan")
         settings_table.add_column("Neutralization", style="cyan")
         settings_table.add_column("Decay", style="cyan")
         settings_table.add_column("Delay", style="cyan")
         settings_table.add_column("Truncation", style="cyan")
-        settings_table.add_row("TOP1000", "SUBINDUSTRY", "5", "1", "0.08")
+        settings_table.add_row(
+            getattr(c, "recommended_region", "USA"),
+            getattr(c, "recommended_universe", "TOP3000"),
+            getattr(c, "recommended_neutralization", "SUBINDUSTRY"),
+            str(getattr(c, "recommended_decay", 5)),
+            "1",
+            str(getattr(c, "recommended_truncation", 0.08)),
+        )
         console.print(settings_table)
         console.print()

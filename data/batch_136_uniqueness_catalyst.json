@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Variance Risk Premium & Historical Volatility Contraction (Subindustry Neutral, Decay 5)",
+      "domain": "option_volatility_surface",
+      "economic_rationale": "The equity options market exhibits systematic overpricing of implied volatility relative to realized volatility (Variance Risk Premium - VRP) due to institutional demand for downside portfolio put insurance. Long equities where 30-day historical realized volatility exceeds 30-day implied volatility mean harvests structural risk premia while intra-subindustry ranking and 3-day delta reversal overlays insulate the portfolio against macro market swings and maintain turnover at ~11.1%.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden corporate earnings releases or binary clinical trial dates temporarily spiking implied volatility",
+        "Severe market-wide liquidity crunches widening options bid-ask spreads"
+      ],
+      "falsification_test": "Inverts during unexpected high-volatility flash crashes where implied volatility spikes exponentially.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(historical_volatility_30 - implied_volatility_mean_30, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Multi-Factor Style Composite Acceleration & Revision Synergy (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "Multi-factor style derivatives aggregate fundamental cash flow efficiency with daily analyst revision momentum with 100% instrument coverage across TOP3000. Pairing cashflow efficiency rank derivatives with analyst revision derivatives targets companies with expanding operational moats and institutional sponsorship, achieving 100% capital allocation without cash drag.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Style factor rotation away from quality toward speculative low-margin assets",
+        "Analyst revisions reflecting backward-looking corporate disclosures rather than forward growth"
+      ],
+      "falsification_test": "Inverts during irrational exuberance bubbles where unprofitable non-cash-generating equities outperform.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(cashflow_efficiency_rank_derivative, subindustry) + 0.30 * group_rank(analyst_revision_rank_derivative, subindustry) - 0.10 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Signal Momentum Spillover (Subindustry Neutral, Decay 5)",
+      "domain": "alternative_supply_chain",
+      "economic_rationale": "Economic information propagates with friction along corporate supply chain networks. Major customers experience revenue and market shocks first, while supplier equity prices lag due to limited investor attention to inter-firm linkages. Filtering customer return signals (pv13_custretsig_retsig) with a 5-day linear decay captures this post-shock drift before it is fully priced in by cash equity markets.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Customer supplier contract cancellations not yet reflected in public supply-chain data maps",
+        "Rapid customer revenue declines that threaten supplier solvency rather than creating tradeable drift"
+      ],
+      "falsification_test": "Inverts during broad supply chain disruptions where supplier pricing power collapses.",
+      "candidates": [
+        {
+          "expression": "0.80 * group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) - 0.20 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

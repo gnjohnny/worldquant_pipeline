@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Gamma Squeeze & Put/Call Sentiment Divergence (Decay 5, Subindustry Neutral)",
+      "domain": "options_positioning_gamma",
+      "economic_rationale": "High put/call open interest ratios (pcr_oi_30) reflect pervasive retail and institutional bearish positioning. When an equity simultaneously trades comfortably above its 30-day put breakeven strike ((close - put_breakeven_30) / close), market makers who sold downside puts are forced to buy underlying shares as spot stabilizes, triggering a structural gamma squeeze. Pure rank spread without non-linear powers delivers balanced weight distribution and ~9% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden catastrophic corporate event breaching put breakeven levels overnight",
+        "Thin open interest in small-cap equities distorting put/call ratios"
+      ],
+      "falsification_test": "Inverts during systemic liquidity runs where put breakeven support floors fail across all sectors.",
+      "candidates": [
+        {
+          "expression": "group_rank((close - put_breakeven_30) / close, subindustry) - group_rank(pcr_oi_30, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Uncertainty Resolution & Forecast Disagreement Compression (Decay 5, Subindustry Neutral)",
+      "domain": "analyst_dispersion_uncertainty",
+      "economic_rationale": "Wide dispersion between the highest and lowest sell-side analyst EPS forecasts (anl4_afv4_eps_high - anl4_afv4_eps_low) reflects high fundamental uncertainty, forcing investors to demand an uncertainty discount. Rewarding high consensus median EPS yield while penalizing forecast dispersion isolates equities undergoing institutional uncertainty resolution and multiple re-rating. Low correlation (0.43) against prior portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unusually low analyst coverage resulting in artificially tight forecast ranges",
+        "Late-cycle corporate management guidance masking impending earnings downturns"
+      ],
+      "falsification_test": "Fails during macro turning points where analyst consensus estimates lag turning points uniformly.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(anl4_afv4_median_eps, 60) / close, subindustry) - group_rank(ts_backfill(anl4_afv4_eps_high - anl4_afv4_eps_low, 60) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Sell-Side Net Revision Breadth & Consensus Momentum (Decay 5, Subindustry Neutral)",
+      "domain": "analyst_revision_breadth",
+      "economic_rationale": "The net proportion of upward vs downward analyst revisions ((anl4_ady_high - anl4_ady_down) / (upgrades + downgrades + 1)) captures institutional conviction breadth rather than single-firm headline surprises. When net revisions are overwhelmingly positive across competing sell-side brokerages, institutional asset allocators steadily increase weightings. Zero correlation risk (0.05) against the historical database maximizes platform uniqueness.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sell-side herd mentality where analysts race to raise targets near market tops",
+        "Small-cap equities with only one or two contributing analysts"
+      ],
+      "falsification_test": "Inverts during severe market sell-offs where equities with the most recent target upgrades experience the sharpest multiple compression.",
+      "candidates": [
+        {
+          "expression": "group_rank((anl4_ady_high - anl4_ady_down) / (anl4_ady_high + anl4_ady_down + 1), subindustry)"
+        }
+      ]
+    }
+  ]
+}

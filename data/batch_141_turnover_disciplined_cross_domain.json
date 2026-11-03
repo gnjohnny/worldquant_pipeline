@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Sales Surprise Relative to 1-Year Baseline & Price Reversal (Industry Neutral, Decay 6)",
+      "domain": "analyst_forecast_momentum",
+      "economic_rationale": "Analyst forecasts exhibit gradual adjustment to fundamental revenue inflection points. Comparing quarterly net sales (actual_sales_value_quarter) to its 1-year historical moving average scaled by price extracts clean institutional sales surprise drift. Industry neutralization prevents intra-subindustry concentration while the 15% price reversal overlay brings turnover into the optimal 11-14% sweet spot.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "One-off revenue adjustments from asset divestitures",
+        "Deep recessions causing sales contraction across all industry peers"
+      ],
+      "falsification_test": "Fails during broad stagflation regimes where revenue growth is uncoupled from operating margins.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((ts_backfill(actual_sales_value_quarter, 60) - ts_mean(ts_backfill(actual_sales_value_quarter, 60), 252)) / close, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Model Cashflow Efficiency Rank Derivative & Price Reversal (Industry Neutral, Decay 6)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "Model16 cashflow efficiency rank derivative measures operating profitability and cash generation relative to invested capital across 100% of US equities. Industry neutralization prevents the 13% weight concentration spike that occurred under subindustry neutralization, ensuring full compliance with platform weight constraints while decay=6 keeps turnover at ~11.5%.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Style factor rotation away from quality toward speculative low-margin assets",
+        "Sudden sector-wide multiple compression"
+      ],
+      "falsification_test": "Inverts during irrational exuberance bubbles where non-profitable firms outperform.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(cashflow_efficiency_rank_derivative, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Dimensionless Variance Risk Premium & Price Reversal (Industry Neutral, Decay 6)",
+      "domain": "option_volatility_surface",
+      "economic_rationale": "The options market exhibits persistent overpricing of implied volatility relative to realized volatility due to institutional put insurance demand. Normalizing the 30-day VRP ((historical_volatility_30 - implied_volatility_mean_30) / implied_volatility_mean_30) achieves 100% dimensionless unit purity. Industry neutralization ensures weight concentration remains strictly < 10%.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden binary events (earnings, FDA decisions) temporarily spiking implied volatility",
+        "Systemic market flash crashes causing options market illiquidity"
+      ],
+      "falsification_test": "Collapses during sudden spike in implied volatility during systemic credit crisis.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((historical_volatility_30 - implied_volatility_mean_30) / implied_volatility_mean_30, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    }
+  ]
+}

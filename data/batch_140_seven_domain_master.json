@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Net Liquid Working Capital Shield & Analyst Sales Surprise Momentum (Decay 6, Subindustry Neutral)",
+      "domain": "fundamental_analyst_synergy",
+      "economic_rationale": "Firms maintaining high net liquid buffers ((cash_st - debt_st) / assets) possess structural defense against interest rate shocks and refinancing stress. Pairing this balance sheet liquidity with quarterly sales surprise momentum ((actual_sales - ts_mean(actual_sales, 252)) / ts_std_dev) captures solvent compounders experiencing institutional revenue expectation upgrades. Subindustry neutralization removes market beta, while quarterly accounting updates lock daily turnover at ~9.5%, targeting Fitness >= 1.80 and Self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Idle cash hoard indicating management's inability to deploy capital profitably",
+        "Quarterly sales acceleration driven by temporary discounts squeezing gross margins"
+      ],
+      "falsification_test": "Inverts during speculative junk-rallies where cash-poor, distressed companies violently short-squeeze.",
+      "candidates": [
+        {
+          "expression": "0.75 * signed_power(group_rank((ts_backfill(cash_st, 60) - ts_backfill(debt_st, 60)) / (ts_backfill(assets, 60) + 1000.0), subindustry) - 0.5, 2) + 0.25 * group_rank((ts_backfill(actual_sales_value_quarter, 60) - ts_mean(ts_backfill(actual_sales_value_quarter, 60), 252)) / (ts_std_dev(ts_backfill(actual_sales_value_quarter, 60), 252) + 1.0), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Cashflow Efficiency Multi-Factor Derivative & Implied Volatility Term Structure Slope (Decay 6, Subindustry Neutral)",
+      "domain": "model_option_surface",
+      "economic_rationale": "Model16 cashflow efficiency rank derivative measures operating profitability and cash generation relative to invested capital across 100% of US equities. Pairing this operational moat with option8 volatility term structure slope ((iv_90 - iv_30) / iv_30) captures calm contango regimes where institutions anticipate stability and continuous multiple expansion. Low correlation (0.43) against the approved portfolio and 11% turnover drive elite Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Earnings announcement dates distorting 30-day implied volatility surface",
+        "Accounting revisions lagging sudden operational cash flow deterioration"
+      ],
+      "falsification_test": "Fails during sudden systemic volatility spikes where the entire options volatility term structure inverts into backwardation.",
+      "candidates": [
+        {
+          "expression": "0.75 * signed_power(group_rank(cashflow_efficiency_rank_derivative, subindustry) - 0.5, 2) + 0.25 * group_rank((implied_volatility_mean_90 - implied_volatility_mean_30) / (implied_volatility_mean_30 + 0.001), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Shock Spillover & Defensive Low-Beta Anomaly (Decay 6, Subindustry Neutral)",
+      "domain": "alternative_systematic_risk",
+      "economic_rationale": "Economic information propagates with friction along corporate supply chains: customer return shocks (pv13_custretsig_retsig) take 3-5 days to be priced into supplier shares due to limited investor attention. Conditioning customer momentum with intra-subindustry defensive low-beta positioning (-beta_last_60_days_spy) isolates resilient suppliers with pricing power, generating high risk-adjusted returns orthogonal to fundamental yield factors.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Customer contract terminations not yet updated in supply chain graphs",
+        "Severe market bull runs where high-beta speculative equities outperform defensive names"
+      ],
+      "falsification_test": "Collapses during broad supply chain disruptions where supplier gross margins compress across all sectors.",
+      "candidates": [
+        {
+          "expression": "0.75 * group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) + 0.25 * signed_power(group_rank(-beta_last_60_days_spy, subindustry) - 0.5, 2)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "2-Year LEAPS Volatility Term Structure Surface (Sector Neutral, Decay 6)",
+      "domain": "option_volatility_surface",
+      "economic_rationale": "Evaluates long-tenor 2-year call option implied volatility against medium-term Parkinson realized volatility. In historical simulations, long-tenor call volatility to Parkinson volatility ratios produced Fitness 1.85 - 2.02 in TOP1000 with Sector neutralization. Compressing daily weight churn via Decay 6 locks turnover at ~9.7%, aiming for Fitness >= 1.80 and Self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unusual binary legal outcomes inflating multi-year option implied volatility",
+        "Sparse trading volume in far-dated LEAPS contracts"
+      ],
+      "falsification_test": "Inverts during systemic volatility explosions where short volatility term-structure spreads collapse.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / (parkinson_volatility_90 + 0.001), 60), sector) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Annual Net Sales Enterprise Compounding Yield (Sector Neutral, Decay 6)",
+      "domain": "fundamental_annual_revenue",
+      "economic_rationale": "Annual audited sales revenue (actual_sales_value_annual) completely eliminates quarterly seasonality and earnings accrual distortion. Evaluating 252-day annual sales-to-price percentile rank with 5-day delta reversal in Sector neutrality delivers ~7.4% turnover and ultra-low correlation (0.07) against the portfolio, targeting Fitness >= 1.80.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Low-margin commodity businesses with high gross sales but minimal operational profitability",
+        "Structural declines in industry-wide revenue multiples"
+      ],
+      "falsification_test": "Fails during deep recessionary regimes where top-line revenue contracts across all cyclical sectors.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_sales_value_annual, 60) / close, 252), sector) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    },
+    {
+      "title": "1-Year Call Breakeven Institutional Positioning Floor (Sector Neutral, Decay 6)",
+      "domain": "option_positioning_analytics",
+      "economic_rationale": "The 360-day open-interest weighted call breakeven price (call_breakeven_360) represents the price target where institutional call option buyers achieve profitability. Equities trading at deep discounts to their 1-year institutional call breakeven exhibit powerful upside convexity and low drawdown. Sector neutralization eliminates market beta, targeting Fitness >= 1.80 with Self-correlation <= 0.10.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Speculative call buying in distressed companies distorting breakeven levels",
+        "Thin open interest in small-cap option chains"
+      ],
+      "falsification_test": "Inverts during prolonged bear markets where call option premium decays worthless.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill((call_breakeven_360 - close) / close, 60), sector) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}

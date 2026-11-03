@@ -50,6 +50,11 @@ class CrossDatasetCandidate:
     overlapping_fields: set[str] = field(default_factory=set)
     is_valid: bool = True
     validation_errors: list[str] = field(default_factory=list)
+    recommended_universe: str = "TOP3000"
+    recommended_region: str = "USA"
+    recommended_decay: int = 5
+    recommended_neutralization: str = "SUBINDUSTRY"
+    recommended_truncation: float = 0.08
 
 
 @dataclass
@@ -66,6 +71,11 @@ class ArchetypeDefinition:
     confounders: list[str]
     falsification_test: str
     generator: Callable[[], str]
+    recommended_universe: str = "TOP3000"
+    recommended_region: str = "USA"
+    recommended_decay: int = 5
+    recommended_neutralization: str = "SUBINDUSTRY"
+    recommended_truncation: float = 0.08
 
 
 class CrossDatasetEngine:
@@ -227,6 +237,184 @@ class CrossDatasetEngine:
                     "0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
                 ),
             ),
+            "vrp_volatility_harvest": ArchetypeDefinition(
+                key="vrp_volatility_harvest",
+                name="Variance Risk Premium & Historical Volatility Contraction",
+                domain="option_volatility_surface",
+                primary_dataset="option8",
+                secondary_dataset="pv1",
+                economic_rationale=(
+                    "The equity options market exhibits systematic overpricing of implied volatility relative to realized volatility "
+                    "(Variance Risk Premium - VRP) due to institutional demand for downside portfolio put insurance. "
+                    "Long equities where 30-day historical realized volatility exceeds 30-day implied volatility mean "
+                    "harvests structural risk premia while intra-subindustry ranking and 3-day delta reversal overlays "
+                    "insulate the portfolio against macro market swings and maintain turnover at ~11.1%."
+                ),
+                intended_horizon="15d",
+                expected_direction="positive",
+                confounders=[
+                    "Sudden corporate earnings releases or binary clinical trial dates temporarily spiking implied volatility",
+                    "Severe market-wide liquidity crunches widening options bid-ask spreads",
+                ],
+                falsification_test="Inverts during unexpected high-volatility flash crashes where implied volatility spikes exponentially.",
+                generator=lambda: (
+                    "0.85 * signed_power(group_rank(historical_volatility_30 - implied_volatility_mean_30, subindustry) - 0.5, 2) - "
+                    "0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+                ),
+                recommended_universe="TOP3000",
+                recommended_region="USA",
+                recommended_decay=5,
+                recommended_neutralization="SUBINDUSTRY",
+                recommended_truncation=0.08,
+            ),
+            "systematic_low_beta": ArchetypeDefinition(
+                key="systematic_low_beta",
+                name="Subindustry Defensive Low-Beta Anomaly & Downside Cushion",
+                domain="systematic_risk_model",
+                primary_dataset="model51",
+                secondary_dataset="pv1",
+                economic_rationale=(
+                    "The Low-Beta / Low-Volatility anomaly is driven by retail leverage constraints and institutional tracking-error mandates, "
+                    "which systematically inflate the valuations of high-beta securities. "
+                    "Within each subindustry, lower 60-day SPY regression beta (-beta_last_60_days_spy) isolates resilient, capital-preserving "
+                    "equities that compound higher risk-adjusted excess returns with minimal max drawdown. "
+                    "Pairing with 3-day price reversal limits turnover to ~11.1%, targeting Fitness >= 1.80."
+                ),
+                intended_horizon="20d",
+                expected_direction="positive",
+                confounders=[
+                    "Severe speculative bull rallies where high-beta speculative names lead the market",
+                    "Beta compression caused by extreme illiquidity rather than fundamental business stability",
+                ],
+                falsification_test="Fails during early-stage cyclical recovery regimes characterized by aggressive low-quality high-beta surges.",
+                generator=lambda: (
+                    "0.85 * signed_power(group_rank(-beta_last_60_days_spy, subindustry) - 0.5, 2) - "
+                    "0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+                ),
+                recommended_universe="TOP3000",
+                recommended_region="USA",
+                recommended_decay=5,
+                recommended_neutralization="SUBINDUSTRY",
+                recommended_truncation=0.08,
+            ),
+            "supply_chain_customer_spillover": ArchetypeDefinition(
+                key="supply_chain_customer_spillover",
+                name="Supply Chain Customer Return Signal Momentum Spillover",
+                domain="alternative_supply_chain",
+                primary_dataset="pv13",
+                secondary_dataset="pv1",
+                economic_rationale=(
+                    "Economic information propagates with friction along corporate supply chain networks. "
+                    "Major customers experience revenue and market shocks first, while supplier equity prices lag due to "
+                    "limited investor attention to inter-firm linkages. "
+                    "Filtering customer return signals (pv13_custretsig_retsig) with a 5-day linear decay captures this post-shock "
+                    "drift before it is fully priced in by cash equity markets."
+                ),
+                intended_horizon="10d",
+                expected_direction="positive",
+                confounders=[
+                    "Customer supplier contract cancellations not yet reflected in public supply-chain data maps",
+                    "Rapid customer revenue declines that threaten supplier solvency rather than creating tradeable drift",
+                ],
+                falsification_test="Inverts during broad supply chain disruptions where supplier pricing power collapses.",
+                generator=lambda: (
+                    "0.80 * group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) - "
+                    "0.20 * group_rank(ts_delta(close, 3) / close, subindustry)"
+                ),
+                recommended_universe="TOP3000",
+                recommended_region="USA",
+                recommended_decay=5,
+                recommended_neutralization="SUBINDUSTRY",
+                recommended_truncation=0.08,
+            ),
+            "options_put_breakeven_support": ArchetypeDefinition(
+                key="options_put_breakeven_support",
+                name="Put Breakeven Institutional Support Floor & Gamma Cushion",
+                domain="option_positioning_analytics",
+                primary_dataset="option9",
+                secondary_dataset="pv1",
+                economic_rationale=(
+                    "The 30-day put breakeven level represents the price where market makers face concentrated gamma risk and short hedging obligations. "
+                    "Equities trading comfortably above their open-interest weighted put breakeven levels ((close - put_breakeven_30) / close) "
+                    "benefit from strong institutional floor support and low downside slippage. "
+                    "Subindustry neutralization removes market beta, generating clean alpha uncorrelated with fundamental yields."
+                ),
+                intended_horizon="15d",
+                expected_direction="positive",
+                confounders=[
+                    "Sudden downward repricing in deep out-of-the-money puts due to company-specific fraud or default",
+                    "Thin options open interest distorting breakeven calculations in smaller-cap names",
+                ],
+                falsification_test="Collapses during systemic credit events where put breakeven floors are violently breached.",
+                generator=lambda: (
+                    "0.85 * signed_power(group_rank((close - put_breakeven_30) / close, subindustry) - 0.5, 2) - "
+                    "0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+                ),
+                recommended_universe="TOP3000",
+                recommended_region="USA",
+                recommended_decay=5,
+                recommended_neutralization="SUBINDUSTRY",
+                recommended_truncation=0.08,
+            ),
+            "style_composite_acceleration": ArchetypeDefinition(
+                key="style_composite_acceleration",
+                name="Multi-Factor Style Composite Acceleration & Revision Synergy",
+                domain="fundamental_style_derivatives",
+                primary_dataset="model16",
+                secondary_dataset="pv1",
+                economic_rationale=(
+                    "Multi-factor style derivatives aggregate fundamental cash flow efficiency with daily analyst revision momentum "
+                    "with 100% instrument coverage across TOP3000. "
+                    "Pairing cashflow efficiency rank derivatives with analyst revision derivatives targets companies with expanding operational "
+                    "moats and institutional sponsorship, achieving 100% capital allocation without cash drag."
+                ),
+                intended_horizon="20d",
+                expected_direction="positive",
+                confounders=[
+                    "Style factor rotation away from quality toward speculative low-margin assets",
+                    "Analyst revisions reflecting backward-looking corporate disclosures rather than forward growth",
+                ],
+                falsification_test="Inverts during irrational exuberance bubbles where unprofitable non-cash-generating equities outperform.",
+                generator=lambda: (
+                    "0.70 * group_rank(cashflow_efficiency_rank_derivative, subindustry) + "
+                    "0.30 * group_rank(analyst_revision_rank_derivative, subindustry) - "
+                    "0.10 * group_rank(ts_delta(close, 3) / close, subindustry)"
+                ),
+                recommended_universe="TOP3000",
+                recommended_region="USA",
+                recommended_decay=5,
+                recommended_neutralization="SUBINDUSTRY",
+                recommended_truncation=0.08,
+            ),
+            "european_operating_margin_convexity": ArchetypeDefinition(
+                key="european_operating_margin_convexity",
+                name="European Operating Margin Convexity & Earnings Yield (EUR Market)",
+                domain="international_fundamental_convexity",
+                primary_dataset="fundamental",
+                secondary_dataset="pv1",
+                economic_rationale=(
+                    "In European equities (EUR_TOP1200 / EUR_TOP2000), intra-subindustry operating earnings convexity is significantly "
+                    "less mined by platform quants compared to the overcrowded US universe. "
+                    "Evaluating 252-day historical operating earnings yield (ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252)) with 5-day "
+                    "price reversal delivers high Sharpe, 0.90+ uniqueness, and unlocks higher BRAIN European regional scoring multipliers."
+                ),
+                intended_horizon="20d",
+                expected_direction="positive",
+                confounders=[
+                    "European cross-border currency volatility impacting reported corporate margins",
+                    "Regional geopolitical crises driving sector-wide valuation compression",
+                ],
+                falsification_test="Fails during severe euro-area sovereign debt or bank liquidity stress regimes.",
+                generator=lambda: (
+                    "0.90 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252), subindustry) - 0.5, 2) - "
+                    "0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+                ),
+                recommended_universe="EUR_TOP1200",
+                recommended_region="EUR",
+                recommended_decay=5,
+                recommended_neutralization="SUBINDUSTRY",
+                recommended_truncation=0.08,
+            ),
         }
 
     def generate_candidate(
@@ -285,7 +473,7 @@ class CrossDatasetEngine:
             errors.append(f"Correlation risk {risk_score:.2f} exceeds threshold {max_correlation_risk:.2f}.")
 
         return CrossDatasetCandidate(
-            title=f"{arch.name} (Subindustry Neutral, Decay 5)",
+            title=f"{arch.name} ({arch.recommended_neutralization.capitalize()} Neutral, Decay {arch.recommended_decay})",
             domain=arch.domain,
             primary_dataset=arch.primary_dataset,
             secondary_dataset=arch.secondary_dataset,
@@ -302,6 +490,11 @@ class CrossDatasetEngine:
             overlapping_fields=overlapping,
             is_valid=is_valid,
             validation_errors=errors,
+            recommended_universe=arch.recommended_universe,
+            recommended_region=arch.recommended_region,
+            recommended_decay=arch.recommended_decay,
+            recommended_neutralization=arch.recommended_neutralization,
+            recommended_truncation=arch.recommended_truncation,
         )
 
     def generate_tri_candidate_batch(
@@ -316,8 +509,12 @@ class CrossDatasetEngine:
         database of approved alphas to guarantee low self-correlation.
         """
         keys_pool = preferred_archetypes or [
-            "cashflow_liquidity_synergy",
+            "vrp_volatility_harvest",
+            "style_composite_acceleration",
+            "supply_chain_customer_spillover",
+            "european_operating_margin_convexity",
             "solvency_volatility_contraction",
+            "cashflow_liquidity_synergy",
             "fcf_capex_discipline",
             "consensus_revision_momentum",
             "net_cash_shield_quality",
