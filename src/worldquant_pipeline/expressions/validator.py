@@ -110,32 +110,54 @@ class ExpressionValidator:
                     op_spec = self.allowed_operators[op_name]
                     expected_arity = op_spec.get("arity")
                     actual_arity = len(current.args)
-                    if expected_arity is not None and actual_arity != expected_arity:
-                        errors.append(
-                            f"Operator '{op_name}' expects {expected_arity} arguments, but got {actual_arity}."
-                        )
+                    if expected_arity is not None:
+                        if isinstance(expected_arity, (list, tuple, set)):
+                            if actual_arity not in expected_arity:
+                                errors.append(
+                                    f"Operator '{op_name}' expects one of {list(expected_arity)} arguments, but got {actual_arity}."
+                                )
+                        elif actual_arity != expected_arity:
+                            errors.append(
+                                f"Operator '{op_name}' expects {expected_arity} arguments, but got {actual_arity}."
+                            )
 
                     # Parameter type checks (e.g. lookback must be positive integer)
                     param_types = op_spec.get("param_types", [])
-                    if len(param_types) == len(current.args):
-                        for i, ptype in enumerate(param_types):
-                            arg = current.args[i]
-                            if ptype == "integer":
-                                if isinstance(arg, LiteralNode):
-                                    if not isinstance(arg.value, int) or arg.value <= 0:
-                                        errors.append(
-                                            f"Argument {i+1} for '{op_name}' must be a positive integer, got '{arg.value}'."
-                                        )
-                                elif isinstance(arg, UnaryOperationNode) and arg.operator == "-":
+                    check_count = min(len(param_types), len(current.args))
+                    for i in range(check_count):
+                        ptype = param_types[i]
+                        arg = current.args[i]
+                        if ptype == "integer":
+                            if isinstance(arg, LiteralNode):
+                                if not isinstance(arg.value, int) or arg.value <= 0:
                                     errors.append(
-                                        f"Argument {i+1} for '{op_name}' must be a positive integer, got negative expression."
+                                        f"Argument {i+1} for '{op_name}' must be a positive integer, got '{arg.value}'."
                                     )
-                            elif ptype == "string":
-                                val_node = arg.value if isinstance(arg, KeywordArgNode) else arg
-                                if not (isinstance(val_node, LiteralNode) and isinstance(val_node.value, str)):
-                                    errors.append(
-                                        f"Argument {i+1} for '{op_name}' must be a string or keyword string parameter."
-                                    )
+                            elif isinstance(arg, UnaryOperationNode) and arg.operator == "-":
+                                errors.append(
+                                    f"Argument {i+1} for '{op_name}' must be a positive integer, got negative expression."
+                                )
+                        elif ptype == "number":
+                            if isinstance(arg, LiteralNode) and not isinstance(arg.value, (int, float)):
+                                errors.append(
+                                    f"Argument {i+1} for '{op_name}' must be a numeric value, got '{arg.value}'."
+                                )
+                        elif ptype == "string":
+                            val_node = arg.value if isinstance(arg, KeywordArgNode) else arg
+                            if not (isinstance(val_node, LiteralNode) and isinstance(val_node.value, str)):
+                                errors.append(
+                                    f"Argument {i+1} for '{op_name}' must be a string or keyword string parameter."
+                                )
+                        elif ptype == "group":
+                            val_node = arg.value if isinstance(arg, KeywordArgNode) else arg
+                            # Groups in BRAIN are fields (subindustry), function calls (densify(x)), or strings
+                            if not (
+                                isinstance(val_node, (FieldNode, FunctionCallNode))
+                                or (isinstance(val_node, LiteralNode) and isinstance(val_node.value, str))
+                            ):
+                                errors.append(
+                                    f"Argument {i+1} for '{op_name}' must be a group identifier or expression."
+                                )
 
                     # Event-type compatibility checks (Operator ts_backfill does not support event inputs)
                     if op_name in {"ts_backfill"} and len(current.args) > 0:

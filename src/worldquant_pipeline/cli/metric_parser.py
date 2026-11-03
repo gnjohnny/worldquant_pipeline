@@ -40,19 +40,22 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     """Parse raw text pasted from WorldQuant BRAIN backtest card into structured metrics."""
     result = ParsedSimulationMetrics(raw_text=raw_text)
 
+    # Strip markdown links [Text](url) to bare Text for robust regex matching
+    cleaned_text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", raw_text)
+
     # 1. Pass / Fail count
-    pass_m = re.search(r"(\d+)\s+PASS", raw_text, re.IGNORECASE)
+    pass_m = re.search(r"(\d+)\s+PASS", cleaned_text, re.IGNORECASE)
     if pass_m:
         result.pass_count = int(pass_m.group(1))
 
-    fail_m = re.search(r"(\d+)\s+FAIL", raw_text, re.IGNORECASE)
+    fail_m = re.search(r"(\d+)\s+FAIL", cleaned_text, re.IGNORECASE)
     if fail_m:
         result.fail_count = int(fail_m.group(1))
 
     # 2. Sub-universe Sharpe (must check before overall Sharpe to avoid false positive)
     sub_sharpe_m = re.search(
         r"(?i)sub-?universe\s+sharpe\s+(?:of\s+|:\s*|\=\s*)?(-?\d+(?:\.\d+)?)",
-        raw_text,
+        cleaned_text,
     )
     if sub_sharpe_m:
         result.sub_universe_sharpe = float(sub_sharpe_m.group(1))
@@ -61,7 +64,7 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     # Negative lookbehinds prevent matching "sub-universe sharpe" or "subuniverse sharpe"
     sharpe_m = re.search(
         r"(?i)(?<!sub-universe\s)(?<!subuniverse\s)\bsharpe\s+(?:of\s+|:\s*|\=\s*)?(-?\d+(?:\.\d+)?)",
-        raw_text,
+        cleaned_text,
     )
     if sharpe_m:
         result.sharpe = float(sharpe_m.group(1))
@@ -69,7 +72,7 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     # 4. Fitness
     fitness_m = re.search(
         r"(?i)\bfitness\s+(?:of\s+|:\s*|\=\s*)?(-?\d+(?:\.\d+)?)",
-        raw_text,
+        cleaned_text,
     )
     if fitness_m:
         result.fitness = float(fitness_m.group(1))
@@ -77,14 +80,14 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     # 5. Turnover (handles percentage like "14.48%" or decimals like "0.1448")
     turnover_pct_m = re.search(
         r"(?i)\bturnover\s+(?:of\s+|:\s*|\=\s*)?(\d+(?:\.\d+)?)\s*%",
-        raw_text,
+        cleaned_text,
     )
     if turnover_pct_m:
         result.turnover = float(turnover_pct_m.group(1)) / 100.0
     else:
         turnover_dec_m = re.search(
             r"(?i)\bturnover\s+(?:of\s+|:\s*|\=\s*)?(0\.\d+)",
-            raw_text,
+            cleaned_text,
         )
         if turnover_dec_m:
             result.turnover = float(turnover_dec_m.group(1))
@@ -92,7 +95,7 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     # 6. Self-correlation
     self_corr_m = re.search(
         r"(?i)self-?correlation\s+(?:is\s+|of\s+|:\s*|\=\s*)?([0-9.]+)",
-        raw_text,
+        cleaned_text,
     )
     if self_corr_m:
         result.self_correlation = float(self_corr_m.group(1))
@@ -100,13 +103,13 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     # 7. Max Drawdown
     dd_pct_m = re.search(
         r"(?i)(?:max\s+)?drawdown\s+(?:of\s+|:\s*|\=\s*)?(\d+(?:\.\d+)?)\s*%",
-        raw_text,
+        cleaned_text,
     )
     if dd_pct_m:
         result.drawdown = float(dd_pct_m.group(1)) / 100.0
 
     # 8. Weight concentration flags
-    if re.search(r"(?i)weight\s+concentration|too\s+strongly\s+concentrated", raw_text):
+    if re.search(r"(?i)weight\s+concentration|too\s+strongly\s+concentrated", cleaned_text):
         result.weight_well_distributed = False
 
     return result

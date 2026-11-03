@@ -86,7 +86,7 @@ class FactorFingerprintAuditor:
             elif isinstance(curr, FunctionCallNode):
                 op = curr.name.lower()
                 operators.add(op)
-                if op == "group_rank" and len(curr.args) > 1:
+                if op.startswith("group_") and len(curr.args) > 1:
                     arg1 = curr.args[1]
                     if isinstance(arg1, FieldNode):
                         groupings.add(arg1.name.lower())

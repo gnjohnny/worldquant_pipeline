@@ -69,6 +69,45 @@ class TestPromptGeneration:
         assert "close" in text
         assert "Required JSON Output Schema" in text
 
+    def test_domain_filtering_and_negative_knowledge(self, db_session):
+        # Insert a dummy rejection decision
+        from worldquant_pipeline.storage.models import AlphaCandidate, Decision, ResearchHypothesis
+
+        hypo = ResearchHypothesis(
+            title="Failed Test Hypo",
+            domain="options",
+            economic_rationale="Test rationale",
+            expected_direction="positive",
+            intended_horizon="10d",
+        )
+        db_session.add(hypo)
+        db_session.flush()
+
+        cand = AlphaCandidate(
+            hypothesis_id=hypo.id,
+            expression_raw="implied_volatility_call_30",
+            expression_normalized="implied_volatility_call_30",
+            expression_hash="hash_dummy_99",
+            status="REJECTED",
+        )
+        db_session.add(cand)
+        db_session.flush()
+
+        dec = Decision(
+            candidate_id=cand.id,
+            decision="REJECTED",
+            reason="Failed Gate G5: Fitness of 0.82 is below cutoff of 1.50 due to high turnover 68%",
+            reviewer="AUDIT_TEST",
+        )
+        db_session.add(dec)
+        db_session.commit()
+
+        prompt_text = generate_copilot_prompt(domain="options", session=db_session)
+        assert "options" in prompt_text.lower()
+        assert "Top Historical Failure Modes" in prompt_text
+        assert "Excessive Turnover" in prompt_text
+        assert cand.id[:8] in prompt_text
+
 
 class TestHypothesisImporter:
     def test_importer_registers_valid_and_catches_invalid(self, db_session):

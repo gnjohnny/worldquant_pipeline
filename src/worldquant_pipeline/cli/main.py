@@ -313,9 +313,10 @@ def record_paste(
         str | None,
         typer.Option("--text", "-t", help="Raw backtest output pasted from WorldQuant BRAIN"),
     ] = None,
-    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP1000",
-    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "Sector",
-    decay: Annotated[int, typer.Option("--decay", "-d")] = 4,
+    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP3000",
+    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "SUBINDUSTRY",
+    decay: Annotated[int, typer.Option("--decay", "-d")] = 5,
+    truncation: Annotated[float, typer.Option("--truncation", "-t")] = 0.08,
 ) -> None:
     """Instantly parse raw text pasted from BRAIN platform, evaluate gates, and record to DB."""
     raw_content = text
@@ -354,7 +355,7 @@ def record_paste(
             universe=universe,
             neutralization=neutralization,
             decay=decay,
-            truncation=0.0100,
+            truncation=truncation,
             status="COMPLETED",
         )
         session.add(exp)
@@ -393,15 +394,218 @@ def record_paste(
             render_submission_card(meta)
 
 
+@app.command("record-batch")
+def record_batch(
+    batch_source: Annotated[
+        str,
+        typer.Argument(help="Path to JSON batch file or comma-separated candidate ID prefixes (e.g. 'c1,c2,c3')"),
+    ],
+    paste_file: Annotated[
+        str | None,
+        typer.Option("--paste-file", "-f", help="Optional file containing raw backtest simulation pastes"),
+    ] = None,
+    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP3000",
+    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "SUBINDUSTRY",
+    decay: Annotated[int, typer.Option("--decay", "-d")] = 5,
+    truncation: Annotated[float, typer.Option("--truncation", "-t")] = 0.08,
+) -> None:
+    """Batch-record simulation metrics for all candidates in a batch (Tri-Candidate Protocol)."""
+    with get_session() as session:
+        candidates: list[AlphaCandidate] = []
+        source_path = Path(batch_source)
+
+        if source_path.exists():
+            with open(source_path, "r", encoding="utf-8") as f:
+                batch_data = json.load(f)
+
+            # Auto-ingest if needed
+            importer = HypothesisImporter(session=session)
+            report = importer.ingest_data(batch_data)
+            if report.valid_candidates > 0:
+                console.print(f"[cyan]Ingested {report.valid_candidates} candidates from {source_path.name}[/cyan]")
+
+            # Collect expressions from batch file
+            expressions: list[str] = []
+            for hypo in batch_data.get("hypotheses", []):
+                for cand in hypo.get("candidates", []):
+                    expressions.append(cand.get("expression", ""))
+
+            # Fetch candidates from DB
+            for expr in expressions:
+                db_cand = (
+                    session.query(AlphaCandidate)
+                    .filter(AlphaCandidate.expression_raw == expr)
+                    .order_by(AlphaCandidate.created_at.desc())
+                    .first()
+                )
+                if db_cand and db_cand not in candidates:
+                    candidates.append(db_cand)
+        else:
+            # Comma-separated prefixes
+            prefixes = [p.strip() for p in batch_source.split(",") if p.strip()]
+            for pfx in prefixes:
+                db_cand = (
+                    session.query(AlphaCandidate)
+                    .filter(AlphaCandidate.id.startswith(pfx))
+                    .first()
+                )
+                if db_cand and db_cand not in candidates:
+                    candidates.append(db_cand)
+
+        if not candidates:
+            console.print(f"[bold red]No matching candidates found for source:[/bold red] {batch_source}")
+            raise typer.Exit(code=1)
+
+        console.print(f"\n[bold cyan]=== Starting Batch Simulation Recording ({len(candidates)} Candidates) ===[/bold cyan]")
+        console.print(f"[bold]Platform Settings:[/bold] Universe={universe}, Neutralization={neutralization}, Decay={decay}, Truncation={truncation}\n")
+
+        paste_blocks: list[str] = []
+        if paste_file:
+            pf = Path(paste_file)
+            if pf.exists():
+                with open(pf, "r", encoding="utf-8") as f:
+                    content = f.read()
+                # Split by delimiters like '---' or '===' or multiple blank lines or Candidate headers
+                raw_splits = re.split(r"(?:\n\s*[-=]{3,}\s*\n|\n{3,}|\n+(?=Candidate\s+\d+:))", content)
+                paste_blocks = [s.strip() for s in raw_splits if s.strip()]
+
+        batch_results: list[dict[str, Any]] = []
+
+        for idx, cand in enumerate(candidates, start=1):
+            console.print("\n[bold yellow]------------------------------------------------------------[/bold yellow]")
+            console.print(f"[bold yellow]Candidate [{idx}/{len(candidates)}] ID:[/bold yellow] [bold white]{cand.id[:8]}[/bold white]")
+            console.print(f"[bold]Expression:[/bold] [green]{cand.expression_raw}[/green]")
+            console.print("[bold yellow]------------------------------------------------------------[/bold yellow]")
+
+            raw_text = ""
+            if paste_blocks and idx <= len(paste_blocks):
+                raw_text = paste_blocks[idx - 1]
+                console.print(f"[cyan]Using simulation text from paste file (block {idx}).[/cyan]")
+            else:
+                console.print("[cyan]Paste raw text from WorldQuant BRAIN backtest card (type 'skip' to skip, end with blank line):[/cyan]")
+                lines: list[str] = []
+                try:
+                    while True:
+                        line = input()
+                        if line.strip().lower() == "skip":
+                            raw_text = "skip"
+                            break
+                        if not line and lines:
+                            break
+                        lines.append(line)
+                except EOFError:
+                    pass
+                if raw_text != "skip":
+                    raw_text = "\n".join(lines).strip()
+
+            if not raw_text or raw_text == "skip":
+                console.print(f"[yellow]Skipping Candidate {cand.id[:8]}.[/yellow]")
+                batch_results.append({
+                    "id": cand.id[:8],
+                    "expression": cand.expression_raw[:45] + "...",
+                    "sharpe": "-",
+                    "fitness": "-",
+                    "turnover": "-",
+                    "self_corr": "-",
+                    "decision": "SKIPPED",
+                    "reason": "User skipped manual paste.",
+                })
+                continue
+
+            metrics = parse_brain_paste(raw_text)
+            decision, reason = evaluate_consultant_track_decision(metrics)
+
+            exp = Experiment(
+                candidate_id=cand.id,
+                universe=universe,
+                neutralization=neutralization,
+                decay=decay,
+                truncation=truncation,
+                status="COMPLETED",
+            )
+            session.add(exp)
+            session.flush()
+
+            for m_name, m_val in metrics.to_metric_dict().items():
+                session.add(
+                    ExperimentMetric(
+                        experiment_id=exp.id,
+                        metric_name=m_name,
+                        metric_value=m_val,
+                        source="BRAIN_PLATFORM",
+                    )
+                )
+
+            session.add(
+                Decision(
+                    candidate_id=cand.id,
+                    decision=decision,
+                    reason=reason,
+                    reviewer="RECORD_BATCH_AUTO",
+                )
+            )
+            cand.status = decision
+            session.commit()
+
+            render_parsed_metrics(cand.id[:8], metrics, decision, reason)
+
+            if decision == "APPROVED":
+                meta = generate_submission_metadata(
+                    cand,
+                    universe=universe,
+                    neutralization=neutralization,
+                    decay=decay,
+                )
+                render_submission_card(meta)
+
+            batch_results.append({
+                "id": cand.id[:8],
+                "expression": cand.expression_raw[:45] + "...",
+                "sharpe": f"{metrics.sharpe:.2f}" if metrics.sharpe is not None else "-",
+                "fitness": f"{metrics.fitness:.2f}" if metrics.fitness is not None else "-",
+                "turnover": f"{metrics.turnover * 100:.1f}%" if metrics.turnover is not None else "-",
+                "self_corr": f"{metrics.self_correlation:.4f}" if metrics.self_correlation is not None else "-",
+                "decision": decision,
+                "reason": reason[:60] + ("..." if len(reason) > 60 else ""),
+            })
+
+        # Render Batch Summary Table
+        console.print("\n[bold cyan]=================== Batch Simulation Summary ===================[/bold cyan]")
+        summary_table = Table(show_header=True, header_style="bold magenta")
+        summary_table.add_column("Candidate ID", style="bold")
+        summary_table.add_column("Expression")
+        summary_table.add_column("Sharpe", justify="right")
+        summary_table.add_column("Fitness", justify="right")
+        summary_table.add_column("Turnover", justify="right")
+        summary_table.add_column("Self-Corr", justify="right")
+        summary_table.add_column("Decision", justify="center")
+        summary_table.add_column("Audit Reason")
+
+        for r in batch_results:
+            dec_color = "green" if r["decision"] == "APPROVED" else ("red" if r["decision"] == "REJECTED" else "yellow")
+            summary_table.add_row(
+                r["id"],
+                r["expression"],
+                r["sharpe"],
+                r["fitness"],
+                r["turnover"],
+                r["self_corr"],
+                f"[{dec_color}]{r['decision']}[/{dec_color}]",
+                r["reason"],
+            )
+        console.print(summary_table)
+        console.print()
+
+
 @app.command("prepare-submission")
 def prepare_submission(
     candidate_id: Annotated[
         str,
         typer.Argument(help="Candidate ID (or first 8 characters of UUID)"),
     ],
-    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP1000",
-    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "Sector",
-    decay: Annotated[int, typer.Option("--decay", "-d")] = 4,
+    universe: Annotated[str, typer.Option("--universe", "-u")] = "TOP3000",
+    neutralization: Annotated[str, typer.Option("--neutralization", "-n")] = "SUBINDUSTRY",
+    decay: Annotated[int, typer.Option("--decay", "-d")] = 5,
 ) -> None:
     """Generate standardized Invariant 6 submission card for an alpha candidate."""
     with get_session() as session:

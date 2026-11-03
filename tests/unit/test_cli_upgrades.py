@@ -95,3 +95,17 @@ def test_submission_metadata_generation():
     assert meta.category in ["price momentum", "price reversion", "none"]
     assert len(meta.tags) == 3
     assert len(meta.description) > 30
+
+
+def test_submission_metadata_defaults():
+    cand = AlphaCandidate(
+        id="a1b2c3d4-test",
+        expression_raw="group_rank(close, subindustry)",
+        status="APPROVED",
+    )
+    meta = generate_submission_metadata(cand)
+    assert meta.universe == "TOP3000"
+    assert meta.neutralization == "SUBINDUSTRY"
+    assert meta.decay == 4
+    assert meta.delay == 1
+    assert meta.truncation == 0.0100

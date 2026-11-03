@@ -49,6 +49,21 @@ class Settings:
         self.log_level: str = os.getenv("LOG_LEVEL", "INFO")
 
     @property
+    def simulation_defaults(self) -> dict[str, Any]:
+        """Simulation parameters (universe, neutralization, decay, truncation, delay, region)."""
+        defaults = {
+            "region": "USA",
+            "universe": "TOP3000",
+            "delay": 1,
+            "decay": 4,
+            "neutralization": "SUBINDUSTRY",
+            "truncation": 0.0100,
+        }
+        cfg_defaults = self.research_config.get("simulation_defaults", {})
+        defaults.update(cfg_defaults)
+        return defaults
+
+    @property
     def research_config(self) -> dict[str, Any]:
         """Cached access to research.yaml."""
         return load_yaml_config(self.research_config_path)

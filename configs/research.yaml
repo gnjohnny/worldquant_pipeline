@@ -39,6 +39,10 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Linearly weighted moving average over d days"
+    - name: "ts_decay_exp_window"
+      arity: 3
+      param_types: ["expression", "integer", "number"]
+      description: "Exponential decay moving average over d days with smoothing factor"
     - name: "ts_mean"
       arity: 2
       param_types: ["expression", "integer"]
@@ -55,8 +59,60 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Rolling sum over d days"
+    - name: "ts_product"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling product over d days"
+    - name: "ts_scale"
+      arity: [2, 3]
+      param_types: ["expression", "integer"]
+      description: "Time-series min-max scale over d days: (x - ts_min(x, d)) / (ts_max(x, d) - ts_min(x, d))"
+    - name: "ts_argmax"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Day of time-series maximum over d days"
+    - name: "ts_argmin"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Day of time-series minimum over d days"
+    - name: "ts_median"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling median over d days"
+    - name: "ts_quantile"
+      arity: 3
+      param_types: ["expression", "integer", "number"]
+      description: "Rolling quantile over d days"
+    - name: "ts_skewness"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling skewness over d days"
+    - name: "ts_kurtosis"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling kurtosis over d days"
+    - name: "ts_zscore"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling z-score (x - ts_mean) / ts_std_dev over d days"
+    - name: "ts_corr"
+      arity: 3
+      param_types: ["expression", "expression", "integer"]
+      description: "Time-series correlation between x and y over d days"
+    - name: "ts_covariance"
+      arity: 3
+      param_types: ["expression", "expression", "integer"]
+      description: "Time-series covariance between x and y over d days"
+    - name: "ts_regression"
+      arity: [3, 4, 5]
+      param_types: ["expression", "expression", "integer"]
+      description: "Time-series linear regression of y on x over d days"
+    - name: "inst_tvr"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Instrument turnover over d days"
 
-  # Cross-sectional operators
+  # Cross-sectional & group operators
   cross_sectional:
     - name: "rank"
       arity: 1
@@ -70,6 +126,38 @@ operators:
       arity: 2
       param_types: ["expression", "group"]
       description: "Neutralize expression relative to a group"
+    - name: "group_zscore"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional z-score within a group"
+    - name: "group_mean"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional mean within a group"
+    - name: "group_median"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional median within a group"
+    - name: "group_std_dev"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional standard deviation within a group"
+    - name: "group_max"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional maximum within a group"
+    - name: "group_min"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional minimum within a group"
+    - name: "group_sum"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Cross-sectional sum within a group"
+    - name: "group_scale"
+      arity: 2
+      param_types: ["expression", "group"]
+      description: "Scale expression within each group"
     - name: "zscore"
       arity: 1
       param_types: ["expression"]
@@ -78,6 +166,26 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Scale expression to sum(abs(x)) = 1"
+    - name: "scale"
+      arity: [1, 2]
+      param_types: ["expression"]
+      description: "Scale expression so sum(abs(x)) = scale_factor (default 1)"
+    - name: "truncate"
+      arity: 2
+      param_types: ["expression", "number"]
+      description: "Truncate individual weights to max_percent"
+    - name: "winsorize"
+      arity: 2
+      param_types: ["expression", "number"]
+      description: "Winsorize outliers beyond n standard deviations"
+    - name: "quantile"
+      arity: [1, 2]
+      param_types: ["expression"]
+      description: "Cross-sectional quantile calculation"
+    - name: "trade_when"
+      arity: 3
+      param_types: ["expression", "expression", "expression"]
+      description: "Conditional holding: trade_when(condition, alpha, exit_alpha)"
     - name: "densify"
       arity: 1
       param_types: ["expression"]
@@ -101,6 +209,14 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Natural logarithm"
+    - name: "exp"
+      arity: 1
+      param_types: ["expression"]
+      description: "Exponential function e^x"
+    - name: "sqrt"
+      arity: 1
+      param_types: ["expression"]
+      description: "Square root"
     - name: "sign"
       arity: 1
       param_types: ["expression"]
@@ -109,7 +225,43 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Absolute value"
+    - name: "floor"
+      arity: 1
+      param_types: ["expression"]
+      description: "Round down to nearest integer"
+    - name: "ceil"
+      arity: 1
+      param_types: ["expression"]
+      description: "Round up to nearest integer"
+    - name: "round"
+      arity: 1
+      param_types: ["expression"]
+      description: "Round to nearest integer"
+    - name: "min"
+      arity: 2
+      param_types: ["expression", "expression"]
+      description: "Elementwise minimum of x and y"
+    - name: "max"
+      arity: 2
+      param_types: ["expression", "expression"]
+      description: "Elementwise maximum of x and y"
+    - name: "power"
+      arity: 2
+      param_types: ["expression", "number"]
+      description: "x raised to power y"
     - name: "signed_power"
       arity: 2
       param_types: ["expression", "number"]
       description: "sign(x) * (abs(x) ** y)"
+    - name: "sigmoid"
+      arity: 1
+      param_types: ["expression"]
+      description: "Standard sigmoid 1 / (1 + exp(-x))"
+    - name: "tanh"
+      arity: 1
+      param_types: ["expression"]
+      description: "Hyperbolic tangent"
+    - name: "clamp"
+      arity: 3
+      param_types: ["expression", "number", "number"]
+      description: "Clamp x between min_val and max_val"

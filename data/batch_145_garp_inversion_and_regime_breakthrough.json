@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "True GARP Inversion: Growth Minus Valuation with Analyst Revisions (Batch 144 C1 Inversion)",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Empirical platform findings from Batch 144 confirmed that relative_valuation_rank_derivative assigns higher ranks to expensive multiples, driving Sharpe to -0.85 when paired with growth. Subtracting the valuation rank from growth potential directly implements classical Growth At a Reasonable Price (GARP). Inexpensive stocks with accelerating top-line expansion generate positive economic spreads, while adding analyst revision momentum (analyst_revision_rank_derivative) captures institutional consensus re-rating with sub-5% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Broad market valuation re-rating during speculative bubbles",
+        "Analyst forecast revision lag during macroeconomic turning points"
+      ],
+      "falsification_test": "Alpha underperforms during non-fundamental momentum rallies where highly leveraged, negative-earning stocks outperform regardless of multiple discipline.",
+      "candidates": [
+        {
+          "expression": "group_rank(growth_potential_rank_derivative, subindustry) - group_rank(relative_valuation_rank_derivative, subindustry) + 0.40 * group_rank(analyst_revision_rank_derivative, subindustry)",
+          "rationale": "True GARP spread: long high-growth undervalued firms with consensus revision upgrades",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Complement-Normalized Multiplicative GARP: Growth Times Undervaluation (Batch 144 C3 Inversion)",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Direct mathematical inversion of Batch 144 Candidate 3 (which delivered Sharpe -0.84 with ultra-low 3.52% turnover). By replacing the raw valuation rank with its cheapness complement (1 - group_rank(relative_valuation_rank_derivative, subindustry)), we isolate stocks in the highest growth potential decile that are simultaneously in the cheapest valuation multiple decile (weight 1.0 * 1.0), zeroing out speculative overvalued firms and reversing negative returns into positive alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Value traps with declining fundamental business models",
+        "Protracted multiple compression across growth sectors"
+      ],
+      "falsification_test": "Fails if high-valuation speculative stocks experience sustained unconstrained multiple expansion over value-growth deciles.",
+      "candidates": [
+        {
+          "expression": "group_rank(growth_potential_rank_derivative, subindustry) * (1 - group_rank(relative_valuation_rank_derivative, subindustry))",
+          "rationale": "Multiplicative interaction between growth potential and fundamental cheapness complement",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Subindustry-Neutral Variance Risk Premium (VRP) Harvest",
+      "domain": "options_implied_volatility",
+      "economic_rationale": "Exploits the structural Variance Risk Premium (VRP) across US equities with 98% coverage in TOP3000. Institutional hedgers and retail speculators routinely overpay for implied volatility (especially downside puts) relative to subsequent realized volatility. Ranking the spread (historical_volatility_30 - implied_volatility_mean_30) within each subindustry goes long equities where implied vol is underpriced relative to realized price fluctuations and shorts equities where panic hedging creates overpriced options.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden volatility regime shifts and volatility clustering shocks",
+        "Earnings announcement implied volatility spikes"
+      ],
+      "falsification_test": "Alpha degrades during sustained volatility expansions where realized volatility persistently exceeds option market implied pricing.",
+      "candidates": [
+        {
+          "expression": "group_rank(historical_volatility_30 - implied_volatility_mean_30, subindustry)",
+          "rationale": "Subindustry-neutral 30-day Variance Risk Premium spread between realized and implied volatility",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

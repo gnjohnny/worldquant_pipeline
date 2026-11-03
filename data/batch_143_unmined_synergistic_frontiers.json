@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Compounding Quality vs Volatility Skew Exhaustion",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Firms exhibiting concurrent cashflow generation efficiency and high earnings predictability possess resilient, compounding operational profiles. When market panic artificially inflates downside put volatility skew over call implied volatility, market makers overcharge for disaster insurance. Long high-quality compounders with compressed or neutral options skew harvests an uncompensated equity tail risk premium within subindustries.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden binary earnings releases widening implied volatility skew independent of business fundamentals",
+        "Subindustry-wide demand shocks impairing trailing cash flow conversion ratios"
+      ],
+      "falsification_test": "Alpha returns invert or decay toward zero during systemic market-wide liquidity dry-ups where high-quality cash compounders face forced institutional liquidations.",
+      "candidates": [
+        {
+          "expression": "group_zscore(cashflow_efficiency_rank_derivative * earnings_certainty_rank_derivative, subindustry) - group_zscore(implied_volatility_put_30 - implied_volatility_call_30, subindustry)",
+          "rationale": "Cross-sectional interaction of 100% coverage cashflow efficiency and earnings certainty, offset by standardized options volatility skew",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Regime-Conditioned Volume-Return Elasticity & Extremum Breakout",
+      "domain": "price_volume",
+      "economic_rationale": "Information arrival speed is regime-dependent. During active volume accumulation periods (volume > 60-day moving average), institutional capital leaves footprints via rolling 20-day return-volume correlation (ts_corr). During subdued volume periods, market maker inventory rebalancing dominates, making channel range positioning ((close - ts_min) / (ts_max - ts_min)) a superior mean-reverting driver. Conditional switching prevents regime mismatches.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Index rebalancing days creating artificial non-informative volume surges",
+        "Persistent single-stock gap risk triggering false channel breakouts"
+      ],
+      "falsification_test": "Performance degrades significantly when conditioning is removed or when tested with unneutralized market beta exposure.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > ts_mean(volume, 60), group_rank(ts_corr(returns, volume, 20), subindustry), group_rank((close - ts_min(low, 20)) / (ts_max(high, 20) - ts_min(low, 20) + 0.001), subindustry))",
+          "rationale": "trade_when operator switches between price-volume correlation during liquidity expansions and rolling channel breakouts during quiet regimes",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Multiplicative Valuation Inflection & Growth Trajectory Synergy",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Value investing without growth criteria frequently traps portfolios in deteriorating businesses (value traps), whereas unconstrained growth investing suffers multiple compression risk. A multiplicative cross-factor synergy (group_zscore(relative_valuation) * group_zscore(growth_potential)) acts as a soft logical AND operator: equities receive large positive allocations only when they simultaneously demonstrate deep valuation support and positive growth acceleration.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cyclical peak in corporate revenues preceding sharp multiple compression",
+        "Accounting distortions inflating backward-looking relative valuation multiples"
+      ],
+      "falsification_test": "Alpha returns fail during hyper-speculative junk rallies where zero-growth, highly indebted stocks drastically outperform.",
+      "candidates": [
+        {
+          "expression": "group_zscore(relative_valuation_rank_derivative, subindustry) * group_zscore(growth_potential_rank_derivative, subindustry)",
+          "rationale": "Multiplicative z-score interaction of 100% coverage relative valuation and growth potential derivatives",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

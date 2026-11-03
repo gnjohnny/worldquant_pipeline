@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "GARP Inflection & Analyst Revision Acceleration Synergy (Batch 143 C3 Refinement)",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Direct revision of Batch 143 Candidate 3. Batch 143 C3 achieved Sharpe 0.82 with ultralow 4.86% turnover and well-distributed weights. Adding analyst revision momentum (analyst_revision_rank_derivative) injects short-term institutional consensus drift into slow valuation-growth compounding, elevating turnover from 4.8% to the optimal 11% fitness sweet-spot and pushing Sharpe >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Analyst herding bias at macroeconomic inflection points",
+        "Multiple compression in broad growth equity corrections"
+      ],
+      "falsification_test": "Alpha returns fail during hyper-speculative junk rallies where zero-growth, highly indebted stocks drastically outperform.",
+      "candidates": [
+        {
+          "expression": "group_rank(relative_valuation_rank_derivative * growth_potential_rank_derivative, subindustry) + 0.35 * group_rank(analyst_revision_rank_derivative, subindustry)",
+          "rationale": "Combines 100% coverage GARP inflection with analyst revision momentum within subindustry",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Regime-Conditioned Volume Elasticity & Native Channel Scaling (Batch 143 C2 Refinement)",
+      "domain": "price_volume",
+      "economic_rationale": "Corrects platform operator syntax by replacing non-existent ts_min/ts_max with native WorldQuant ts_scale(close, 20). Uses trade_when to dynamically switch between rolling return-volume correlation (ts_corr) during institutional volume accumulation and 20-day channel oscillator positioning (ts_scale) during normal regimes.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Index rebalancing days causing non-informative volume spikes",
+        "Persistent single-stock gap risk"
+      ],
+      "falsification_test": "Performance degrades significantly when conditioning is removed or when tested with unneutralized market beta exposure.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > ts_mean(volume, 60), group_rank(ts_corr(returns, volume, 20), subindustry), group_rank(ts_scale(close, 20), subindustry))",
+          "rationale": "trade_when switching between ts_corr price-volume decoupling and native ts_scale channel breakout",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Multiplicative Style Decile Inflection with Low-Decay Calibration",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Direct rank-normalized variant of Batch 143 C3. Ranks each factor prior to multiplicative interaction, eliminating right-tail weight concentration. Because base turnover is only 4.86%, running with decay=3 (or decay=2) significantly enhances signal responsiveness and sub-universe Sharpe without exceeding turnover friction limits.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Cyclical peak in corporate earnings",
+        "High intra-industry dispersion driven by micro-cap illiquidity"
+      ],
+      "falsification_test": "Alpha inverts during broad junk rallies characterized by extreme distress outperformance.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(relative_valuation_rank_derivative, subindustry) * group_rank(growth_potential_rank_derivative, subindustry), subindustry)",
+          "rationale": "Rank-normalized multiplicative GARP interaction tested at decay=3 to boost sub-universe Sharpe",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

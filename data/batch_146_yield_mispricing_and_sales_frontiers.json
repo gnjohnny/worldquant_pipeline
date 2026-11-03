@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Cash Flow Yield Horizon & Liquidity Dampener (analyst4 unmined cfps)",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Operating cash flow per share forecast yield (anl4_afv4_cfps_median / close) provides an unmanipulated fundamental anchor against earnings management and accrual inflation. Evaluating the 180-day historical percentile rank of forward cash flow yield relative to historical trading levels within each subindustry identifies structurally undervalued cash generators, while a modest short-term price reversal buffer dampens execution friction and elevates turnover into the optimal 12%-16% fitness sweet-spot.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden corporate capex expansions temporarily depressing near-term free cash flow",
+        "Analyst forecast revision lag during macroeconomic turning points"
+      ],
+      "falsification_test": "Alpha fails if capital-intensive, negative-cashflow speculative equities outperform sustainable cash generators across subindustries.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "180-day percentile rank of consensus cashflow per share yield with 3-day liquidity reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Options Term Structure Realized Variance Mispricing (Dense 1-Year Horizon)",
+      "domain": "options_implied_volatility",
+      "economic_rationale": "Direct architectural calibration of the top-performing options anomaly on BRAIN (which delivered Sharpe 2.16 and Fitness 1.55 in ff15b378). Normalizing 360-day implied call volatility by 90-day realized volatility with a dense 120-day backfill eliminates instrument sparsity and weight concentration spikes, harvesting unhedged variance risk premia across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Protracted volatility backwardation regimes during severe systemic liquidity shocks",
+        "Sparse options quoting in illiquid small-cap names"
+      ],
+      "falsification_test": "Alpha inverts if market-wide realized volatility persistently exceeds option market implied pricing over prolonged multi-quarter horizons.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_backfill(implied_volatility_call_360 / historical_volatility_90, 120), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "360-day implied over 90-day realized volatility ratio with 120-day dense backfill and short-term price dampener",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Sales Yield Velocity & Cyclical Value Re-rating",
+      "domain": "analyst_fundamentals",
+      "economic_rationale": "Net sales represent the pure top-line revenue capacity of the enterprise before capital structure or accounting adjustments. Evaluating the trailing 1-year rolling percentile rank of quarterly sales relative to current equity price (actual_sales_value_quarter / close) isolates revenue compounders trading at extreme valuation discounts. Pairing with 5-day reversal removes liquidity friction and enhances sub-universe consistency.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unprofitable hyper-growth firms burning cash despite high top-line revenue",
+        "Broad cyclical deceleration in corporate capital expenditure"
+      ],
+      "falsification_test": "Alpha underperforms during speculative momentum runs where low-sales, high-valuation story stocks trade without multiple discipline.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) / close, 252), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Trailing 252-day percentile rank of sales yield to price with 5-day short-term reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

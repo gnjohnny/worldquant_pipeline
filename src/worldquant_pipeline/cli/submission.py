@@ -2,6 +2,7 @@
 import re
 from dataclasses import dataclass
 
+from worldquant_pipeline.config.settings import get_settings
 from worldquant_pipeline.storage.models import AlphaCandidate
 
 
@@ -15,8 +16,8 @@ class AlphaSubmissionMetadata:
     tags: list[str]  # exactly 3 tags
     description: str
     expression: str
-    universe: str = "TOP1000"
-    neutralization: str = "Sector"
+    universe: str = "TOP3000"
+    neutralization: str = "SUBINDUSTRY"
     decay: int = 4
     delay: int = 1
     truncation: float = 0.0100
@@ -24,11 +25,18 @@ class AlphaSubmissionMetadata:
 
 def generate_submission_metadata(
     candidate: AlphaCandidate,
-    universe: str = "TOP1000",
-    neutralization: str = "Sector",
-    decay: int = 4,
+    universe: str | None = None,
+    neutralization: str | None = None,
+    decay: int | None = None,
 ) -> AlphaSubmissionMetadata:
     """Generate standardized, compliant submission metadata for an approved alpha."""
+    defaults = get_settings().simulation_defaults
+    active_universe = universe or defaults.get("universe", "TOP3000")
+    active_neutralization = neutralization or defaults.get("neutralization", "SUBINDUSTRY")
+    active_decay = decay if decay is not None else int(defaults.get("decay", 4))
+    active_delay = int(defaults.get("delay", 1))
+    active_truncation = float(defaults.get("truncation", 0.0100))
+
     expr = candidate.expression_raw
     name_parts: list[str] = []
     tags: list[str] = []
@@ -67,10 +75,10 @@ def generate_submission_metadata(
         )
     elif "implied_volatility_call" in expr:
         name_parts.append("Call_Implied_Vol_Surface_Asymmetry")
-        tags.extend(["options", "volatility", "capex"])
+        tags.extend(["options", "volatility", "sentiment"])
         desc_driver = (
             "Measures institutional upside call option implied volatility relative to realized Parkinson volatility. "
-            "Stationarized percentile ranking captures speculative accumulation while capex discipline prevents value traps."
+            "Stationarized percentile ranking captures speculative accumulation while volatility spread controls downside tail risk."
         )
     elif "historical_volatility" in expr and "implied_volatility" in expr:
         name_parts.append("Variance_Risk_Premium_Realized_Dislocation")
@@ -105,7 +113,7 @@ def generate_submission_metadata(
     # Neutralization & convexity in name
     if "signed_power" in expr:
         name_parts.append("Convexity")
-    if neutralization == "Market":
+    if active_neutralization.lower() in {"market", "market_neutral"}:
         name_parts.append("Market_Neutral")
 
     full_name = "_".join(name_parts)
@@ -119,7 +127,9 @@ def generate_submission_metadata(
         tags=tags,
         description=desc_driver,
         expression=expr,
-        universe=universe,
-        neutralization=neutralization,
-        decay=decay,
+        universe=active_universe,
+        neutralization=active_neutralization,
+        decay=active_decay,
+        delay=active_delay,
+        truncation=active_truncation,
     )
