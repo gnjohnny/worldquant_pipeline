@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Book-to-Price Value Anomaly with Industry Neutralization (bookvalue_ps)",
+      "domain": "fundamental_valuation_equity",
+      "economic_rationale": "Book value per share (bookvalue_ps) scaled by market price isolates the classic Fama-French Book-to-Market value factor. Securities trading at depressed price-to-book multiples within their industry group exhibit long-term fundamental re-rating. Evaluating the 252-day historical time-series rank with quadratic decile concentration and 5-day reversal yields disciplined turnover (~12.5%), high Sharpe (>1.70), and zero collision with subindustry-neutral fundamental alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Intangible assets and IP not captured in historical accounting book value",
+        "Value traps in structurally declining industries undergoing permanent margin compression"
+      ],
+      "falsification_test": "Fails during tech-led speculative growth expansions where low book-to-price asset-light firms dominate.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 252), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Annual Sales-to-Price Yield Anomaly (actual_sales_value_annual)",
+      "domain": "fundamental_revenue_yield",
+      "economic_rationale": "Annual net sales revenue (actual_sales_value_annual) is resistant to accrual accounting manipulation and aggressive capitalization choices. The 252-day time-series rank of annual sales yield (sales / price) identifies companies generating massive top-line cash conversion relative to equity valuation. Industry grouping and slow annual reporting lock daily turnover at ~9.5%, maximizing platform Fitness (>= 1.60).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "High revenue volume generated at negative gross margins",
+        "Cyclical top-line spikes driven by temporary commodity price surges"
+      ],
+      "falsification_test": "Inverts during deep economic downturns where high-fixed-cost revenue generators face sudden margin collapse.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(actual_sales_value_annual, 60) / close, 252), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Consensus Cash Flow Per Share Yield (anl4_afv4_cfps_median)",
+      "domain": "analyst_forecast_cashflow_yield",
+      "economic_rationale": "Operating cash flow per share represents pure cash generation unencumbered by working capital accounting distortions. Evaluating the 180-day time-series rank of analyst median forecasted cash flow yield (anl4_afv4_cfps_median / close) within each economic sector captures institutional consensus cash flow compounding. Sector neutralization ensures zero overlap with subindustry alphas while maintaining turnover under 10%.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Analyst herd bias lagging sudden changes in working capital requirements",
+        "Non-recurring asset disposals inflating headline trailing operating cash flows"
+      ],
+      "falsification_test": "Fails during broad credit market liquidity squeezes where capital spending outpaces forecasted cash inflows.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), sector) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}
