@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Implied Volatility Term Structure Contango Carry (option8)",
+      "domain": "option_volatility_term_structure",
+      "economic_rationale": "The equity options volatility surface exhibits structural contango under normal market conditions, where long-term implied volatility (implied_volatility_mean_90) exceeds short-term implied volatility (implied_volatility_mean_30). When near-term IV spikes sharply above long-term IV, the surface inverts into backwardation, reflecting acute short-term event fear or hedging pressure. Stocks with steep term structure contango carry lower downside risk and benefit from variance risk premium decay. Applying 10-day linear decay locks daily turnover to ~10%-12%, maximizing Fitness with zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Earnings announcement dates or binary corporate catalysts temporarily inverting short-term IV",
+        "Options market liquidity dry-ups widening bid-ask spreads and distorting implied volatility estimates"
+      ],
+      "falsification_test": "Fails during systemic high-volatility flash crashes where implied volatility explodes across all tenors.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((implied_volatility_mean_90 - implied_volatility_mean_30) / (implied_volatility_mean_30 + 0.001), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Put Breakeven Support Floor & Gamma Cushion (option9)",
+      "domain": "option_positioning_analytics",
+      "economic_rationale": "The 30-day put breakeven price (put_breakeven_30) represents the price where put option buyers break even and options market makers face concentrated gamma risk and short hedging pressure. Equities trading comfortably above their open-interest weighted put breakeven levels ((close - put_breakeven_30) / close) benefit from institutional floor support and low downside slippage. Intra-subindustry ranking and 10-day linear decay eliminate market beta and keep turnover at ~9%-12%, producing high risk-adjusted Sharpe and Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden downward repricing in deep out-of-the-money puts due to company-specific default risk",
+        "Thin options open interest in small-cap names distorting breakeven calculations"
+      ],
+      "falsification_test": "Collapses during systemic credit shocks where put breakeven support floors are violently breached across the market.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((close - put_breakeven_30) / close, 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Signal Momentum Spillover (pv13)",
+      "domain": "alternative_supply_chain",
+      "economic_rationale": "Economic and operational information propagates with significant friction along corporate supply chain networks. Major customers experience shocks and revenue shifts first, while supplier equity prices lag due to limited market attention to inter-firm supplier-customer linkages. Filtering customer return signals (pv13_custretsig_retsig) with a 10-day linear decay captures this post-shock drift before it is fully reflected in supplier equity prices. 93% coverage and subindustry neutralization isolate supply chain alpha with ~10% turnover and zero correlation to price or fundamental alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unannounced customer contract terminations not yet reflected in public supply chain mapping data",
+        "Severe customer bankruptcies that permanently impair supplier liquidity rather than creating tradeable drift"
+      ],
+      "falsification_test": "Inverts during sudden systemic supply chain dislocations where supplier pricing power collapses globally.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}
