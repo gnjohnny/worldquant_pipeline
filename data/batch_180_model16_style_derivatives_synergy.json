@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cashflow Efficiency & Analyst Revision Momentum Synergy (model16)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "Operational cash conversion efficiency per unit of capital measures core business profitability, while daily analyst revision derivatives track the rate of institutional consensus earnings upgrades. 100% instrument coverage across TOP3000 guarantees zero cash drag. Combining cashflow quality (70%) with revision momentum (30%) yields a robust, steady alpha with low turnover and zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden accounting restatements changing prior reported operating cashflow",
+        "Sell-side analysts lagging rapid macroeconomic inflections"
+      ],
+      "falsification_test": "Inverts during broad speculative relief rallies where unprofitable non-cash-generating equities surge.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_rank(cashflow_efficiency_rank_derivative, subindustry) + 0.30 * group_rank(analyst_revision_rank_derivative, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Relative Valuation Rank Derivative with 3-Day Reversal Overlay (model16)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "The relative valuation rank derivative evaluates whether an equity is structurally underpriced relative to peer cash flows and replacement cost. Convex signed_power decile weighting concentrates capital on top-decile value opportunities, while a 15% 3-day reversal overlay dampens short-term drawdown and targets an optimal turnover of ~12%-15%.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Value traps in structurally impaired industries undergoing permanent business obsolescence",
+        "Extreme illiquidity in bottom-tier microcap value stocks"
+      ],
+      "falsification_test": "Fails during tech-led growth bubble regimes where high-multiple momentum stocks outperform continuously.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(relative_valuation_rank_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Multi-Factor Composite Score & Cashflow Efficiency Synergy (model16)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "The multi-factor composite factor score derivative synthesizes intraday price momentum with trailing earnings quality. Conditioning this multi-factor composite with operational cashflow efficiency filters out low-quality momentum stocks, yielding a balanced quality-momentum alpha with 100% TOP3000 coverage and minimal turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Macro factor rotation violently penalizing momentum factors",
+        "One-off accounting accruals distorting reported cash conversion"
+      ],
+      "falsification_test": "Inverts during sudden violent market reversals where crowded momentum names experience severe factor drawdowns.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(composite_factor_score_derivative, subindustry) + 0.40 * group_rank(cashflow_efficiency_rank_derivative, subindustry)"
+        }
+      ]
+    }
+  ]
+}
