@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Bar Direction Mean Reversion (Decay 10 Setting Optimization)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "In Batch 177, this exact formula delivered 6 PASS with Sharpe 1.38, Sub-universe Sharpe 0.97, and ZERO self-correlation warnings. The only hurdle was Fitness (0.83 vs 1.00) due to 27.59% turnover under decay 5. Increasing simulation decay from 5 to 10 applies a 10-day portfolio holding smoothing, halving turnover to ~12%-14% and mathematically projecting Fitness to >= 1.25.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Strong multi-day momentum breakouts supported by institutional block buying",
+        "Pre-market earnings gaps that dictate entire day-to-day returns"
+      ],
+      "falsification_test": "Fails during aggressive multi-day trend rallies where opening prints mark the intraday lows consistently.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((open - close) / (high - low + close * 0.0001), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Bar Direction Mean Reversion (18-Day Formula Decay)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Extending the inner linear decay window from 10 to 18 trading days smooths the intraday pressure signal directly at the formula level. This compresses daily portfolio turnover from 27.59% down to ~12% under standard decay 5 settings, driving Fitness above 1.20 while preserving Sharpe >= 1.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "18d",
+      "confounders": [
+        "Lagged signal responsiveness during sudden regime shifts from mean-reversion to momentum",
+        "Extended low volatility periods blunting intraday bar range"
+      ],
+      "falsification_test": "Inverts during sudden momentum trend acceleration where 18-day smoothed reversion signals remain positioned counter-trend.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((open - close) / (high - low + close * 0.0001), 18), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "VWAP Range-Normalized Mean Reversion (18-Day Formula Decay)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "In Batch 177, VWAP mean reversion delivered Sharpe 1.35 and Sub-universe Sharpe 0.92 with 6 PASS. Extending the decay smoothing to 18 days dampens daily turnover from 27.20% down to ~12%, boosting Fitness from 0.67 to >= 1.15 without self-correlation collisions.",
+      "expected_direction": "positive",
+      "intended_horizon": "18d",
+      "confounders": [
+        "Persistent institutional block selling below VWAP during quarterly rebalancing cycles",
+        "Extended single-direction trend days overriding volume-weighted mean reversion"
+      ],
+      "falsification_test": "Inverts during macro panic liquidity sell-offs where price remains pinned below VWAP for weeks.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((vwap - close) / (high - low + close * 0.0001), 18), subindustry)"
+        }
+      ]
+    }
+  ]
+}
