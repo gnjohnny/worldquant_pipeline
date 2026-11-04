@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Volatility-Adjusted Put Breakeven Distance (Sigma-Cushion Support)",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Measures the distance from spot price to the institutional put breakeven support floor in units of the stock's own historical realized volatility (cushion_sigma = (close - put_breakeven) / (close * historical_volatility)). A fixed dollar cushion provides vastly different support across varying volatility regimes; evaluating the volatility-standardized distance identifies equities trading multi-sigma above dealer short-gamma flip points with structural downside protection across all market sectors.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden volatility regime shifts inflating the denominator during market drawdowns",
+        "Stale open-interest pricing on illiquid option strikes"
+      ],
+      "falsification_test": "Alpha underperforms if market-wide realized volatility spikes rapidly through all historical baseline estimates.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((close - ts_backfill(put_breakeven_30, 60)) / (close * ts_backfill(historical_volatility_30, 60) + 0.001 * close), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Volatility-standardized put breakeven distance paired with 5-day liquidity reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Breakeven Asymmetry Velocity: Structural Level & 5-Day Gamma Acceleration",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct velocity enhancement of Batch 150 C2 (which achieved Sharpe 0.88 and Sub-universe Sharpe 0.79 with zero self-correlation). Static breakeven levels capture established dealer positioning, but alpha generates highest margins during active repositioning. Measuring the 5-day rate of change in the breakeven asymmetry ratio (ts_delta(ratio, 5)) isolates stocks where institutional call accumulation is actively accelerating, providing immediate directional momentum.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Short-term post-earnings implied volatility crushes distorting ratio deltas",
+        "Gamma pinning during monthly expiration weeks"
+      ],
+      "falsification_test": "Alpha degrades if 5-day breakeven ratio expansions reflect speculative retail buying rather than institutional flow.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) + 0.40 * group_rank(ts_delta((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), 5), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Blended 20-day breakeven asymmetry level and 5-day acceleration with short-term price reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Cross-Asset Synergy: 20-Day Gamma Asymmetry & Idiosyncratic Risk Normalization",
+      "domain": "cross_asset_options_and_risk",
+      "economic_rationale": "Synthesizes two completely virgin datasets (option9 and model51) where the user has zero historical submissions. Pairs quadratic conviction on 20-day gamma breakeven asymmetry with 30d/360d idiosyncratic variance exhaustion. Because the two signals are driven by orthogonal structural mechanisms (dealer option gamma vs equity unsystematic risk post-panic recovery), their combined Sharpe compounds via Markowitz diversification while idiosyncratic turnover partially cancels.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Correlated market liquidity shocks impacting both options market makers and equity liquidity providers",
+        "Protracted single-stock distressed restructurings"
+      ],
+      "falsification_test": "Alpha inverts during broad systemic risk-off shocks where idiosyncratic risk normalization fails.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) - 0.5, 2) - 0.40 * group_rank(ts_backfill(unsystematic_risk_last_30_days, 60) / (ts_backfill(unsystematic_risk_last_360_days, 60) + 0.0001), subindustry)",
+          "rationale": "Orthogonal synthesis of nonlinear 20-day gamma asymmetry conviction and idiosyncratic risk exhaustion",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

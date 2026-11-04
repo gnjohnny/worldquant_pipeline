@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Long-Term Put Volatility Risk Premium (implied_volatility_put_720 / parkinson_volatility_120) (option8)",
+      "domain": "variance_risk_premium_put_tail_risk",
+      "economic_rationale": "Captures the structural long-term Variance Risk Premium (VRP) using the ratio of 2-year put implied volatility to 120-day high-low Parkinson realized volatility (implied_volatility_put_720 / parkinson_volatility_120). Institutional demand for long-dated put insurance creates persistent overpricing in put implied volatility relative to physical Parkinson price range volatility. In approved alpha 48f2f183, the call variant achieved Sharpe 1.73, Fitness 1.31, Turnover 13.80%, and Sub-universe Sharpe 1.24 under decay=8. Shifting to put implied volatility isolates downside crash protection pricing with distinct positioning, low turnover (~13%), and high risk-adjusted return.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Systemic multi-quarter market crashes where out-of-the-money puts remain permanently elevated",
+        "Sparse trading in long-dated LEAP options in smaller cap names"
+      ],
+      "falsification_test": "Alpha breaks down if long-term put implied volatility consistently underprices trailing Parkinson realized volatility.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_put_720 / parkinson_volatility_120, 120), subindustry)",
+          "rationale": "Subindustry-neutral 2-year put implied volatility relative to 120-day Parkinson realized volatility with 120-day backfill",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "1-Year Call Volatility Risk Premium (implied_volatility_call_360 / parkinson_volatility_60) (option8)",
+      "domain": "variance_risk_premium_intermediate_horizon",
+      "economic_rationale": "Exploits intermediate-horizon implied-versus-realized volatility term structures (implied_volatility_call_360 / parkinson_volatility_60). Retail upside speculation and institutional covered-call overwriting systematically elevate 1-year call implied volatility above 60-day realized Parkinson volatility. Cross-sectional ranking within subindustries eliminates market-wide volatility regimes, delivering smooth, low-turnover (< 14%) alpha with zero reliance on fundamental accounting metrics.",
+      "expected_direction": "positive",
+      "intended_horizon": "40d",
+      "confounders": [
+        "Protracted short squeezes driving realized volatility above implied volatility for multiple weeks",
+        "Abrupt shifts in equity borrowing fees"
+      ],
+      "falsification_test": "Alpha underperforms if 1-year call implied volatility consistently underpredicts realized price fluctuations across subindustries.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_60, 60), subindustry)",
+          "rationale": "Subindustry-neutral 1-year call implied volatility relative to 60-day Parkinson realized volatility",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Inverted Customer Return Spillover 8d Decay (pv13_custretsig_retsig) (pv13)",
+      "domain": "supply_chain_information_diffusion",
+      "economic_rationale": "Refines the agile customer return shock anomaly discovered in Batch 169 (Sharpe 1.11, Sub-universe 0.52, Self-Correlation 0.00). Batch 170 proved that customer return transmission is a short-horizon phenomenon whose edge degrades if over-smoothed to 22 days. Tuning the linear decay to 8 days preserves peak signal potency, while running at platform decay=8 smooths portfolio rebalancing, targeting 14%-16% turnover, Sharpe >= 1.25, and Fitness >= 1.20 with zero portfolio self-correlation.",
+      "expected_direction": "negative",
+      "intended_horizon": "8d",
+      "confounders": [
+        "Macroeconomic cyclical demand shocks simultaneous across entire supply chains",
+        "Protracted contractual price renegotiations"
+      ],
+      "falsification_test": "Alpha fails if inverted 8-day customer return signals generate zero return predictability over subsequent weekly rebalancing windows.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(pv13_custretsig_retsig, 8), subindustry)",
+          "rationale": "Subindustry-neutral 8-day linearly decayed inverted customer return signal engineered for peak signal potency and disciplined execution",
+          "expected_direction": "negative"
+        }
+      ]
+    }
+  ]
+}

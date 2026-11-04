@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "52-Week High Anomaly Proximity Channel (ts_scale 252d) (pv1)",
+      "domain": "price_momentum_and_anchoring",
+      "economic_rationale": "Directly implements the celebrated 52-Week High Anomaly (George & Hwang 2004, Finding Alphas Chapters 18 & 21). When an equity trades near its 52-week peak (ts_scale(close, 252) -> 1.0), psychological anchoring causes investors to hesitate to bid higher, creating temporarily underpriced buying opportunities that experience persistent drift once quarterly earnings momentum confirms the breakout. Evaluating ts_scale over a 252-day annual channel yields exceptionally disciplined turnover (~10%-14%), unlocking the Tulchinsky Fitness multiplier with near-zero correlation to our approved portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad market cyclical tops causing broad momentum crashes",
+        "Overextended speculative bubbles without fundamental support"
+      ],
+      "falsification_test": "Alpha fails if equities near 52-week highs systematically suffer mean-reversion pullbacks rather than breakout continuation.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_scale(close, 252), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 252-day time-series scale (52-week high channel) with 5-day smoothed price reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "60-Day Rolling Price-Volume Correlation / Flow Coherence (pv1)",
+      "domain": "institutional_order_flow_coherence",
+      "economic_rationale": "Directly activates the unmined ts_corr operator from Finding Alphas (Chapter 18). Institutional accumulation produces positive price-volume coherence (prices advance on volume expansion and consolidate on volume contractions). In contrast, negative price-volume correlation indicates heavy distribution and institutional dumping. Measuring the 60-day rolling correlation (ts_corr(returns, volume, 60)) identifies equities under steady institutional accumulation. Measuring correlation over a 60-day window keeps turnover smooth and low (~12%-16%), directly driving Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Index arbitrage program trading skewing daily volume without directional conviction",
+        "Short squeeze spikes creating transient volume-return spikes"
+      ],
+      "falsification_test": "Alpha breaks down if positive price-volume correlation indicates retail FOMO top rather than institutional accumulation.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_corr(returns, volume, 60), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 60-day rolling correlation between returns and volume with 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "120-Day Negative Return Skewness / Anti-Lottery Anomaly (pv1)",
+      "domain": "return_distribution_tail_risk",
+      "economic_rationale": "Directly activates the unmined ts_skewness operator from Finding Alphas (Chapter 22). Retail investors overpay for equities with positive return skewness (lottery-like payoff profiles with occasional extreme positive spikes), leading to depressed subsequent returns. Conversely, equities with negative return skewness trade at an empirical risk discount and deliver superior forward risk-adjusted returns. Going long low-skewness compounders (-ts_skewness(returns, 120)) systematically harvests this tail-risk anomaly. The 120-day rolling window enforces ultra-low turnover (~8%-12%), with zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Hidden left-tail disaster risk in highly leveraged equities",
+        "Regime changes from low-volatility compounding into high-volatility crashes"
+      ],
+      "falsification_test": "Alpha underperforms if high-skewness speculative growth equities systematically outperform disciplined low-skewness compounders.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(ts_skewness(returns, 120), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral negative 120-day return skewness with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

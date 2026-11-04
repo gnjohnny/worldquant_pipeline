@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Book-to-Price Valuation Extremes (Finding Alphas Ch 19 & 20)",
+      "domain": "fundamental_balance_sheet_valuation",
+      "economic_rationale": "Directly implements the classic Book-to-Price value anomaly from Finding Alphas (Chapters 19 & 20, Fama & French 1992). Book value per share (bookvalue_ps) represents the accounting net worth of the equity. Evaluating the 180-day time-series rank of Book-to-Price (ts_rank(bookvalue_ps / close, 180)) captures historical valuation extremes when an equity is priced at an extreme discount relative to its own 6-month historical norm. Because fundamental updates occur quarterly, turnover is inherently disciplined (12%-16%), directly unlocking the Tulchinsky Fitness multiplier (Fitness >= 1.50). Completely unmined in the approved portfolio with guaranteed low self-correlation (<= 0.45).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Intangible asset intensity biasing reported accounting book equity in technology sectors",
+        "Protracted value trap scenarios in structurally declining industries"
+      ],
+      "falsification_test": "Alpha underperforms during speculative market momentum bubbles where unprofitable growth equities heavily outperform tangible asset value.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(bookvalue_ps, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day time-series rank of Book-to-Price with short-term price reversal hedge",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Net Working Capital Liquid Buffer (Finding Alphas Ch 19, Page 162)",
+      "domain": "fundamental_working_capital_solvency",
+      "economic_rationale": "Directly implements the Net Working Capital Solvency Buffer from Finding Alphas (Chapter 19, Page 162). Evaluates short-term liquidity safety by subtracting short-term debt obligations from cash reserves ((cash_st - debt_st) / (assets + 1000)). Firms maintaining expanding net liquid buffers possess a structural shield against refinancing shocks and credit tightening, enabling steady operational compounding that is systematically underpriced by short-horizon equity markets. Zero approved alphas in the database.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Inefficient capital allocation and cash hoarding dragging return on equity",
+        "Short-term working capital swings from lumpy commercial contracts"
+      ],
+      "falsification_test": "Alpha fails if low-cash, high-debt leveraged equities outperform liquid peers during periods of rapid interest rate cuts.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(cash_st - debt_st, 60) / (ts_backfill(assets, 60) + 1000), 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day rank of net liquid working capital cushion normalized by total assets",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Free Cash Flow Yield & Capex Solvency (Finding Alphas Ch 19, Page 164)",
+      "domain": "fundamental_free_cash_flow",
+      "economic_rationale": "Directly implements True Operational Free Cash Flow from Finding Alphas (Chapter 19, Page 164). Capital expenditures are non-negotiable cash outflows required to maintain productive assets. Subtracting capex from operating income (operating_income - capex) isolates true discretionary free cash flow before financial engineering. Normalizing by stock price and evaluating its 180-day channel captures multi-month free cash flow yield inflection points. Capex has 0 approved alphas in database, guaranteeing self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Lumpy multi-year capital expenditure cycles creating temporary FCF deficits in capital-intensive firms",
+        "Asset sales temporarily boosting operating income"
+      ],
+      "falsification_test": "Alpha degrades if high-capex firms successfully monetize growth investments ahead of consensus expectations.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(operating_income - capex, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day rank of free cash flow yield (operating income minus capex over price)",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

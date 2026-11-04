@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Style Pentagon Quality & Valuation Synergy (model16)",
+      "domain": "fundamental_multi_factor_style",
+      "economic_rationale": "Directly activates WorldQuant BRAIN dataset model16 (Fundamental Scores), which currently has 0 approved alphas in our portfolio. Implements the classic Quality-at-a-Reasonable-Price (GARP) anomaly from Finding Alphas (Chapters 19 & 20). High balance sheet resilience and debt sustainability (fscore_bfl_quality) combined with discounted valuation (fscore_bfl_value) isolates compounding cash-generative equities priced at an attractive peer discount. Using signed_power concentrates conviction on extreme style deciles while subduing noise, driving turnover down to 12%-18% to maximize the Tulchinsky Fitness multiplier.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Style rotation into unprofitable speculative tech during high-beta market rallies",
+        "Protracted distress in capital-intensive value firms"
+      ],
+      "falsification_test": "Alpha underperforms during speculative junk rallies where distressed, low-quality balance sheets outrun defensive compounders.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(0.60 * group_rank(fscore_bfl_quality, industry) + 0.40 * group_rank(fscore_bfl_value, industry), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral blend of pentagon quality and valuation scores with short-term reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Options Synthetic Forward Implied Premium (option9)",
+      "domain": "options_analytics_forward_parity",
+      "economic_rationale": "Directly activates WorldQuant BRAIN dataset option9 (Options Analytics), which has 0 approved alphas in our portfolio. Evaluates the synthetic forward price (forward_price_180) established by market makers through arbitrage-free put-call parity. The normalized forward basis ((forward_price_180 - close) / close) reflects forward term structure expectations and institutional call skew demand. Stocks exhibiting high forward basis relative to industry peers benefit from institutional positioning tailwinds.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "High dividend yields artificially depressing theoretical forward price relative to spot",
+        "Short borrow fees widening the forward repo basis"
+      ],
+      "falsification_test": "Alpha breaks down if elevated forward basis is driven exclusively by hard-to-borrow short squeeze dynamics rather than institutional conviction.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((forward_price_180 - close) / close, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day synthetic forward price basis with short-term price reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Cash Flow Consensus Forecast Drift (analyst4)",
+      "domain": "analyst_forecast_drift",
+      "economic_rationale": "Directly activates unmined fields in dataset analyst4. Sell-side equity analysts produce consensus forecasts of annual cash flow per share (anl4_afv4_cfps_median). Because analysts update models gradually due to career risk and anchoring bias, consensus revisions drift systematically (Finding Alphas Ch 18). Normalizing forward median CFPS expectations by stock price and measuring its 180-day channel rank captures institutional expectation upgrades, with zero self-correlation against historical submissions.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Stale analyst forecasts in illiquid or thinly covered small caps",
+        "One-off working capital releases distorting cash flow projections"
+      ],
+      "falsification_test": "Alpha fails if consensus cash flow forecasts consistently lag backward-looking headline earnings releases.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)",
+          "rationale": "Industry-neutral 180-day channel rank of consensus median cash flow per share forecast yield",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

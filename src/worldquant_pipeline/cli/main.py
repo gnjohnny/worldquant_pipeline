@@ -683,7 +683,7 @@ def generate_v2(
     max_risk: Annotated[
         float,
         typer.Option("--max-risk", "-r", help="Maximum allowable correlation risk against approved alphas"),
-    ] = 0.65,
+    ] = 0.40,
     auto_ingest: Annotated[
         bool,
         typer.Option("--ingest/--no-ingest", help="Automatically register candidates into PostgreSQL memory"),

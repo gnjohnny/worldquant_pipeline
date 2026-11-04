@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Autonomous Domestic Operating EBIT Revision Momentum (fnd2_ebitdm) (fundamental)",
+      "domain": "domestic_operating_profitability_momentum",
+      "economic_rationale": "Directly eliminates the self-correlation bottleneck from Batch 165 Candidate 2 (which achieved Sharpe 1.91, Fitness 1.59, Sub-universe Sharpe 1.81, and Turnover 12.61%, but failed self-correlation due to the shared fn_oth_income_loss overlay). By replacing the external accrual overlay with an autonomous 60-day domestic operating yield revision momentum term (ts_delta(ts_backfill(fnd2_ebitdm, 60) / close, 60)) modeled on approved alpha 0c4d2fa0, the formula is 100% self-contained. Domestic EBIT isolates resilient domestic cash generation from foreign exchange distortions. Turnover is locked in the 12%-14% sweet spot, preserving Sharpe >= 1.80 and Fitness >= 1.55 while cutting self-correlation to <= 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Domestic economic recessions disproportionately affecting domestically focused firms",
+        "Cost-push inflation squeezing domestic margins faster than multinational exporters"
+      ],
+      "falsification_test": "Alpha breaks down if domestic operating earnings momentum fails to outperform broader market earnings over subsequent 20-day holding windows.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), industry) - 0.5, 2) + 0.20 * group_rank(ts_delta(ts_backfill(fnd2_ebitdm, 60) / close, 60), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day rank of domestic operating EBIT with 60-day yield delta revision momentum and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Autonomous Forward Consensus Dividend Revision Momentum (anl4_afv4_div_median) (analyst4)",
+      "domain": "analyst_consensus_dividend_yield_momentum",
+      "economic_rationale": "Directly eliminates the self-correlation bottleneck from Batch 165 Candidate 1 (which achieved Sharpe 1.82, Fitness 1.62, Sub-universe Sharpe 1.56, and Turnover 12.31%, but collided on self-correlation at 0.8642). In Batch 163, standalone anl4_afv4_div_median exhibited zero self-correlation warnings (0.00). By replacing the external accrual overlay with the autonomous 60-day dividend yield delta (ts_delta(ts_backfill(anl4_afv4_div_median, 60) / close, 60)), the alpha captures institutional dividend revision momentum without borrowing correlation from any other alpha in the portfolio. Turnover remains in the ~12%-14% sweet spot, driving Fitness >= 1.55 with near-zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad macroeconomic interest rate shocks altering relative dividend attractiveness",
+        "Dividend cuts in highly leveraged cyclical equities"
+      ],
+      "falsification_test": "Alpha underperforms if upward dividend forecast revisions fail to generate positive price drift over 20-day holding windows.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_div_median, 60) / close, 180), industry) - 0.5, 2) + 0.20 * group_rank(ts_delta(ts_backfill(anl4_afv4_div_median, 60) / close, 60), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day rank of consensus dividend yield with 60-day yield delta revision momentum and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Autonomous Forward Consensus Book-to-Price Revision Momentum (anl4_bvps_median) (analyst4)",
+      "domain": "forward_consensus_book_yield_momentum",
+      "economic_rationale": "Directly eliminates the self-correlation bottleneck from Batch 165 Candidate 3 (which achieved Sub-universe Sharpe 1.29 and Turnover 14.28%, but hit 0.736 self-correlation). In Batch 163, standalone anl4_bvps_median had zero self-correlation warnings (0.00). By substituting the external accrual overlay with the autonomous 60-day forward book value yield delta (ts_delta(ts_backfill(anl4_bvps_median, 60) / close, 60)), the alpha captures positive consensus equity growth revisions while decoupling from other value alphas. Turnover is disciplined at ~12%-14%, targeting Fitness >= 1.50 with self-correlation <= 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unforeseen asset impairments not yet recognized in analyst book estimates",
+        "Disruptive technology shifts eroding historical tangible asset values"
+      ],
+      "falsification_test": "Alpha fails if consensus book value upward revisions correlate with value traps rather than compounding businesses.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) / close, 180), industry) - 0.5, 2) + 0.20 * group_rank(ts_delta(ts_backfill(anl4_bvps_median, 60) / close, 60), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral 180-day rank of consensus book-to-price with 60-day yield delta revision momentum and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

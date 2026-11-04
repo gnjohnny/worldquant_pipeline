@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Call-Put Implied Volatility Spread (Finding Alphas Ch 23)",
+      "domain": "options_volatility_spread",
+      "economic_rationale": "Directly implements the Options Volatility Spread anomaly from Finding Alphas (Chapter 23, Footnote 3, Cremers & Weinbaum 2010). Under put-call parity, at-the-money calls and puts should trade at identical implied volatilities. In practice, institutional informed traders with positive expectations aggressively buy calls, driving call IV above put IV (vol_spread = IV_call - IV_put). Stocks with higher call-implied volatility systematically outperform those with lower call IV by over 50 bps per week. Paired with a short-term price reversal buffer.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Dividend capture strategies skewing near-term call implied volatility",
+        "Short squeeze dynamics artificially inflating call option premiums"
+      ],
+      "falsification_test": "Alpha fails if higher call implied volatility reflects retail lottery buying rather than institutional flow.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_30, 60) - ts_backfill(implied_volatility_put_30, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "30-day ATM call-minus-put implied volatility spread with 5-day price reversal hedge",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Intermediate Trend with Microstructure Reversal (Finding Alphas Ch 18 & 21)",
+      "domain": "price_momentum_and_reversion",
+      "economic_rationale": "Directly implements the classic momentum-reversion dichotomy detailed in Finding Alphas (Chapter 18 & 21, Jegadeesh & Titman 1993). Prices exhibit strong mean-reversion over short 1- to 5-day horizons due to liquidity provision friction, but exhibit robust trend continuation over 2- to 3-month horizons due to gradual institutional information diffusion. Measuring the intermediate 60-day trend skipping the most recent 5 days ((ts_delay(close, 5) - ts_delay(close, 60)) / close) isolates pure institutional drift free from short-term overreaction.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad market trend inflection points and sharp market-wide regime reversals",
+        "Earnings announcement gaps resetting intermediate price trends"
+      ],
+      "falsification_test": "Alpha underperforms during broad market volatility spikes when momentum crashes occur.",
+      "candidates": [
+        {
+          "expression": "0.80 * signed_power(group_rank((ts_delay(close, 5) - ts_delay(close, 60)) / close, subindustry) - 0.5, 2) - 0.20 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Lagged 60-day intermediate trend skipping 5 days paired with 3-day short-term reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Composite Style Factor Acceleration (Finding Alphas Ch 19, 20 & 31)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "Directly implements multi-factor style acceleration from Finding Alphas (Chapters 19, 20 & 31). WorldQuant BRAIN's composite_factor_score_derivative integrates earnings quality, cash conversion efficiency, and multi-factor revision momentum across 100% of the TOP3000 universe. Evaluating the cross-sectional rank of this derivative identifies turning points in corporate fundamental health before headline financial reporting, providing a completely pristine, low-turnover fundamental anchor with 0 approved alphas in the database.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Protracted macro recessions delaying fundamental earnings realization",
+        "Discrepancies in corporate reporting calendars across different fiscal quarters"
+      ],
+      "falsification_test": "Alpha fails if speculative non-profitable growth stocks outperform high-quality style leaders.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(composite_factor_score_derivative, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Subindustry-neutral composite factor score derivative with short-term price reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "VWAP Range-Normalized Mean Reversion (10d Linear Decay)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Equities closing significantly below their volume-weighted average price (vwap - close > 0) experience institutional mean-reversion over the subsequent 1 to 5 trading days as order flow imbalances clear. Normalizing by daily true range (high - low + close * 0.0001) insulates against volatility shocks, while 10-day linear decay compresses turnover into the optimal 11%-15% sweet spot, capturing the +2.03 inverted Sharpe discovered in empirical testing.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Severe fundamental news shocks causing persistent institutional liquidation below VWAP",
+        "Wide bid-ask spreads in illiquid equities distorting closing print vs VWAP"
+      ],
+      "falsification_test": "Inverts during catastrophic macroeconomic sell-off days where gap-down selling accelerates into market close.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((vwap - close) / (high - low + close * 0.0001), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Bar Direction Mean Reversion (10d Linear Decay)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "In US equities, intraday momentum overshoots: securities closing higher than their open (close > open) suffer overnight and next-day price fading as day traders and fast money take profits. Buying equities that closed below their open (open - close > 0) exploits this intraday exhaustion. The inverted formulation directly converts the -1.38 Sharpe observed in Batch 176 into an expected +1.38 Sharpe with +0.97 Sub-universe Sharpe.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Strong multi-day momentum breakouts supported by institutional block buying",
+        "Pre-market earnings gaps that dictate entire day-to-day returns"
+      ],
+      "falsification_test": "Fails during aggressive multi-day trend rallies where opening prints mark the intraday lows consistently.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((open - close) / (high - low + close * 0.0001), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "3-Day True-Range Multi-Day Price Displacement Reversal",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Short-term 3-day price displacements scaled by 10-day average true range isolate overextended momentum spikes. Market makers demand reversion compensation for absorbing inventory during aggressive short-term directional runs. Subindustry ranking isolates stock-specific overextension, while 8-day decay maintains optimal turnover of ~12%.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Persistent fundamental earnings drift following major guidance raises",
+        "M&A buyout rumors preventing post-spike mean reversion"
+      ],
+      "falsification_test": "Inverts during structural momentum regime shifts where 3-day winners continue accelerating.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - ts_delay(close, 3)) / (ts_mean(high - low, 10) + close * 0.0001), 8), subindustry)"
+        }
+      ]
+    }
+  ]
+}

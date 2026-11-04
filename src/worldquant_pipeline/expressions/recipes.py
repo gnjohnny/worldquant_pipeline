@@ -144,10 +144,11 @@ class AlphaRecipeGenerator:
     def vector_orthogonal_residual(
         factor_signal: str,
         factor_benchmark: str,
+        lookback: int = 60,
         group: str = "subindustry",
     ) -> str:
-        """Create an orthogonal residual alpha via vector_neut(signal, benchmark)."""
-        orthogonal = f"vector_neut({factor_signal}, {factor_benchmark})"
+        """Create an orthogonal residual alpha via ts_regression residual (rettype=2)."""
+        orthogonal = f"ts_regression({factor_signal}, {factor_benchmark}, {lookback})"
         return f"group_rank({orthogonal}, {group})"
 
     @staticmethod

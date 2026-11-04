@@ -38,7 +38,7 @@ class TestCrossDatasetEngine:
 
         for key, arch in engine.archetypes.items():
             assert arch.key == key
-            assert arch.primary_dataset != arch.secondary_dataset or arch.primary_dataset in {"analyst4", "fundamental"}
+            assert arch.primary_dataset != arch.secondary_dataset or arch.primary_dataset in {"analyst4", "fundamental", "model16", "pv1"}
             expr = arch.generator()
             assert isinstance(expr, str)
             assert len(expr) > 20

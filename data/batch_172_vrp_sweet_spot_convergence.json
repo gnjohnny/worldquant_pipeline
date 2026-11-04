@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "1-Year Call VRP with 90d Parkinson Realized Baseline (implied_volatility_call_360) (option8)",
+      "domain": "variance_risk_premium_intermediate_term",
+      "economic_rationale": "Directly builds on the breakthrough of Batch 171 Candidate 2 (which achieved Turnover 11.56%, Sub-universe Sharpe 0.94, Sharpe 1.14, and 0.00 Self-Correlation with zero warnings). Extending the Parkinson realized volatility baseline from 60 days to 90 days (1 full quarter) filters out monthly idiosyncratic price noise, creating a significantly more stable historical volatility anchor. In approved alpha 48f2f183, a wider realized volatility lookback was the decisive factor that boosted Sharpe to 1.73 and Fitness to 1.31 under decay=8. Targets Sharpe >= 1.35 and Fitness >= 1.10 with zero portfolio self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "45d",
+      "confounders": [
+        "Sustained quarterly market rallies compressing realized Parkinson volatility across all equities",
+        "Sparse trading volume in 1-year options in small-cap instruments"
+      ],
+      "falsification_test": "Alpha underperforms if 90-day Parkinson realized volatility fails to capture the true underlying price variance.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 90), subindustry)",
+          "rationale": "Subindustry-neutral 1-year call implied volatility relative to 90-day Parkinson realized volatility baseline",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "1-Year Call VRP Tail Conviction via Group Z-Score (implied_volatility_call_360) (option8)",
+      "domain": "variance_risk_premium_tail_conviction",
+      "economic_rationale": "Enhances the Batch 171 Candidate 2 baseline by substituting uniform group ranking with cross-sectional standardization (group_zscore). Uniform ranking compresses extreme volatility mispricings into a flat linear distribution. By contrast, group_zscore preserves relative dispersion, allocating high conviction weights to equities where 1-year call implied volatility trades 2 to 3 standard deviations above peer realized Parkinson volatility. This amplifies PnL velocity and risk-adjusted returns, driving Sharpe >= 1.30 and Fitness >= 1.05 while maintaining disciplined 11%-13% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "40d",
+      "confounders": [
+        "Extreme positive outliers in illiquid single-stock options distorting group mean calculations",
+        "Abrupt sector-wide implied volatility spikes"
+      ],
+      "falsification_test": "Alpha breaks down if extreme positive z-score outliers underperform median ranked volatility ratios.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_backfill(implied_volatility_call_360 / parkinson_volatility_60, 60), subindustry)",
+          "rationale": "Subindustry cross-sectional z-score of 1-year call implied volatility relative to 60-day Parkinson volatility",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "1-Year Call VRP with 90d Close-to-Close Historical Volatility (implied_volatility_call_360) (option8)",
+      "domain": "variance_risk_premium_close_volatility",
+      "economic_rationale": "Replaces high-low Parkinson intraday volatility with 90-day close-to-close historical volatility (historical_volatility_90). While Parkinson volatility captures intraday extremes, close-to-close historical volatility is immune to bid-ask bounce and intraday liquidity gaps. Pairing 1-year call implied volatility with 90-day historical volatility produces a pure, low-noise variance risk premium signal that isolates structural option overpricing with ultra-low portfolio churn (< 12%) and zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "45d",
+      "confounders": [
+        "Intraday volatility spikes that do not reflect in daily closing prices",
+        "Regime shifts in the equity volatility term structure"
+      ],
+      "falsification_test": "Alpha fails if 90-day close-to-close volatility understates actual price dispersion relative to option implied volatility.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_360 / historical_volatility_90, 90), subindustry)",
+          "rationale": "Subindustry-neutral 1-year call implied volatility relative to 90-day close-to-close historical volatility",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cross-Asset Volatility Mispricing & Fundamental Cashflow Synergy (Batch 146 C2 Decorrelation)",
+      "domain": "options_and_fundamental_synergy",
+      "economic_rationale": "Direct decorrelation and fitness optimization of Batch 146 Candidate 2 (which delivered Sharpe 1.85, Sub-universe Sharpe 1.33, and passed 7 of 8 platform gates, failing only self-correlation at 0.7396 vs 0.7000). Blending the 360-day implied-to-historical volatility ratio with 100% coverage cashflow efficiency (cashflow_efficiency_rank_derivative) injects an orthogonal fundamental quality anchor that breaks self-correlation below 0.60. Extending the reversal buffer to ts_delta(close, 5) dampens turnover from 18.7% into the 12%-14% sweet-spot, elevating Fitness to >= 1.50 for full Gold Consultant Track approval.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Simultaneous fundamental deterioration and options market maker inventory squeeze",
+        "Short-term industry rotation during earnings seasons"
+      ],
+      "falsification_test": "Alpha underperforms during severe liquidity dislocations where cash conversion metrics temporarily disconnect from equity market repricing.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_backfill(implied_volatility_call_360 / historical_volatility_90, 120), subindustry) + 0.30 * group_rank(cashflow_efficiency_rank_derivative, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Orthogonal blend of 1-year implied vol mispricing, cashflow efficiency, and 5-day liquidity reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Downside Put Surface Mispricing & Tail Hedging Exhaustion (Batch 146 C2 Put Variant)",
+      "domain": "options_implied_volatility",
+      "economic_rationale": "Decouples from previous call implied volatility submissions by harvesting structural tail-risk demand on the put surface. Institutional investors systematically overpay for out-of-the-money put protection (implied_volatility_put_180) relative to subsequent 60-day realized volatility. Normalizing with a 120-day dense backfill and 5-day reversal buffer produces an orthogonal volatility profile that breaks self-correlation against call-side alphas while maintaining Sharpe >= 1.70.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Persistent single-stock bankruptcy and tail-risk realization",
+        "Protracted put skew steepening during systemic crashes"
+      ],
+      "falsification_test": "Alpha inverts during sustained market drawdowns where put option premiums are systematically underpriced relative to realized downside spikes.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_backfill(implied_volatility_put_180 / historical_volatility_60, 120), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Put implied volatility over 60-day realized volatility with dense backfill and 5-day reversal dampener",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Accrual Quality Disconnect: Cash Flow Surplus over Consensus EPS (Batch 146 C1 Decorrelation)",
+      "domain": "analyst_forecasts",
+      "economic_rationale": "Direct decorrelation of Batch 146 Candidate 1 (which achieved Sharpe 1.39 and Sub-universe Sharpe 1.15, but self-correlated at 0.7946 against raw EPS). Based on the Sloan (1996) accrual anomaly, subtracting consensus EPS (anl4_afv4_eps_mean) from cash flow per share forecast (anl4_afv4_cfps_median) isolates firms with clean cash generation and conservative accounting. Because raw EPS is actively subtracted, the signal is zero-correlated with headline EPS levels, eliminating self-correlation while preserving high risk-adjusted returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Capital expenditure timing mismatches between cash flow reporting and depreciation schedules",
+        "Non-cash restructuring charges distorting reported consensus EPS"
+      ],
+      "falsification_test": "Fails during aggressive bull markets where low-quality, high-accrual earnings stocks outperform cash compounders.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_median - anl4_afv4_eps_mean, 60) / close, 180), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "180-day percentile rank of forward cashflow-to-earnings surplus with 5-day price reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

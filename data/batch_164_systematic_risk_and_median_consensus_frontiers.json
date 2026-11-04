@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "90-Day Systematic Market Beta Discount (beta_last_90_days_spy) (model51)",
+      "domain": "systematic_risk_low_beta_anomaly",
+      "economic_rationale": "Directly implements the celebrated Low-Beta Anomaly (Black 1972, Frazzini & Pedersen 2014, Finding Alphas Chapters 15 & 23). Leverage-constrained institutional and retail investors seeking market upside bid up high-beta equities, leading to systematic overvaluation and depressed forward risk-adjusted returns. Conversely, stable low-beta equities offer superior risk-adjusted returns and persistent alpha when cross-sectionally ranked within industries. Rolling 90-day beta provides smooth, disciplined turnover (~10%-14%), with zero approved alphas in our database utilizing this field, guaranteeing self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden speculative momentum surges favoring high-beta distressed equities",
+        "Regime shifts in market interest rates compressing equity risk premia"
+      ],
+      "falsification_test": "Alpha breaks down if high-beta equities systematically generate higher risk-adjusted returns than defensive low-beta peers.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(beta_last_90_days_spy, industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral inverse 90-day SPY beta with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Robust Median Consensus Net Income Yield (adj_net_income_median) (analyst4)",
+      "domain": "forward_consensus_earnings_yield",
+      "economic_rationale": "Applies consensus forward earnings yield using the median forecast (adj_net_income_median) rather than the arithmetic mean. Sell-side analyst forecasts frequently suffer from extreme positive outliers due to investment banking underwriting incentives. The median forecast is mathematically robust to outliers, accurately reflecting true institutional consensus. Equities exhibiting elevated median consensus net income yields relative to price experience persistent post-revision drift, driving high Sharpe and Fitness with disciplined low turnover (~12%-15%).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad macroeconomic recessions triggering synchronized downward estimate revisions",
+        "Accounting restatements altering adjusted net income definitions"
+      ],
+      "falsification_test": "Alpha fails if equities with high median consensus net income yield underperform peers due to unmodeled earnings quality degradation.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(adj_net_income_median, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 180-day rank of forward median net income yield with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "90-Day Market Log-Return Correlation Discount (correlation_last_90_days_spy) (model51)",
+      "domain": "systematic_decoupling_tail_risk",
+      "economic_rationale": "Directly harvests the Idiosyncratic Decoupling Anomaly (Ang, Chen, Xing 2006, Finding Alphas Chapter 15). Equities with high correlation to SPY are vulnerable to synchronized macro liquidations and market-wide beta dumps. In contrast, equities with low rolling correlation to SPY exhibit strong idiosyncratic pricing power, independent capital allocation, and higher risk-adjusted compounding. Ranking on 90-day correlation isolates structurally decoupled compounders, generating low turnover (~10%-14%) and ultra-low portfolio self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Idiosyncratic operational catastrophes masking as low market correlation",
+        "Market-wide liquidity freezes forcing correlation towards 1.0"
+      ],
+      "falsification_test": "Alpha underperforms if low-correlation equities suffer idiosyncratic tail losses that negate portfolio diversification benefits.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(correlation_last_90_days_spy, industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral inverse 90-day SPY correlation with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

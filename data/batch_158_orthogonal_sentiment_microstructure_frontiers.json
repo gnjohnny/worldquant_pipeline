@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Sentiment Put-Call Open Interest Contrarian Imbalance (option)",
+      "domain": "options_sentiment_positioning",
+      "economic_rationale": "Directly activates the aggregated options sentiment domain (pcr_oi_all) across all maturities, which currently has 0 approved alphas in our database. Put-Call open interest ratios measure structural market participant hedging and speculation. When pcr_oi_all is low (long calls / bullish institutional sentiment), institutional smart money is positioning for upside drift. Conversely, excessive put open interest represents over-hedged panic. Using -pcr_oi_all with signed_power concentrates conviction on equities with aggressive bullish call positioning and low put-hedging drag, with 0% self-correlation against fundamental and call-IV approved alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Index arbitrage programs skewing single-stock options open interest",
+        "Dividend capture trades generating artificial call open interest"
+      ],
+      "falsification_test": "Alpha fails if elevated call open interest is driven purely by covered call selling rather than directional institutional call buying.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-pcr_oi_all, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral contrarian negative put-call open interest ratio with 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Microstructure Volume-Weighted Liquidity Shock Reversal (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Directly activates intraday microstructure price-volume interactions using close, vwap, volume, and adv20. When an equity's closing price deviates substantially from its volume-weighted average price ((close - vwap) / close) accompanied by an abnormal volume burst (volume / (adv20 + 1)), institutional or retail market orders have temporarily overwhelmed local liquidity. Microstructure liquidity providers earn excess returns by taking the opposing side as prices revert to intrinsic volume-weighted fair value over 3 days. 100% instrument coverage across TOP3000 guarantees zero weight concentration issues and zero correlation to balance sheet fundamentals.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Fundamental regime-change news causing permanent structural re-pricing rather than temporary liquidity dislocation",
+        "Merger arbitrage announcement gaps"
+      ],
+      "falsification_test": "Alpha breaks down during sustained one-way momentum trends where high-volume price moves experience continuous trend continuation.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank((close - vwap) / close * (volume / (adv20 + 1)), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)",
+          "rationale": "Industry-neutral volume-weighted price deviation shock reversal with 3-day short-term momentum hedge",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Options Put IV Term Structure Slope / Tail Risk Reversal (option8)",
+      "domain": "options_put_volatility_surface",
+      "economic_rationale": "Directly activates the put implied volatility surface (implied_volatility_put_180 and implied_volatility_put_30), which has 0 approved alphas in our database (all historical approved options alphas used call IVs). In calm markets, options trade in contango where 180-day put IV exceeds 30-day put IV. Acute panic events cause short-term put IV to spike above 180-day put IV (inversion/backwardation). Measuring the term structure slope ((implied_volatility_put_180 - implied_volatility_put_30) / (implied_volatility_put_30 + 0.001)) identifies stocks where short-term crash insurance is cheap relative to long-term baseline, delivering robust alpha with zero overlap to historical call IV alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Imminent quarterly earnings releases creating justifiable short-term put volatility spikes",
+        "Broad equity market systemic volatility contagion"
+      ],
+      "falsification_test": "Alpha fails if short-term put IV spikes accurately anticipate catastrophic bankruptcy or litigation events.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((implied_volatility_put_180 - implied_volatility_put_30) / (implied_volatility_put_30 + 0.001), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral put implied volatility term structure contango with 5-day price reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

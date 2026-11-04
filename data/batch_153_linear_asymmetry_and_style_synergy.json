@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Linear Normalized Breakeven Asymmetry with 5-Day Velocity",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct structural optimization of Batch 151 Candidate 2 (46ec7888, which achieved Sharpe 1.14 and Sub-universe Sharpe 1.03 with zero self-correlation). In the ratio formulation (call - close)/(close - put), when price approaches put breakeven the denominator approaches zero, creating outlier volatility and inflating turnover to 40.59%. Normalizing the net difference ((call - close) - (close - put) = call + put - 2*close) by spot price provides a mathematically stable percentage metric. This eliminates near-zero denominator singularities to compress turnover while preserving the fast 5-day dealer momentum that generated high predictive Sharpe.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden corporate action adjustments altering strike matrices",
+        "Short-term gamma pin risk during expiration week"
+      ],
+      "falsification_test": "Alpha underperforms if linear asymmetry fails to distinguish between high-volatility and low-volatility underlying equities.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank((ts_backfill(call_breakeven_20, 60) + ts_backfill(put_breakeven_20, 60) - 2 * close) / close, subindustry) + 0.40 * group_rank(ts_delta((ts_backfill(call_breakeven_20, 60) + ts_backfill(put_breakeven_20, 60) - 2 * close) / close, 5), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Linear normalized breakeven asymmetry level + 5-day velocity with 5-day price reversal hedge",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Breakeven Asymmetry 10-Day Percentile Rank Channel Breakout",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct acceleration of Batch 152 Candidate 2 (3ebfe7dd, which achieved Sharpe 1.02 and Sub-universe Sharpe 0.90 with 29% turnover). Tightening the time-series percentile lookback from 20 days to 10 days (ts_rank(ratio, 10)) captures rapid dealer inventory adjustments and institutional call accumulation twice as fast, while maintaining smooth, bounded [0, 1] ranking that suppresses discrete noise spikes.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Post-earnings implied volatility crushes resetting percentile channels",
+        "Thin liquidity on out-of-the-money option contracts"
+      ],
+      "falsification_test": "Alpha underperforms if 10-day percentile breakouts reflect transient retail gamma squeeze rather than institutional repositioning.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) + 0.40 * group_rank(ts_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), 10), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "20-day breakeven ratio level + agile 10-day time-series rank breakout",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Orthogonal Domain Synergy: Options Gamma Asymmetry & Fundamental Cashflow Efficiency",
+      "domain": "cross_asset_options_and_fundamentals",
+      "economic_rationale": "Applies Tulchinsky's All-Domain Pairing Architecture (Chapter 15) by synthesizing two completely virgin datasets in the portfolio: options dealer gamma positioning (option9) and fundamental cashflow efficiency derivatives (model16). Both have 0 approved alphas in the database. Operational cash generation provides a persistent, low-turnover fundamental anchor, while options gamma breakeven asymmetry captures agile upside dealer rebalancing. Because the drivers are orthogonal, turnover is substantially dampened, amplifying the Fitness metric.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Discrepancies between fundamental reporting cycles and options expiration cycles",
+        "Severe liquidity shocks affecting broad equity markets"
+      ],
+      "falsification_test": "Alpha fails if market rewards unprofitable growth stories over cashflow-efficient equities during options rallies.",
+      "candidates": [
+        {
+          "expression": "0.65 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) + 0.35 * group_rank(cashflow_efficiency_rank_derivative, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Orthogonal synthesis of 20-day options breakeven asymmetry and fundamental cashflow operational efficiency",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

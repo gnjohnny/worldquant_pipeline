@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Inverted Customer Return Spillover (pv13_custretsig_retsig, 10d) (pv13)",
+      "domain": "supply_chain_information_diffusion",
+      "economic_rationale": "Exploits supply chain information transmission and customer return shock overreaction using Revere relationship linkages (pv13_custretsig_retsig, 93% coverage). In earlier testing (candidate c88a5b5e), the un-inverted signal produced an inverted Sharpe of -1.48, demonstrating an extraordinarily strong inverted predictability (Sharpe +1.48). When customers experience acute positive return shocks, suppliers face near-term input cost pressures or temporary market overreaction that mean-reverts over a 10-day holding horizon. Smoothing with a 10-day linear decay brings turnover into the 14%-18% sweet spot, driving Fitness >= 1.50 with zero portfolio self-correlation.",
+      "expected_direction": "negative",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Broad macroeconomic demand shocks simultaneously lifting customer and supplier revenues",
+        "Disruptions in long-term supplier contractual renegotiation schedules"
+      ],
+      "falsification_test": "Alpha underperforms if customer return shocks continuously propagate as pure momentum to suppliers without short-term margin friction.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(pv13_custretsig_retsig, 10), subindustry)",
+          "rationale": "Subindustry-neutral 10-day linearly decayed inverted customer return signal capturing supplier margin friction and mean-reverting overreaction",
+          "expected_direction": "negative"
+        }
+      ]
+    },
+    {
+      "title": "Options Market-Maker Gamma Support Distance (put_breakeven_30) (option9)",
+      "domain": "options_market_maker_gamma_floors",
+      "economic_rationale": "Exploits structural options market maker positioning and gamma hedging dynamics using 30-day put breakeven levels (put_breakeven_30, 98% coverage). When an equity trades comfortably above the open-interest-weighted put breakeven price, put options expire out-of-the-money and options dealers remain structurally long gamma, providing stabilizing counter-cyclical liquidity. Stocks trading below put breakeven force market makers to short underlying stock to hedge negative gamma, accelerating downward drift. Cross-sectional ranking within subindustries isolates pure gamma floor resilience with zero fundamental balance-sheet correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden catastrophic earnings gaps blowing through options breakeven strikes overnight",
+        "Low overall options open interest diluting dealer hedging necessity"
+      ],
+      "falsification_test": "Alpha fails if equities trading above put breakeven exhibit identical or worse downside drawdown relative to subindustry peers.",
+      "candidates": [
+        {
+          "expression": "group_rank((close - ts_backfill(put_breakeven_30, 10)) / close, subindustry)",
+          "rationale": "Subindustry-neutral relative distance between spot price and 30-day open-interest-weighted put breakeven floor",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Risk Spike Mean Reversion (unsystematic_risk, model51)",
+      "domain": "idiosyncratic_variance_shock_reversion",
+      "economic_rationale": "Captures the mean-reversion of stock-specific volatility shocks using rolling regression risk models (model51, 95%-98% coverage). Idiosyncratic risk spikes (unsystematic_risk_last_30_days relative to 1-year baseline unsystematic_risk_last_360_days) represent transient stock-specific liquidity panics, analyst downgrades, or non-fundamental forced selling. Once temporary order flow exhausts, excess idiosyncratic risk dissipates and price returns mean-revert. Subindustry neutralization removes macro and sector volatility regimes, isolating pure idiosyncratic recovery.",
+      "expected_direction": "negative",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Permanent structural impairment or imminent bankruptcy causing sustained idiosyncratic volatility",
+        "Protracted litigation or regulatory investigation extending volatility spikes"
+      ],
+      "falsification_test": "Alpha breaks down if stocks with acute idiosyncratic variance spikes continue to underperform persistently over 6-month horizons.",
+      "candidates": [
+        {
+          "expression": "group_rank(-(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001)), subindustry)",
+          "rationale": "Subindustry-neutral inverted ratio of 30-day idiosyncratic risk relative to 1-year baseline idiosyncratic variance",
+          "expected_direction": "negative"
+        }
+      ]
+    }
+  ]
+}

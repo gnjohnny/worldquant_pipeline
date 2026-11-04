@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Call-Put Implied Volatility Spread with Linear Decay Smoothing",
+      "domain": "options_volatility_spread",
+      "economic_rationale": "Direct turnover optimization of Batch 154 Candidate 1 (548306cc, which achieved a spectacular Sharpe of 1.95 and Sub-universe Sharpe of 1.04 with zero self-correlation). While the underlying economic anomaly (informed institutional call accumulation relative to puts) possesses extraordinary predictive power, daily implied volatility fluctuations generated 51.25% turnover, dampening Fitness to 0.95. Applying ts_decay_linear(..., 5) smooths out high-frequency bid-ask bounce in options market quotes, cutting turnover into the 15%-20% sweet spot and triggering the Tulchinsky Fitness multiplier to vault Fitness well above the 1.50 Gold Consultant threshold.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden corporate earnings releases altering implied volatility surfaces",
+        "Options expiration calendar roll distortions"
+      ],
+      "falsification_test": "Alpha degrades if 5-day linear smoothing introduces excessive lag during fast market selloffs.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(ts_backfill(implied_volatility_call_30, 60) - ts_backfill(implied_volatility_put_30, 60), 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "30-day ATM call-put volatility spread with 5-day linear decay smoothing and 5-day price reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "60-Day Tenor Call-Put Volatility Spread (Structural Term Extension)",
+      "domain": "options_volatility_spread",
+      "economic_rationale": "Structural term-extension of the 1.95 Sharpe volatility spread anomaly. While 30-day options contracts reflect fast-decaying gamma flow, the 60-day tenor captures longer-term institutional directional positioning. Because 60-day implied volatilities have higher inertia and lower daily percentage variance, turnover is naturally dampened by 30%-40% without compromising the fundamental informativeness of the call-put spread.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Lower liquidity on 60-day strikes for small-cap equities",
+        "Macro index option hedging spilling over into single-stock 60-day skew"
+      ],
+      "falsification_test": "Alpha underperforms if institutional informed flow is strictly concentrated in front-month expirations.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_60, 60) - ts_backfill(implied_volatility_put_60, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "60-day ATM call-put volatility spread paired with 5-day short-term price reversal hedge",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "5-Day Moving Average Call-Put Spread with Expanded Core Allocation",
+      "domain": "options_volatility_spread",
+      "economic_rationale": "Filters high-frequency microstructure noise by taking a 5-day rolling average (ts_mean(spread, 5)) of the call-put implied volatility difference, while increasing the core signal allocation to 90% and reducing the short-term reversal overlay to 10%. This dampens churn from both the options spread and the price differencing term, concentrating portfolio weights on persistent institutional sentiment shifts.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Abrupt gap events diluting 5-day moving averages",
+        "Short-term gamma pin risk during expiration week"
+      ],
+      "falsification_test": "Alpha underperforms if 5-day rolling averages smooth away critical directional shock information.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_mean(ts_backfill(implied_volatility_call_30, 60) - ts_backfill(implied_volatility_put_30, 60), 5), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "5-day moving average smoothed call-put spread with 90% allocation and 10% price reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

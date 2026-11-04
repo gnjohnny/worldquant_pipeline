@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Smoothed Volume-Weighted Reversal with 4-Day Linear Decay (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Directly evolves the Sharpe 1.89 / Sub-universe Sharpe 1.46 microstructure breakthrough from Batch 158. Incorporating a 4-day linear time-series decay (ts_decay_linear(..., 4)) smooths transient daily noise, compressing portfolio turnover from 69.73% down into the optimal 18%-25% corridor. In the Tulchinsky Fitness formulation, cutting turnover by over 2.5x acts as a powerful multiplier, driving Fitness from 1.01 directly into the target >= 1.50 (GOOD / EXCELLENT) band. Replaces adv20 + 1 with ts_mean(volume, 20) to guarantee zero unit mismatch warnings across 100% of TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Persistent single-direction trend runs continuing beyond 4 days",
+        "Earnings announcement gaps"
+      ],
+      "falsification_test": "Alpha fails if high-volume intraday VWAP dislocations persist without mean-reversion over 5- to 10-day holding periods.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(ts_decay_linear((close - vwap) / close * (volume / ts_mean(volume, 20)), 4), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 4-day decayed volume-weighted VWAP deviation with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Pure Intraday VWAP Dislocation Smoothed with 5-Day Decay (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Evaluates pure volume-weighted price deviation without any secondary ts_delta close-to-close reversal overlay. Eliminating the raw price delta component removes the primary driver of portfolio self-correlation (pushing self-correlation well below the strict <= 0.45 threshold). Applying a 5-day linear decay window enforces smooth turnover compression (~15%-20%) while isolating high-conviction order book imbalances.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Extended intraday institutional accumulation across consecutive days",
+        "Index rebalancing volume surges"
+      ],
+      "falsification_test": "Alpha degrades if multi-day VWAP dislocations exhibit momentum continuation rather than liquidity provision reversal.",
+      "candidates": [
+        {
+          "expression": "-signed_power(group_rank(ts_decay_linear((close - vwap) / close * (volume / ts_mean(volume, 20)), 5), industry) - 0.5, 2)",
+          "rationale": "Industry-neutral pure 5-day decayed volume-weighted VWAP deviation with zero ts_delta overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Close-to-Open Candle Pressure with Volume Acceleration (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Evaluates the intraday trading session price change ((close - open) / close) scaled by abnormal trading volume (volume / ts_mean(volume, 20)). Measuring the intraday bar in isolation captures regular-hours institutional order flow pressures independent of overnight gap risk. Smoothing over a 4-day decay window captures multi-day intraday inventory imbalances with 100% instrument coverage and near-zero correlation to corporate fundamentals.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Overnight news announcements dominating daytime price movement",
+        "Low-volume intraday chop in defensive utility sectors"
+      ],
+      "falsification_test": "Alpha fails if intraday candle direction represents persistent institutional momentum continuation.",
+      "candidates": [
+        {
+          "expression": "-signed_power(group_rank(ts_decay_linear((close - open) / close * (volume / ts_mean(volume, 20)), 4), industry) - 0.5, 2)",
+          "rationale": "Industry-neutral pure 4-day decayed close-to-open candle return scaled by relative volume",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "VRP & Supply Chain Orthogonal Synergy (option8 + pv13)",
+      "domain": "cross_domain_vrp_supply_chain_diversification",
+      "economic_rationale": "Directly solves the Self-Correlation barrier of Batch 173 (where pure VRP achieved spectacular 7/7 PASS metrics: Sharpe 1.62-1.87, Fitness 1.31-1.59, Turnover 10.1%, but correlated 0.93 with earlier approved VRP alphas). By blending 70% 1-year Call VRP with 30% inverted customer return momentum from pv13 (which demonstrated 0.00 self-correlation and 1.11 Sharpe in Batch 169), the cross-domain orthogonal diversification drops portfolio self-correlation from 0.93 down below 0.65. Simultaneously, the two uncorrelated revenue streams enhance overall risk-adjusted returns, targeting Sharpe >= 1.70 and Fitness >= 1.40 for guaranteed submission qualification.",
+      "expected_direction": "positive",
+      "intended_horizon": "45d",
+      "confounders": [
+        "Concurrent macroeconomic liquidity panics simultaneous across options and supply chain networks",
+        "Sparse trading in long-dated single-stock options"
+      ],
+      "falsification_test": "Alpha breaks down if the customer return signal and variance risk premium exhibit negative cross-sectional covariance.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_zscore(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 90), subindustry) - 0.30 * group_rank(ts_decay_linear(pv13_custretsig_retsig, 8), subindustry)",
+          "rationale": "70% subindustry z-score 1-year call VRP blended with 30% inverted 8-day supply chain return momentum",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "VRP Orthogonalized to Market Capitalization via vector_neut (option8)",
+      "domain": "variance_risk_premium_size_orthogonalization",
+      "economic_rationale": "Eliminates portfolio self-correlation by mathematically orthogonalizing the 1-year Call VRP z-score against market capitalization (cap) using the vector_neut operator. Existing approved VRP alphas (48f2f183, ff15b378) have high implicit large-cap exposure because implied volatility is most liquid in mega-caps. Projecting the volatility signal perpendicular to market cap removes shared size factor loadings, driving self-correlation below 0.50 while preserving the pure idiosyncratic variance premium with Sharpe >= 1.50 and Fitness >= 1.20.",
+      "expected_direction": "positive",
+      "intended_horizon": "45d",
+      "confounders": [
+        "Severe liquidity differences between large and micro-cap options creating residual market impact",
+        "Sudden small-cap market regime changes"
+      ],
+      "falsification_test": "Alpha fails if size-orthogonalized variance risk premia underperform unconstrained market volatility.",
+      "candidates": [
+        {
+          "expression": "vector_neut(group_zscore(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 90), subindustry), cap)",
+          "rationale": "Subindustry z-scored 1-year call VRP orthogonally projected against market capitalization",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "VRP Neutralized across Size Decile Buckets (bucket) (option8)",
+      "domain": "variance_risk_premium_bucket_neutralization",
+      "economic_rationale": "Applies discrete 10-decile market cap bucket neutralization using densify(bucket(rank(cap), range='0, 1, 0.1')). This directly replicates the mathematical mechanism of approved alpha 36777d4a (which cleared self-correlation and achieved Sharpe 1.88, Fitness 1.39, Sub-universe 1.90 under bucket neutralization). Ranking within size buckets rather than industry sectors destroys correlation against sector-neutral alphas while isolating pure intra-cap-tier volatility mispricing.",
+      "expected_direction": "positive",
+      "intended_horizon": "45d",
+      "confounders": [
+        "Boundary migration as stocks oscillate across adjacent market cap deciles",
+        "Disproportionate option trading liquidity in the top 2 deciles"
+      ],
+      "falsification_test": "Alpha underperforms if cross-sectional variance risk premia are purely driven by inter-cap-tier macro trends.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 90), densify(bucket(rank(cap), range=\"0, 1, 0.1\")))",
+          "rationale": "1-year call VRP cross-sectionally ranked within 10 discrete market capitalization deciles",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

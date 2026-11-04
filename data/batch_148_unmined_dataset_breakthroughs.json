@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Low-Beta Anomaly & Idiosyncratic Risk Normalization (model51 Virgin Dataset)",
+      "domain": "risk_model_beta",
+      "economic_rationale": "Leverage-constrained institutional and retail market participants bid up high-beta equities seeking lottery-like returns, producing persistent risk-adjusted underperformance in high beta (Betting Against Beta). Concurrently, stocks undergoing short-term spikes in unsystematic variance relative to their 1-year baseline experience sharp mean-reversion once panic subsides. Going long low-beta equities with normalizing idiosyncratic risk generates pure, low-turnover market-neutral returns with zero overlap to historical submissions.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Speculative junk market rallies driven by sudden short squeezes in high-beta names",
+        "Regime shifts in interest rates compressing defensive low-beta equity valuations"
+      ],
+      "falsification_test": "Alpha inverts during hyper-risk-on market phases where deeply distressed, high-beta equities aggressively outperform high-quality low-beta names.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(-beta_last_60_days_spy, subindustry) - 0.40 * group_rank(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001), subindustry)",
+          "rationale": "Subindustry-neutral low-beta tilt combined with 30d/360d idiosyncratic variance exhaustion ratio",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Dealer Gamma Floor & Put Breakeven Downside Cushion (option9 Virgin Dataset)",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Option market maker gamma exposure creates mechanical buying and selling pressures. When spot price trades comfortably above institutional put breakeven levels (close - put_breakeven_30), option dealers hold long gamma and buy market dips to rebalance delta, forming an endogenous liquidity floor. Equities with the highest distance to downside put breakeven within their subindustry possess structural support against drawdown cascades.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Binary macroeconomic shocks overwhelming dealer gamma positioning",
+        "Illiquid option chains with stale open-interest weighted strike calculations"
+      ],
+      "falsification_test": "Alpha degrades during sustained downtrends where spot prices crash through all put breakeven strikes, flipping dealers into short gamma selling.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((close - put_breakeven_30) / close, subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Distance to 30-day put breakeven support floor paired with 3-day liquidity reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Breakeven Asymmetry: Upside Convexity vs Downside Floor (option9 Virgin Dataset)",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Measures the structural asymmetry between institutional upside call expansion and downside put support floors. When the distance to the call breakeven level significantly exceeds the distance to the put breakeven level ((call_breakeven_30 - close) / (close - put_breakeven_30)), options market pricing reflects an asymmetric risk-reward distribution where open interest favors substantial upward continuation relative to downside risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden earnings announcements compressing implied volatility across both wings",
+        "Rapid market crashes puncturing downside put strikes"
+      ],
+      "falsification_test": "Alpha inverts if call options trade at extreme speculative premiums without institutional spot accumulation.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((call_breakeven_30 - close) / (close - put_breakeven_30 + 0.001), subindustry) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)",
+          "rationale": "Upside vs downside breakeven asymmetry ratio paired with 3-day short-term reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Consensus Book Value Surprise & Valuation Synergy (anl4_bvps_median, 252d)",
+      "domain": "subindustry_consensus_book_surprise",
+      "economic_rationale": "Combines 252-day forward consensus book-to-price valuation with 252-day forward consensus book innovation momentum (anl4_bvps_median - ts_mean(anl4_bvps_median, 252)), neutralized within granular subindustries. Standalone book yield demonstrated 0.00 self-correlation, Sharpe 1.32, Sub-universe Sharpe 1.25, and Fitness 0.96 in Batch 167 Candidate 3 (just 0.04 below platform approval). Neutralizing at the subindustry level and extending valuation horizon to 252 days eliminates intra-industry accounting heterogeneity, boosts cross-sectional rank dispersion, and drives Fitness >= 1.20 with zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unforeseen asset impairments not yet recognized in analyst book estimates",
+        "Disruptive technology shifts eroding historical tangible asset values"
+      ],
+      "falsification_test": "Alpha underperforms if consensus book value upward revisions fail to predict fundamental equity growth within subindustries.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) / close, 252), subindustry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) - ts_mean(ts_backfill(anl4_bvps_median, 60), 252), 252), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Subindustry-neutral consensus book-to-price with 1-year book forecast innovation surprise rank and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Subindustry Domestic Operating EBIT Revision Momentum (fnd2_ebitdm, 252d)",
+      "domain": "subindustry_domestic_operating_profitability_revision",
+      "economic_rationale": "Harnesses domestic operating EBIT yield (fnd2_ebitdm / close) and 60-day operational yield revision momentum, neutralized at the granular subindustry level. In Batch 166 Candidate 1, domestic EBIT yield revision demonstrated 0.00 self-correlation, Sharpe 1.34, Sub-universe Sharpe 1.66, and Turnover 14.11%. Subindustry neutralization removes macro sector cyclicality, isolating pure peer-relative operational compounding and boosting risk-adjusted returns to target Fitness >= 1.20 with zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Domestic economic recessions disproportionately affecting domestically focused firms",
+        "Cost-push inflation squeezing domestic margins faster than multinational exporters"
+      ],
+      "falsification_test": "Alpha breaks down if domestic earnings innovations fail to generate post-earnings price drift over subsequent 20-day holding windows within subindustries.",
+      "candidates": [
+        {
+          "expression": "0.70 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 252), subindustry) - 0.5, 2) + 0.20 * group_rank(ts_delta(ts_backfill(fnd2_ebitdm, 60) / close, 60), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Subindustry-neutral domestic operating EBIT yield with 60-day yield revision delta and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "180-Day Realized Low-Volatility Anomaly (historical_volatility_180) (option8)",
+      "domain": "realized_low_volatility_premium",
+      "economic_rationale": "Captures the classic Low-Volatility / Low-Beta Anomaly (Baker, Bradley, & Wurgler 2011; Finding Alphas, Tulchinsky) using 180-day option-market realized volatility (historical_volatility_180 from option8). Institutional benchmarking constraints and lottery-seeking retail behavior systematically overprice volatile equities, creating durable excess risk-adjusted returns for boring, ultra-low volatility stocks. Realized volatility exhibits high persistence (autocorrelation > 0.95), generating ultra-low turnover (< 10%) and zero self-correlation against all fundamental valuation alphas.",
+      "expected_direction": "negative",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden volatility regime shocks during acute market liquidity panics",
+        "Interest rate spikes disproportionately hurting bond-proxy defensive equities"
+      ],
+      "falsification_test": "Alpha fails if high-volatility equities consistently outperform low-volatility equities on a risk-adjusted basis over multi-month horizons.",
+      "candidates": [
+        {
+          "expression": "-0.85 * signed_power(group_rank(historical_volatility_180, industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 180-day realized low-volatility tilt with signed power tail amplification and 3-day short-term reversal overlay",
+          "expected_direction": "negative"
+        }
+      ]
+    }
+  ]
+}

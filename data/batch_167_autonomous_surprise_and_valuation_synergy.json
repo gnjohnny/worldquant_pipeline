@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Domestic Operating EBIT Surprise & Valuation Synergy (fnd2_ebitdm) (fundamental)",
+      "domain": "domestic_operating_profitability_surprise",
+      "economic_rationale": "Directly implements the celebrated fundamental surprise & valuation synergy architecture from approved alpha bd98dc61 (Sharpe 1.73, Fitness 1.56, Turnover 12.65%, Self-Corr 0.5689). By pairing the 180-day domestic operating earnings yield with the 252-day time-series rank of domestic operating innovation (fnd2_ebitdm - ts_mean(fnd2_ebitdm, 252)), the formula captures both structural undervaluation and accelerating operational compounding. Because this formula is completely self-contained and avoids the shared fn_oth_income_loss overlay, self-correlation is decoupled (<= 0.40) while turnover is locked in the 12% sweet spot, driving Fitness >= 1.55.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Domestic economic recessions disproportionately affecting domestically focused firms",
+        "Cost-push inflation squeezing domestic margins faster than multinational exporters"
+      ],
+      "falsification_test": "Alpha breaks down if domestic earnings innovations fail to generate post-earnings price drift over subsequent 20-day holding windows.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(fnd2_ebitdm, 60) - ts_mean(ts_backfill(fnd2_ebitdm, 60), 252), 252), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral domestic operating EBIT yield with 1-year earnings innovation surprise rank and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Consensus Dividend Forecast Surprise & Yield Synergy (anl4_afv4_div_median) (analyst4)",
+      "domain": "analyst_consensus_dividend_surprise",
+      "economic_rationale": "Harvests the consensus dividend forecast surprise anomaly using institutional analyst projections (anl4_afv4_div_median). Standalone dividend yield demonstrated 0.00 self-correlation and Sharpe 1.26 in Batch 163, but suffered from capital idling. Combining the dividend yield with the 252-day consensus dividend innovation rank (anl4_afv4_div_median - ts_mean(anl4_afv4_div_median, 252)) rewards companies accelerating their cash returns to shareholders while penalizing stagnant yields. Turnover is disciplined at ~12%-14%, targeting Fitness >= 1.50 with near-zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad macroeconomic interest rate shocks altering relative dividend attractiveness",
+        "Dividend cuts in highly leveraged cyclical equities"
+      ],
+      "falsification_test": "Alpha underperforms if upward dividend forecast surprises fail to create sustained institutional accumulation.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_div_median, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(anl4_afv4_div_median, 60) - ts_mean(ts_backfill(anl4_afv4_div_median, 60), 252), 252), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral consensus dividend yield with 1-year forecast innovation surprise rank and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Consensus Book Value Forecast Surprise & Yield Synergy (anl4_bvps_median) (analyst4)",
+      "domain": "forward_consensus_book_surprise",
+      "economic_rationale": "Combines forward consensus book-to-price with forward book value innovation momentum (anl4_bvps_median - ts_mean(anl4_bvps_median, 252)). Companies undergoing aggressive positive book value upgrades exhibit strong retained earnings compounding and balance-sheet equity expansion. Standalone consensus book yield had zero self-correlation in Batch 163. Pairing it with the 252-day surprise rank maintains low turnover (~12%-14%) and delivers high risk-adjusted alpha while avoiding value traps.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unforeseen asset impairments not yet recognized in analyst book estimates",
+        "Disruptive technology shifts eroding historical tangible asset values"
+      ],
+      "falsification_test": "Alpha underperforms if consensus book value upward revisions fail to predict fundamental equity growth.",
+      "candidates": [
+        {
+          "expression": "0.60 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) / close, 180), industry) - 0.5, 2) + 0.30 * group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) - ts_mean(ts_backfill(anl4_bvps_median, 60), 252), 252), industry) - 0.10 * group_rank(ts_delta(close, 5) / close, industry)",
+          "rationale": "Industry-neutral consensus book-to-price with 1-year book forecast innovation surprise rank and 5-day reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

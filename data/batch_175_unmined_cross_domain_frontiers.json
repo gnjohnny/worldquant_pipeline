@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quality Style Surface Acceleration (fscore_bfl_surface_accel) (model16)",
+      "domain": "fundamental_style_acceleration",
+      "economic_rationale": "Captures the first derivative / acceleration of the comprehensive fundamental pentagon style surface (fscore_bfl_surface_accel, measuring rate-of-change across Value, Growth, Profitability, Momentum, and Quality). Rather than relying on static accounting multiples that are prone to value traps, acceleration in the style surface detects inflection points in corporate operational quality before they are recognized in quarterly earnings headlines. Pure subindustry ranking captures peer-relative operational upgrades with zero price-delta polynomial overlays and zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Transitory non-operating gains temporarily boosting composite style acceleration",
+        "Subindustry-wide accounting metric revisions"
+      ],
+      "falsification_test": "Alpha breaks down if positive acceleration in the fundamental style surface fails to predict subsequent 20-day equity outperformance.",
+      "candidates": [
+        {
+          "expression": "group_rank(fscore_bfl_surface_accel, subindustry)",
+          "rationale": "Subindustry-neutral cross-sectional rank of fundamental pentagon style surface acceleration",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Intraday VWAP Order Flow Closing Pressure (vwap, high, low) (pv1)",
+      "domain": "microstructure_institutional_order_flow",
+      "economic_rationale": "Measures institutional intraday accumulation pressure using the position of the daily closing price relative to the Volume-Weighted Average Price (vwap) normalized by the day's total trading range (high - low + 0.001). When an equity closes near the high of the day and significantly above its VWAP, institutional execution algorithms were aggressively buying into the close, absorbing liquidity and signaling inventory accumulation. Cross-sectional ranking within subindustries isolates pure intraday buying dominance, completely orthogonal to balance-sheet accounting metrics.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "End-of-day market-on-close index rebalancing flows that mean-revert on the market open",
+        "Earnings releases occurring precisely at the market close"
+      ],
+      "falsification_test": "Alpha underperforms if stocks closing significantly above intraday VWAP experience immediate negative morning price reversals.",
+      "candidates": [
+        {
+          "expression": "group_rank((close - vwap) / (high - low + 0.001), subindustry)",
+          "rationale": "Subindustry-neutral ratio of closing price distance from VWAP normalized by daily price range",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Options Volume Put/Call Contrarian Flow (pcr_vol_all, 5d Decay) (option9)",
+      "domain": "options_trading_volume_contrarian_flow",
+      "economic_rationale": "Harvests short-term institutional and retail options order flow sentiment using the total put-to-call trading volume ratio across all strikes (pcr_vol_all, 98% coverage). Spikes in put trading volume relative to call volume indicate acute downside panic buying of protective puts or aggressive directional short positioning. Once temporary options hedging flow abates, prices experience strong relief rebounds. Smoothing over 5 days captures flow momentum while maintaining low portfolio churn.",
+      "expected_direction": "negative",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Informed option buying accurately anticipating catastrophic overnight fundamental news",
+        "Complex multi-leg options spreads where put volume is paired with synthetic long equity"
+      ],
+      "falsification_test": "Alpha breaks down if elevated put trading volume persistently forecasts downward momentum over 5-day holding horizons.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(pcr_vol_all, 5), subindustry)",
+          "rationale": "Subindustry-neutral 5-day decayed inverted put/call option trading volume ratio capturing retail overreaction relief rallies",
+          "expected_direction": "negative"
+        }
+      ]
+    }
+  ]
+}

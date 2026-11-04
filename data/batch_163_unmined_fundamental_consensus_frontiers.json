@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Forward Consensus Dividend Yield Anomaly (anl4_afv4_div_median) (analyst4)",
+      "domain": "analyst_consensus_dividend_yield",
+      "economic_rationale": "Directly harvests the forward dividend yield anomaly using institutional analyst consensus projections (anl4_afv4_div_median). High forward dividend yield relative to current price reflects robust underlying corporate cash flow generation, disciplined capital return governance, and downside valuation support. Companies with attractive consensus dividend yields experience persistent institutional accumulation and re-rating drift. Utilizing a 180-day time-series ranking with ts_backfill enforces disciplined, low turnover (~12%-16%), while zero approved alphas in our database utilize this field, ensuring self-correlation <= 0.45.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Dividend traps facing imminent forecast downgrades or capital cuts",
+        "Rising interest rate regimes causing broad fixed-income substitute re-pricing"
+      ],
+      "falsification_test": "Alpha breaks down if high consensus dividend yields fail to outperform peer equities over subsequent 20-day holding windows.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_div_median, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 180-day rank of forward consensus dividend yield with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Forward Book-to-Price Consensus Forecast Yield (anl4_bvps_median) (analyst4)",
+      "domain": "forward_consensus_valuation_yield",
+      "economic_rationale": "Replaces backward-looking historical book value with forward analyst consensus book value per share (anl4_bvps_median). While reported accounting book values suffer from substantial quarterly reporting lags, forward consensus forecasts incorporate real-time analyst revisions and expected equity book growth. Equities exhibiting elevated forward book-to-price yields reflect high-margin value compounders with institutional support, yielding high risk-adjusted Sharpe and Fitness with turnover smoothly held below 18%. Completely untouched in our database, guaranteeing zero self-correlation conflicts.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Severe balance sheet impairments not yet captured in consensus figures",
+        "Structural declines in capital-intensive industries"
+      ],
+      "falsification_test": "Alpha underperforms if high consensus book-to-price yields correlate with structural value traps rather than resilient compounders.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_median, 60) / close, 180), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral 180-day rank of forward consensus book-to-price with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "SEC Fair-Value Balance Sheet Solvency Cushion (fn_assets_fair_val_a) (fundamental)",
+      "domain": "balance_sheet_credit_solvency",
+      "economic_rationale": "Evaluates corporate balance sheet solvency and net equity cushion using SEC fair-value accounting disclosures (fn_assets_fair_val_a) against total liabilities. Unlike historical cost accounting, fair-value assets accurately reflect current market-marked liquidity and recovery value. Firms with high fair-value asset coverage relative to liabilities exhibit lower distress risk, cheaper financing costs, and superior financial resilience, commanding an ongoing institutional valuation premium. The annual reporting cadence produces low portfolio turnover (~10%-15%), optimizing the Tulchinsky Fitness multiplier with near-zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Fair value markdowns during broad market liquidity shocks",
+        "Non-linear debt covenants not captured in aggregate liabilities"
+      ],
+      "falsification_test": "Alpha underperforms if equities with high fair-value net cushions underperform overleveraged peers during market expansions.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((ts_backfill(fn_assets_fair_val_a, 60) - ts_backfill(liabilities, 60)) / (ts_backfill(fn_assets_fair_val_a, 60) + 1000), industry) - 0.5, 2) - 0.15 * group_rank(ts_decay_linear(ts_delta(close, 5) / close, 3), industry)",
+          "rationale": "Industry-neutral fair-value asset solvency cushion over total liabilities with 5-day smoothed reversal overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

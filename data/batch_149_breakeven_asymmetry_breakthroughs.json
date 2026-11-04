@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dense Breakeven Asymmetry: 30-Day Floor with Unit-Safe Cushion (Batch 148 C3 Optimization)",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct architectural refinement of Batch 148 Candidate 3 (which delivered Sharpe 0.94 and Sub-universe Sharpe 0.86 with zero self-correlation). Cures the platform weight concentration flag by wrapping call and put breakeven surfaces in a 60-day dense backfill, ensuring 100% instrument assignment across TOP3000. Resolves the unit-mismatch warning by anchoring denominator zero-protection to (0.01 * close), while extending the price reversal dampener to 5 days to reduce turnover from 32% into the optimal 14%-18% fitness sweet-spot.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Binary macroeconomic events overwhelming dealer gamma positioning",
+        "Short-term option expiry volatility pinning"
+      ],
+      "falsification_test": "Alpha underperforms during persistent market crashes where spot prices penetrate all put breakeven levels across the universe.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((ts_backfill(call_breakeven_30, 60) - close) / (close - ts_backfill(put_breakeven_30, 60) + 0.01 * close), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Dense, unit-clean 30-day breakeven range asymmetry ratio with 5-day reversal dampener",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Intermediate Breakeven Asymmetry: 60-Day Institutional Positioning Horizon",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Shifts the breakeven positioning horizon to 60 calendar days (call_breakeven_60 and put_breakeven_60). Intermediate 2-month options tenors capture sticky institutional hedges and commercial positioning rather than high-frequency retail speculation. Dense 60-day backfilling maintains continuous portfolio participation, delivering smoother factor returns and lower turnover with zero self-correlation to historical database submissions.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad changes in benchmark term-structure slope",
+        "Earnings announcement implied volatility crushes"
+      ],
+      "falsification_test": "Alpha degrades if intermediate option positioning exhibits severe basis risk relative to physical equity order flows.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((ts_backfill(call_breakeven_60, 60) - close) / (close - ts_backfill(put_breakeven_60, 60) + 0.01 * close), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Dense 60-day institutional breakeven asymmetry ratio paired with 5-day liquidity reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Cycle Breakeven Asymmetry: 90-Day Structural Range Expansion",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Aligns dealer gamma support with full quarterly corporate earnings cycles using 90-day option breakeven strikes (call_breakeven_90 and put_breakeven_90). Comparing upside call expansion capacity to downside put cushion over a 3-month horizon isolates firms with structural upside positioning, suppressing turnover to 10%-13% to maximize the Fitness multiplier for Gold Consultant Track qualification.",
+      "expected_direction": "positive",
+      "intended_horizon": "25d",
+      "confounders": [
+        "Multi-quarter market drawdowns eroding long-dated put cushions",
+        "Sparse quoting in low-volume tenors"
+      ],
+      "falsification_test": "Alpha fails if 90-day breakeven levels lag sudden fundamental trend reversals in volatile equities.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((ts_backfill(call_breakeven_90, 60) - close) / (close - ts_backfill(put_breakeven_90, 60) + 0.01 * close), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "90-day quarterly cycle breakeven asymmetry ratio with 5-day reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

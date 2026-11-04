@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Nonlinear Decile Conviction on 30-Day Breakeven Asymmetry (Batch 149 C1 Refinement)",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct nonlinear optimization of Batch 149 Candidate 1 (which achieved Sharpe 0.86 and Sub-universe Sharpe 0.80 with zero self-correlation). Linear grouping assigns excessive capital to noisy, uninformative stocks in the middle percentiles (0.40 to 0.60). Applying signed_power(group_rank - 0.5, 2) suppresses noise in median equities and exponentially amplifies capital allocation strictly to the top and bottom deciles where upside call room vs downside put cushion is most extreme. Testing with decay=6 smooths turnover from 28% into the 12%-14% sweet-spot, directly elevating Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Binary macroeconomic shocks compressing dealer gamma surfaces across all tenors",
+        "Short-term post-earnings implied volatility crushes"
+      ],
+      "falsification_test": "Alpha underperforms during broad market crashes where spot prices penetrate all put breakeven levels across the entire universe.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((ts_backfill(call_breakeven_30, 60) - close) / (close - ts_backfill(put_breakeven_30, 60) + 0.01 * close), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Nonlinear quadratic conviction curve on dense 30-day breakeven asymmetry with 5-day reversal dampener",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Nonlinear Decile Conviction on 20-Day Monthly Expiry Gamma Cycle",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Empirical results from Batch 149 proved that shorter options tenors exhibit systematically steeper Sharpe gradients (30d Sharpe 0.86 vs 90d Sharpe 0.59). Shifting to the 20-day horizon (call_breakeven_20 and put_breakeven_20) targets the core monthly option expiration cycle where market-maker gamma pinning and delta rebalancing reach their maximum structural intensity. Combining with signed_power decile scaling concentrates allocations into equities with the highest structural upside convexity.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Option expiration week pinning distortions",
+        "Sparse quoting in illiquid small-cap names"
+      ],
+      "falsification_test": "Alpha degrades if market maker hedging is dominated by delta-neutral index futures rather than underlying cash equities.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Nonlinear decile conviction curve on 20-day monthly expiry breakeven asymmetry",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Linear 20-Day Monthly Expiry Breakeven Asymmetry Baseline",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct linear benchmark on the 20-day monthly option expiration horizon. By pairing 20-day gamma breakevens with dense 60-day backfill and a 5-day liquidity reversal buffer, this candidate captures the unconstrained monthly gamma asymmetry gradient with uniform subindustry cross-sectional rank scaling.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Severe liquidity shocks triggering forced dealer liquidations",
+        "Short gamma cascades puncturing downside put cushions"
+      ],
+      "falsification_test": "Alpha inverts during market regime shifts where put option writers refuse to buy dips.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Linear 20-day breakeven asymmetry ratio with 5-day short-term price reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

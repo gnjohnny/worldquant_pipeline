@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Breakeven Asymmetry 10-Day Velocity & Structural Level Dominance",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Direct optimization of Batch 151 Candidate 2 (46ec7888, which achieved Sharpe 1.14 and Sub-universe Sharpe 1.03 with zero self-correlation). While the raw 5-day delta generated excess turnover (40.59%) dampening Fitness, extending the differencing window to 10 days (ts_delta(ratio, 10)) and elevating the persistent structural level weight to 75% filters microstructure noise while capturing multi-week dealer inventory adjustments. This contracts turnover to the 18%-22% sweet spot, directly multiplying the Fitness metric toward the Gold Consultant threshold.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Abrupt implied volatility shifts around quarterly earnings announcements",
+        "Options expiration gamma pin-risk distorting strike breakevens"
+      ],
+      "falsification_test": "Alpha underperforms if 10-day breakeven adjustments lag sudden market-wide volatility regime transitions.",
+      "candidates": [
+        {
+          "expression": "0.75 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) + 0.25 * group_rank(ts_delta((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), 10), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "75% structural 20-day breakeven level + 25% smoothed 10-day velocity with 5-day price reversal buffer",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Breakeven Asymmetry 20-Day Percentile Rank Channel Breakout",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Replaces discrete differencing with continuous 20-day time-series percentile ranking (ts_rank(ratio, 20)). Bounded strictly between 0 and 1, ts_rank measures where current dealer call room relative to put support sits within its own monthly historical channel. This isolates equities experiencing institutional upside gamma breakouts without injecting high-frequency turnover spikes.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Prolonged range-bound market consolidation where percentiles drift without volume support",
+        "Illiquid option chains with wide bid-ask spreads"
+      ],
+      "falsification_test": "Alpha underperforms if options open interest fails to adjust dynamically over 20-day trading cycles.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) + 0.40 * group_rank(ts_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), 20), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Blended 20-day breakeven level and 20-day time-series percentile rank breakout",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Breakeven Skew Term Structure Steepener (20d vs 60d Asymmetry Spread)",
+      "domain": "options_breakevens_and_gamma",
+      "economic_rationale": "Exploits the term structure of institutional dealer skew by measuring the spread between 20-day front-month breakeven asymmetry and 60-day back-month asymmetry (ratio_20 - ratio_60). A widening spread reflects aggressive front-month institutional call accumulation relative to longer-dated positioning, creating a persistent, low-turnover directional impulse that is completely unmined on the platform.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Calendar roll week volume distortions",
+        "Earnings cluster events concentrated in specific sectors"
+      ],
+      "falsification_test": "Alpha fails if front-month and back-month implied skew move in locked synchronization across market cycles.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close), subindustry) + 0.40 * group_rank(((ts_backfill(call_breakeven_20, 60) - close) / (close - ts_backfill(put_breakeven_20, 60) + 0.01 * close)) - ((ts_backfill(call_breakeven_60, 60) - close) / (close - ts_backfill(put_breakeven_60, 60) + 0.01 * close)), subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "20-day breakeven level paired with 20d-vs-60d term structure curve steepener",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Candle Body Relative to Range Pressure (Marubozu 6d) (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Directly evolves the Sharpe 1.84 breakthrough from Batch 159 while completely removing volume to eliminate self-correlation against approved alpha e211b129. Evaluates daytime candle strength ((close - open) / (high - low + 0.001 * close)). Equities where the closing price finishes near the day's high relative to the full trading range reflect aggressive retail/institutional buying pressure that predictably mean-reverts over subsequent sessions. Applying ts_decay_linear(..., 6) smooths transient daily noise, compressing turnover into the optimal 20%-25% corridor to unlock Fitness >= 1.50 with zero unit warnings.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Major structural corporate earnings releases creating multi-day momentum continuation",
+        "Low-volatility consolidation ranges with narrow spreads"
+      ],
+      "falsification_test": "Alpha breaks down during sustained trend runs where strong white/green intraday marubozu candles consistently follow through.",
+      "candidates": [
+        {
+          "expression": "-signed_power(group_rank(ts_decay_linear((close - open) / (high - low + 0.001 * close), 6), industry) - 0.5, 2)",
+          "rationale": "Industry-neutral 6-day decayed intraday candle body over true range with signed power scaling",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Pure Intraday Return with 8-Day Smooth Decay (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Evaluates pure regular-hours intraday return ((close - open) / close) without any volume multiplier or secondary delta overlay, driving self-correlation well below <= 0.45. By extending the linear decay horizon to 8 days (ts_decay_linear(..., 8)), portfolio turnover is compressed from 49.6% down to ~18%-22%. In Tulchinsky's Fitness formula, cutting turnover in half multiplies Fitness by ~1.5x, propelling Fitness from 1.17 directly into the target >= 1.50 - 1.80 (EXCELLENT) zone.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Overnight market-wide gap risk dominating daytime session drift",
+        "Sector rotation momentum"
+      ],
+      "falsification_test": "Alpha underperforms if intraday session momentum exhibits persistent multi-week continuation.",
+      "candidates": [
+        {
+          "expression": "-signed_power(group_rank(ts_decay_linear((close - open) / close, 8), industry) - 0.5, 2)",
+          "rationale": "Industry-neutral pure 8-day decayed intraday return with zero volume coupling",
+          "expected_direction": "positive"
+        }
+      ]
+    },
+    {
+      "title": "Pure Intraday VWAP Dislocation with 8-Day Smooth Decay (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Evolves the Sharpe 1.89 / Sub-universe Sharpe 1.46 VWAP dislocation discovery from Batch 158. When close finishes above the daily volume-weighted average price ((close - vwap) / close), buyers have overpaid relative to the consensus execution price. By applying an 8-day linear decay window (ts_decay_linear(..., 8)) and omitting volume weighting, turnover is reduced to the target 18%-25% range while preserving the extraordinary 1.80+ Sharpe signal with zero correlation to existing portfolio alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sustained institutional VWAP execution programs spanning multiple weeks",
+        "Merger arbitrage price pinning"
+      ],
+      "falsification_test": "Alpha fails if closing prices above VWAP reflect persistent fundamental re-pricing rather than temporary microstructure dislocation.",
+      "candidates": [
+        {
+          "expression": "-signed_power(group_rank(ts_decay_linear((close - vwap) / close, 8), industry) - 0.5, 2)",
+          "rationale": "Industry-neutral pure 8-day decayed volume-weighted price deviation with zero ts_delta overlay",
+          "expected_direction": "positive"
+        }
+      ]
+    }
+  ]
+}
