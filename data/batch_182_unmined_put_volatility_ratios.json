@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "270-Day Put Implied to 60-Day Parkinson Realized Volatility Ratio (implied_volatility_put_270)",
+      "domain": "option_volatility_put_surface",
+      "economic_rationale": "Put implied volatility measures institutional demand for downside tail-risk hedging and crash insurance. Parkinson volatility isolates clean intraday realized high-low price dispersion free of overnight jump noise. Stocks where 270-day put implied volatility is significantly elevated relative to 60-day realized Parkinson volatility encode an harvestable downside variance risk premium (VRP). Dense 60-day backfilling ensures 100% instrument coverage across TOP3000, eliminating single-day weight concentration spikes.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Binary event catalysts (e.g. pending FDA decisions or hostile takeover bids) causing structural put buying",
+        "Sudden illiquidity in deep out-of-the-money put option strikes"
+      ],
+      "falsification_test": "Fails during catastrophic downside market crashes where out-of-the-money put protection pays off exponentially.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_270 / parkinson_volatility_60, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "180-Day Put Implied to 60-Day Parkinson Realized Volatility Ratio with Industry Neutralization (implied_volatility_put_180)",
+      "domain": "option_volatility_put_surface",
+      "economic_rationale": "Evaluating the 180-day put implied to 60-day Parkinson realized volatility ratio within each broader industry group isolates intra-industry tail risk mispricing while neutralizing sector-level macroeconomic variance. Convex signed_power decile weighting concentrates portfolio capital on equities with the highest variance risk premium, while a 15% 3-day reversal overlay optimizes turnover for maximum platform Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Industry-wide regulatory crackdowns distorting downside put options pricing across all peers",
+        "Extreme intraday price gaps caused by pre-market earnings surprises"
+      ],
+      "falsification_test": "Inverts during synchronized industry-level credit defaults where downside put hedges are in the money.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_180 / parkinson_volatility_60, 60), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "120-Day Put Implied to 30-Day Parkinson Realized Volatility Ratio (implied_volatility_put_120)",
+      "domain": "option_volatility_put_surface",
+      "economic_rationale": "Short-to-medium 120-day put implied volatility compared against trailing 30-day Parkinson realized volatility captures rapid shifts in downside institutional hedging demand. Equities with high put-to-realized volatility ratios experience systematic volatility decay, generating steady risk-adjusted returns with zero self-correlation against previously approved call-option alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Company-specific quarterly earnings announcement dates falling inside the 30-day window",
+        "Sudden spike in realized borrowing fees for shorted equities"
+      ],
+      "falsification_test": "Fails during sudden idiosyncratic volatility expansion events where realized volatility overtakes implied put volatility.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_put_120 / parkinson_volatility_30, 60), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
