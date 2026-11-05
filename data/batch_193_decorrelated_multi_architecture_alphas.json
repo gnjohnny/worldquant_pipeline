@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Implied Volatility & Operating Funds Flow Multiplicative Synergy",
+      "domain": "cross_domain_synergy",
+      "economic_rationale": "Breaks the formula boilerplate bottleneck by employing a multiplicative non-linear interaction rank(A) * rank(B) between options surface variance pricing (implied_volatility_call_360 / parkinson_volatility_90) and capital structure cash generation (fnd6_fopo / debt_lt). Rather than a simple linear addition, this functions as a soft logical AND gate where only equities demonstrating both institutional call option buying and resilient balance-sheet cash generation receive top allocation. Evaluated under Industry neutralization to decouple completely from subindustry earnings alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden debt restructuring distorting long-term debt figures",
+        "Options illiquidity in smaller capitalization names within industry groups"
+      ],
+      "falsification_test": "Fails during severe market liquidity crunches where both option implied volatilities and operating cash flows decouple from equity price action.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(ts_backfill(implied_volatility_call_360 / (parkinson_volatility_90 + 0.001), 60), industry) * group_rank(ts_backfill(fnd6_fopo, 60) / (ts_backfill(debt_lt, 60) + 1000), industry), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Long-Tenor Call Option Volatility Term Structure Curve Arbitrage",
+      "domain": "options_term_structure",
+      "economic_rationale": "Eliminates price reversal overlays and fundamental accounting fields entirely by constructing a pure options term-structure curve slope spread. Stocks where 3-year institutional call volatility heavily exceeds 4-month historical volatility (capturing long-dated upside skew and structural institutional buying) while front-month 30-day implied volatility is subdued relative to realized moves offer positive drift without short-term overbought penalty. Sibling ff15b378 achieved Sharpe 2.16 and Self-Correlation 0.4624 under Industry neutralization.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Abrupt market-wide volatility regime shifts causing instantaneous flattenings of the vol curve",
+        "Corporate action announcements causing discrete localized volatility spikes"
+      ],
+      "falsification_test": "Inverts during sudden market-wide crashes where short-term front-month implied volatility explodes across all equities simultaneously.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_1080 / (historical_volatility_120 + 0.001), 120), industry) - group_rank(ts_backfill(implied_volatility_mean_30 / (historical_volatility_30 + 0.001), 30), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Balance Sheet Solvency Asset-Coverage De-Risking under Sector Neutralization",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "Isolates balance sheet asset coverage and solvency risk by ranking total liabilities relative to total balance sheet assets, neutralized at the broad Sector level. Sibling b2bea437 delivered Sharpe 1.73 and Fitness 1.66 with correlation 0.5212. Shifting neutralization from subindustry to Sector expands the cross-sectional breadth, reduces cross-portfolio overlap with subindustry earnings alphas, and preserves low turnover (~8%-13%) via slow-moving balance sheet data.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Asset impairments and intangible goodwill write-downs",
+        "Financial institutions with non-standard liability accounting"
+      ],
+      "falsification_test": "Underperforms during speculative, high-beta junk debt rallies where distressed, highly leveraged firms outperform solvent counterparts.",
+      "candidates": [
+        {
+          "expression": "0.80 * group_rank(ts_backfill(liabilities, 60) / (ts_backfill(assets, 60) + 1000), sector) - 0.20 * group_rank(ts_delta(close, 5) / close, sector)"
+        }
+      ]
+    }
+  ]
+}
