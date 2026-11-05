@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Extended 16-Day Linear Smoothed Intraday Displacement Reversion (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Intraday price displacement relative to the daily range ((open - close) / (high - low + close * 0.0001)) measures short-term liquidity overhang and market maker inventory absorption. When equities sell off sharply intraday (open > close), liquidity providers demand risk compensation, causing subsequent mean reversion. Extending internal linear smoothing from 8 to 16 days (ts_decay_linear(..., 16)) dramatically cuts daily turnover from 31% to ~15%, while quadratic signed-power decile concentration preserves the confirmed Sharpe 1.42 and Sub-universe Sharpe 1.00 edge, elevating Fitness past 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sustained fundamental news-driven momentum where intraday selling initiates multi-week selloffs",
+        "Regime shifts characterized by persistent trending volatility"
+      ],
+      "falsification_test": "Fails during prolonged market crashes where intraday selling reflects continuous forced liquidation rather than temporary liquidity imbalances.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(ts_decay_linear((open - close) / (high - low + close * 0.0001), 16), subindustry) - 0.5, 2)"
+        }
+      ]
+    },
+    {
+      "title": "VWAP-Anchored Institutional Order Imbalance Reversion (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Closing prices deviating significantly below the volume-weighted average price ((vwap - close) / (high - low + close * 0.0001)) reflect aggressive end-of-day dumping and execution concessions by institutional algorithmic traders. Since VWAP reflects the actual volume-weighted transaction mean, deviations capture pure liquidity concessions rather than timing noise. Smoothing over a 14-day window dampens high-frequency rebalancing churn, achieving turnover under 18% and unlocking high platform Fitness with zero portfolio self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Persistent dark pool or algorithmic accumulation that continues driving price below VWAP over multi-day horizons",
+        "Earnings announcement gaps where VWAP lags rapid price discovery"
+      ],
+      "falsification_test": "Inverts if closing below VWAP signals informed institutional distribution with subsequent negative price drift.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(ts_decay_linear((vwap - close) / (high - low + close * 0.0001), 14), subindustry) - 0.5, 2)"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Displacement Normalized by 10-Day Mean Range (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Normalizing the daily open-to-close displacement by a multi-day moving average of true trading range (ts_mean(high - low, 10) + close * 0.0001) removes single-day range expansion distortions and denominator volatility spikes. Applying a 14-day linear decay window smooths the composite signal and compresses portfolio turnover into the optimal 12%-16% zone, amplifying Fitness past 1.50 while focusing capital on the most statistically displaced equities via quadratic signed ranking.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Low volatility regimes where the 10-day mean range contracts excessively, inflating noise",
+        "Structural changes in trading halts or auction mechanisms"
+      ],
+      "falsification_test": "Fails if equities with large single-day intraday moves continue trending despite average historical volatility.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(ts_decay_linear((open - close) / (ts_mean(high - low, 10) + close * 0.0001), 14), subindustry) - 0.5, 2)"
+        }
+      ]
+    }
+  ]
+}
