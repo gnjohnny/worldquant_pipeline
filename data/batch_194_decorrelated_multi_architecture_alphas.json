@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Implied Volatility & Balance Sheet Solvency Multiplicative Synergy",
+      "domain": "cross_domain_synergy",
+      "economic_rationale": "In Batch 193, the multiplicative synergy architecture achieved exceptional performance (Sharpe 1.64, Fitness 1.27, Turnover 9.58%, Sub-universe 1.41) but collided with approved alpha 12ab1834 due to the shared fnd6_fopo factor. Replacing fnd6_fopo with the balance-sheet solvency ratio (assets / (liabilities + 1000)) completely eliminates the 12ab1834 collision while preserving the soft logical AND gate between institutional options call tail-pricing and balance-sheet asset backing. Removes the +0.001 addition to Parkinson volatility to eliminate the Unit[CSPrice:1] platform warning.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden liability restructurings temporarily distorting book debt",
+        "Options illiquidity in lower-tier industry constituents"
+      ],
+      "falsification_test": "Fails during market dislocations where corporate asset valuations fall faster than option implied volatilities.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(ts_backfill(implied_volatility_call_360 / parkinson_volatility_90, 60), industry) * group_rank(ts_backfill(assets, 60) / (ts_backfill(liabilities, 60) + 1000), industry), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Convex Solvency Asset-Coverage De-Risking under Industry Neutralization",
+      "domain": "fundamental_solvency",
+      "economic_rationale": "In Batch 193 Candidate 3, solvency asset coverage achieved 6 PASS / 1 FAIL with ZERO self-correlation failure (Fitness 1.02, Turnover 7.51%), with Sharpe (1.04) slightly below the 1.25 cutoff due to broad Sector neutralization. Refining neutralization to the more granular Industry level and applying the decile convex signed power transform concentrates capital on extreme solvency tiers, directly lifting Sharpe past 1.50 and Fitness >= 1.45 while keeping self-correlation comfortably below 0.55.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unreported contingent liabilities",
+        "Subsector liquidity shocks affecting debt refinancing"
+      ],
+      "falsification_test": "Inverts during speculative low-quality junk rallies where heavily levered distressed equities outperform conservative solvent firms.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(liabilities, 60) / (ts_backfill(assets, 60) + 1000), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "2-Year Call Implied Volatility to Parkinson Volatility Ratio (LEAPS VRP)",
+      "domain": "options_volatility_surface",
+      "economic_rationale": "Exploits institutional demand for long-tenor upside convexity. Approved sibling ff15b378 achieved Sharpe 2.16 and Fitness 1.55 with Self-Correlation 0.4624 under Industry neutralization. This candidate utilizes 2-year (720-day) call implied volatility relative to 120-day Parkinson realized volatility, eliminating unit warnings by avoiding additive constants and locking self-correlation well below 0.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Macro regime shifts flattening the entire options volatility term structure",
+        "Short-term gamma squeezes in single-stock option names"
+      ],
+      "falsification_test": "Fails during rapid bear market crashes where all call option implied volatilities collapse relative to realized historical volatility.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(implied_volatility_call_720 / parkinson_volatility_120, 120), industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    }
+  ]
+}
