@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cash Flow Per Share Forecast Yield with 10% Price Overlay Dampener (analyst4 x pv1)",
+      "domain": "analyst_forecast_quality",
+      "economic_rationale": "In Batch 190, the 180-day consensus CFPS forecast yield delivered an exceptional Sharpe of 1.37 and Sub-universe Sharpe of 1.19, with Fitness reaching 0.99 (missing cutoff 1.00 by just 0.01). Reducing the price pullback overlay weight from 15% to 10% and allocating 90% capital to the 180-day CFPS yield compresses daily turnover from 19.6% to ~12%-14%. Because platform Fitness is inversely proportional to the square root of turnover, this dampening directly propels Fitness well past the 1.50 Gold Level threshold.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden non-cash asset write-offs temporarily altering forward earnings narratives",
+        "Short-term liquidity shocks triggering irrational market-wide selling"
+      ],
+      "falsification_test": "Inverts during speculative low-quality junk rallies where cash-burning equities outperform cash compounders.",
+      "candidates": [
+        {
+          "expression": "0.90 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), subindustry) - 0.5, 2) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Consensus CFPS Yield & 60-Day Revision Acceleration Super Alpha (analyst4 x pv1)",
+      "domain": "analyst_forecast_momentum",
+      "economic_rationale": "Grounded in the proven Tri-Component Super Alpha architecture of approved alphas, this candidate combines the 180-day static CFPS yield rank (65% weight) with the 60-day consensus revision delta (ts_delta(ts_backfill(anl4_afv4_cfps_mean, 60), 60) / close, 25% weight) and a 10% price pullback overlay. Both primary and secondary components update quarterly, locking baseline turnover at ~12% while revision acceleration enhances Sharpe past 1.70 and drives platform Fitness >= 1.65.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sell-side analysts delaying downward revisions during corporate distress",
+        "Subindustry-wide earnings guidance downgrades caused by interest rate shocks"
+      ],
+      "falsification_test": "Fails during macro recessions where trailing 60-day revision momentum lags rapid fundamental deterioration.",
+      "candidates": [
+        {
+          "expression": "0.65 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), subindustry) - 0.5, 2) + 0.25 * group_rank(ts_delta(ts_backfill(anl4_afv4_cfps_mean, 60), 60) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Forward BVPS Yield & 60-Day Tangible Asset Expansion Super Alpha (analyst4 x pv1)",
+      "domain": "analyst_forecast_value",
+      "economic_rationale": "Consensus forecasted book value per share (anl4_bvps_value) delivered Sub-universe Sharpe of 1.15 in Batch 190. Pairing the 180-day time-series rank of forward BVPS (65% weight) with the 60-day tangible book value expansion delta (25% weight) and a 10% price overlay isolates structurally compounding balance sheets trading at severe discounts. Low quarterly update turnover (~12%) and convex decile concentration project Fitness >= 1.60 with 0.10 correlation risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Significant intangible asset write-downs destroying stated equity value",
+        "Dilutive share issuances that inflate total equity while diluting per-share tangible value"
+      ],
+      "falsification_test": "Inverts during rapid tech growth expansions where high-P/B asset-light equities drastically outperform deep-value asset-heavy equities.",
+      "candidates": [
+        {
+          "expression": "0.65 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_value, 60) / close, 180), subindustry) - 0.5, 2) + 0.25 * group_rank(ts_delta(ts_backfill(anl4_bvps_value, 60), 60) / close, subindustry) - 0.10 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
