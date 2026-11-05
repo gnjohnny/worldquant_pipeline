@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Lead-Lag Return Spillover with Volume Confirmation (pv13 x pv1)",
+      "domain": "supply_chain_lead_lag",
+      "economic_rationale": "Information propagates gradually along the economic supply chain. Negating customer return signal over a 10-day decay captures mean-reverting supplier inventory adjustments. Coupling with an additive 20-day trading volume participation overlay confirms institutional accumulation. Completely decorrelated from existing portfolio (0 supply chain alphas on the account).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Supplier customer concentration risk",
+        "Abrupt contract cancellation without warning"
+      ],
+      "falsification_test": "Inverts during supply chain disruption where customer and supplier decouple completely.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) - 0.5, 2) + 0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Corporate News Sentiment Drift with Institutional Participation (nws12 x pv1)",
+      "domain": "alternative_news_sentiment",
+      "economic_rationale": "Captures post-news drift and institutional reaction to corporate news articles via vec_avg(nws12_afterhsz_sl) smoothed over a 5-day linear decay. The additive volume overlay provides liquidity confirmation, eliminating short-term price delta correlation while capturing non-linear news drift across subindustries.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sparse news coverage during holiday trading periods",
+        "Sensational headlines causing temporary mispricing"
+      ],
+      "falsification_test": "Fails during market regimes dominated entirely by macro geopolitical headlines where corporate news is ignored.",
+      "candidates": [
+        {
+          "expression": "0.85 * group_rank(ts_decay_linear(vec_avg(nws12_afterhsz_sl), 5), subindustry) + 0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Variance Risk Premium Spread with Volume Participation (option8 x pv1)",
+      "domain": "volatility_variance_risk_premium",
+      "economic_rationale": "Exploits the structural Variance Risk Premium: institutional put insurance demand persistently prices 30-day implied volatility above 30-day realized historical volatility. Using the additive spread historical_volatility_30 - implied_volatility_mean_30 rather than call ratios eliminates collinearity with existing options alphas. Pairing with volume overlay ensures low self-correlation (< 0.50).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Black swan tail events where realized volatility surges beyond option pricing",
+        "Option strike skew illiquidity"
+      ],
+      "falsification_test": "Underperforms during severe macro volatility spikes where implied volatility lags sudden market gaps.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(historical_volatility_30 - implied_volatility_mean_30, subindustry) - 0.5, 2) + 0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    }
+  ]
+}
