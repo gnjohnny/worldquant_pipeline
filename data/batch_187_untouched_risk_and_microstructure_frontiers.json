@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Idiosyncratic Risk Spike Normalization (model51)",
+      "domain": "systematic_risk_model",
+      "economic_rationale": "Stocks experiencing temporary surges in 30-day unsystematic variance relative to their 360-day baseline (unsystematic_risk_last_30_days / unsystematic_risk_last_360_days) suffer from transient liquidity panics or event overreactions. As market conditions normalize, idiosyncratic risk contracts, producing steady excess risk-adjusted returns with low turnover and zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Permanent operational impairment or catastrophic fraud altering baseline variance permanently",
+        "Protracted litigation creating ongoing binary outcomes"
+      ],
+      "falsification_test": "Inverts during high-volatility financial crises where idiosyncratic distress triggers widespread defaults.",
+      "candidates": [
+        {
+          "expression": "group_rank(-(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.001)), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Subindustry Defensive Low-Beta Anomaly (model51)",
+      "domain": "systematic_risk_model",
+      "economic_rationale": "Empirical asset pricing confirms that retail leverage constraints and institutional tracking error mandates systematically inflate high-beta asset valuations. Within each subindustry, selecting securities with the lowest 60-day regression beta relative to SPY (-beta_last_60_days_spy) isolates steady, capital-preserving compounders that deliver superior risk-adjusted returns with minimal maximum drawdown.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden speculative momentum surges where low-quality high-beta junk leads the market",
+        "Beta compression caused by severe trading illiquidity"
+      ],
+      "falsification_test": "Fails during aggressive early-stage market cyclical recoveries characterized by high-beta speculative rallies.",
+      "candidates": [
+        {
+          "expression": "-group_rank(beta_last_60_days_spy, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Volatility-Scaled Statistical Price Reversion (pv1)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Dividing the 5-day price displacement by the 20-day historical standard deviation of close prices (ts_std_dev(close, 20)) converts raw dollar changes into a statistical z-score. Ranking the negative z-score within each subindustry buys temporarily oversold equities while dampening turnover and avoiding price-level distortions.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Fundamental structural repricing driven by earnings revisions or major news events",
+        "Protracted momentum trend continuation in high-volatility stocks"
+      ],
+      "falsification_test": "Fails during strong momentum trends where overextended equities continue trending without reverting.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_delta(close, 5) / (ts_std_dev(close, 20) + 0.001), subindustry)"
+        }
+      ]
+    }
+  ]
+}
