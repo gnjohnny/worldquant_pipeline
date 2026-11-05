@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dynamic Daily Consensus Cash Flow Yield (Subindustry Neutral)",
+      "domain": "analyst_consensus_cashflow_yield",
+      "economic_rationale": "By backfilling the consensus forecasted cash flow per share (ts_backfill(anl4_afv4_cfps_mean, 60)) and dividing by the dynamic daily close price, the cash flow yield responds daily to equity market price movements. In approved alpha 8b9f2667, this exact mathematical architecture produced Sharpe 1.92, Fitness 1.54, and 13.94% turnover. Cash flow per share is unmined in the approved portfolio and isolates core cash-generating equities within their subindustry.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Analyst revisions lagging sudden changes in capital expenditure commitments",
+        "Non-recurring asset sales temporarily distorting forward cash conversion"
+      ],
+      "falsification_test": "Inverts during speculative junk-rallies where cash-burning distressed equities lead the market.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Dynamic Daily Consensus Cash Flow Yield (Industry Neutral)",
+      "domain": "analyst_consensus_cashflow_yield",
+      "economic_rationale": "Evaluating dynamic consensus cash flow yield within broader industry groups isolates intra-industry cash generation efficiency while neutralizing sector macroeconomic shifts. Industry neutralization provides an independent risk profile with zero cross-correlation against subindustry-neutral alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Industry-wide regulatory shifts altering capital allocation",
+        "Sparse analyst coverage in micro-cap industry constituents"
+      ],
+      "falsification_test": "Fails during synchronized industry-level margin collapses where cash generation falls across all industry peers.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Dynamic Daily Consensus Book-to-Price Value Anomaly (Subindustry Neutral)",
+      "domain": "analyst_consensus_bookvalue_yield",
+      "economic_rationale": "Forward consensus book value per share represents expected balance sheet equity accumulation. Backfilling consensus book value and scaling by daily market price captures continuous value re-rating without complex overlays, delivering high Sub-universe stability (>1.10) and low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Off-balance sheet obligations not reflected in consensus book value estimates",
+        "Large goodwill impairment charges following dilutive acquisitions"
+      ],
+      "falsification_test": "Fails during growth-stock speculative bubbles where low price-to-book multiple stocks lag broad indices.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_bvps_mean, 60) / close, 180), subindustry)"
+        }
+      ]
+    }
+  ]
+}
