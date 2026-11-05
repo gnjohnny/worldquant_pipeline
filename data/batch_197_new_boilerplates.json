@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Time-Series Z-Score Acceleration Engine (Boilerplate 1)",
+      "domain": "time_series_acceleration",
+      "economic_rationale": "Measures corporate cashflow efficiency acceleration relative to its trailing 20-day mean in units of historical standard deviation. Normalizes each stock against its own dynamic time-series baseline before cross-sectionally ranking peers. Eliminates the old signed_power transform to guarantee uniform weight distribution across all TOP3000 instruments with zero concentration penalties, and avoids short-term price reversal overlays to break self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Low volatility regimes where ts_std_dev is artificially compressed",
+        "Infrequent balance sheet revisions for stagnant industry peers"
+      ],
+      "falsification_test": "Fails during macro liquidity crunches where operational efficiency metrics are overshadowed by broad market beta contagion.",
+      "candidates": [
+        {
+          "expression": "group_rank((ts_decay_linear(cashflow_efficiency_rank_derivative, 5) - ts_mean(cashflow_efficiency_rank_derivative, 20)) / (ts_std_dev(cashflow_efficiency_rank_derivative, 20) + 0.001), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Multiplicative Quality x Low-Beta Synergy (Boilerplate 2)",
+      "domain": "multiplicative_cross_factor",
+      "economic_rationale": "Implements soft logical conjunction: an asset receives top allocation only when exhibiting superior cash generation efficiency AND low market beta simultaneously. Multiplication produces natural non-linear convexity in the upper-right quadrant without squaring near-zero ranks, completely preserving capital allocation across the entire universe without weight concentration.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Speculative bull market rallies driven by high-beta cyclicals",
+        "Sector-wide credit downgrades hitting low-beta defensive names"
+      ],
+      "falsification_test": "Inverts during rapid cyclical re-openings where distressed high-beta equities heavily outperform high-quality defensive peers.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(cashflow_efficiency_rank_derivative, industry) * group_rank(-beta_last_60_days_spy, industry), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Continuous Intra-Industry Z-Score Dispersion Spread (Boilerplate 3)",
+      "domain": "zscore_dispersion_spread",
+      "economic_rationale": "Preserves genuine economic distance and revision magnitude rather than flattening into uniform ranks. Standardizes analyst consensus revisions and market beta into bounded z-scores (clamped at +/- 2.5 to eliminate single-stock tail leverage) before forming an intra-industry spread. Wraps with final group_rank to ensure perfectly balanced long-short capital distribution.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Widely dispersed analyst revisions following unforeseen macroeconomic news",
+        "Beta estimation noise during regime transitions"
+      ],
+      "falsification_test": "Underperforms when analyst estimates cluster tightly around zero revision with negligible dispersion.",
+      "candidates": [
+        {
+          "expression": "group_rank(min(max(group_zscore(analyst_revision_rank_derivative, industry), -2.5), 2.5) - min(max(group_zscore(beta_last_60_days_spy, industry), -2.5), 2.5), industry)"
+        }
+      ]
+    }
+  ]
+}
