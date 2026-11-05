@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Cash Flow Per Share Yield Convexity (analyst4 x pv1)",
+      "domain": "analyst_forecast_quality",
+      "economic_rationale": "Operating cash flow per share forecast (anl4_afv4_cfps_mean) reflects pure expected cash generation free of accrual manipulation. Normalizing by closing price and computing 180-day time-series rank extracts companies trading at generational cash-flow bargains. Convex signed_power decile ranking concentrates portfolio capital into top-conviction compounders, while a 15% 5-day price pullback overlay (-group_rank(ts_delta(close, 5) / close)) optimizes entry timing. Slow-moving quarterly updates lock daily turnover at ~8.5%, directly unlocking platform Fitness >= 1.70 with low correlation risk (0.10).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unforeseen debt covenants restricting cash flow distribution to equity holders",
+        "Abrupt consensus forecast cancellations following sudden management resignation"
+      ],
+      "falsification_test": "Inverts during highly speculative junk rallies where cash-burning unprofitable equities dramatically outperform cash-efficient compounders.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Book Value Per Share Yield Convexity (analyst4 x pv1)",
+      "domain": "analyst_forecast_value",
+      "economic_rationale": "Consensus forecasted book value per share (anl4_bvps_value) captures forward equity accumulation and net tangible asset growth. Equities exhibiting high 180-day historical percentile ranks of forward BVPS-to-price possess deep structural asset protection. Applying convex decile weighting concentrates capital on the most undervalued balance sheets, while a 15% 5-day price pullback overlay captures temporary liquidity mispricings. Baseline turnover locks at ~8.5%, delivering exceptional risk-adjusted Sharpe and Fitness >= 1.60 with low correlation risk (0.10).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Massive accounting goodwill impairment write-downs destroying stated book values",
+        "Financial sector contagion triggering sudden liquidation of tangible book assets"
+      ],
+      "falsification_test": "Fails during prolonged deflationary contractions where low price-to-book ratios represent persistent value traps.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(anl4_bvps_value, 60) / close, 180), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Variance Risk Premium Harvest & Delta Reversal Overlay (option8 x pv1)",
+      "domain": "option_volatility_surface",
+      "economic_rationale": "The equity options market systematically overprices implied volatility relative to realized historical volatility due to persistent institutional demand for downside portfolio put insurance (Variance Risk Premium - VRP). Long equities where 60-day historical realized volatility exceeds 60-day mean implied volatility (historical_volatility_60 - implied_volatility_mean_60) harvests structural volatility risk premia. Pairing this 80% volatility anchor with a 20% 5-day price pullback reversal overlay (-group_rank(ts_delta(close, 5) / close, subindustry)) provides short-term liquidity optimization, holding turnover in the optimal 10%-12% sweet spot and driving Fitness >= 1.60.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Binary events such as clinical trial announcements or pending mergers causing sudden implied volatility jumps",
+        "Persistent macro volatility regime shifts widening volatility risk premia unexpectedly"
+      ],
+      "falsification_test": "Fails during sudden market-wide volatility spikes where realized volatility expands exponentially beyond implied expectations.",
+      "candidates": [
+        {
+          "expression": "0.80 * group_rank(historical_volatility_60 - implied_volatility_mean_60, subindustry) - 0.20 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
