@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Implied Synthetic Forward Price Premium (option9 x pv1)",
+      "domain": "options_forward_pricing",
+      "economic_rationale": "Mining an entirely unmined dataset on the platform: synthetic forward prices derived from ATM put-call parity (forward_price_360). When market makers price 1-year forward contracts at a premium relative to spot price ((forward_price_360 - close) / close), it reflects institutional net call demand and positive underlying asset drift expectations. Zero historical correlation against existing approved portfolio (0 options forward price alphas exist in memory).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden interest rate shifts altering risk-free cost of carry",
+        "Large ex-dividend calendar adjustments"
+      ],
+      "falsification_test": "Inverts during liquidity stress where option market makers widen bid-ask spreads and distort synthetic forwards.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((forward_price_360 - close) / close, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Contrarian Put/Call Open Interest Positioning Reversion (option9 x pv1)",
+      "domain": "options_sentiment_positioning",
+      "economic_rationale": "Pcr_oi_180 captures the ratio of put open interest to call open interest across 180-day tenors. When put open interest surges to extreme levels within an industry group, downside hedging demand is saturated and short positioning is fully crowded. Ranking inverted open interest (-pcr_oi_180) captures contrarian mean reversion as institutional hedges unwind. Completely decorrelated from fundamental accounting and realized volatility.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sustained fundamental distress causing legitimate put accumulation",
+        "Options illiquidity in smaller capitalization industry peers"
+      ],
+      "falsification_test": "Fails during catastrophic bankruptcy cascades where heavy put open interest accurately prices imminent insolvency.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-pcr_oi_180, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    },
+    {
+      "title": "SPY Correlation Decoupling Idiosyncratic Variance Anomaly (model51 x pv1)",
+      "domain": "systematic_risk_decoupling",
+      "economic_rationale": "Leverages unmined systematic risk model field correlation_last_90_days_spy. Equities whose daily return correlation with the broad market index (SPY) is lowest possess high idiosyncratic pricing power and firm-specific alpha potential. Ranking inverted correlation (-correlation_last_90_days_spy) within industry groups isolates stocks that decouple from macroeconomic index volatility, generating market-neutral alpha completely orthogonal to earnings and options surface metrics.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Micro-cap illiquidity creating artificially low rolling correlations",
+        "Abrupt market-wide crash where all correlations converge toward 1.0"
+      ],
+      "falsification_test": "Inverts during sudden macro liquidity crises where high-correlation mega-cap equities act as flight-to-safety havens.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-correlation_last_90_days_spy, industry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, industry)"
+        }
+      ]
+    }
+  ]
+}
