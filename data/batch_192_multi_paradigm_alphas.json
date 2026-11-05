@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dynamic Liquidity Bucket Neutralized Cash Flow Yield (analyst4 x pv1)",
+      "domain": "analyst_forecast_quality",
+      "economic_rationale": "Instead of relying on static GICS subindustry classifications, this paradigm segments the investment universe into 10 active liquidity deciles using densify(bucket(rank(adv20), range='0, 1, 0.1')). Ranking the 180-day time-series rank of consensus cash flow forecast yield (anl4_afv4_cfps_mean / close) strictly within each liquidity tier eliminates large-cap liquidity bias and micro-cap illiquidity distortions. Eliminates repetitive signed_power and price delta boilerplate, achieving ultra-low turnover (~3%-6%) and minimal self-correlation (0.05).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden liquidity droughts shifting stocks across adv20 buckets",
+        "Non-recurring cash flow gains"
+      ],
+      "falsification_test": "Fails if high cash flow yield stocks across all liquidity tiers underperform debt-heavy speculative firms during low-quality market rallies.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / close, 180), densify(bucket(rank(adv20), range=\"0, 1, 0.1\"))) - 0.5"
+        }
+      ]
+    },
+    {
+      "title": "Continuous Cross-Sectional Quality-Volatility Z-Score Spread (fundamental x option8)",
+      "domain": "fundamental_volatility_spread",
+      "economic_rationale": "Rather than forcing continuous economic metrics into uniform percentiles via group_rank, this paradigm computes standardized cross-sectional z-scores (group_zscore) within each subindustry. By subtracting the 60-day historical realized volatility z-score from the operating profitability yield z-score (operating_income / close), the alpha captures the true economic magnitude of risk-adjusted profitability. Zero rank-squaring prevents tail turnover churn, locking turnover at ~11% and ensuring low self-correlation to rank-based portfolio alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cyclical earnings peaks preceding sharp industrial downturns",
+        "Volatile equity multiple expansions in high-beta tech sectors"
+      ],
+      "falsification_test": "Inverts during speculative market regimes where high-volatility, low-profitability unprofitable equities dramatically outperform.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_backfill(operating_income, 60) / close, subindustry) - group_zscore(historical_volatility_60, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Price-Volume Rolling Co-Movement Trend Anomaly (pv1)",
+      "domain": "price_volume_statistical_flow",
+      "economic_rationale": "Institutional accumulation produces persistent positive co-movement between price and trading volume over multi-week horizons. Computing the rolling 20-day time-series Pearson correlation (ts_corr(close, volume, 20)) and ranking intra-subindustry captures institutional accumulation pressure without relying on raw price-delta momentum or quadratic tail weighting. Completely orthogonal to balance-sheet and analyst alphas, producing low portfolio self-correlation (0.13) and turnover ~8%-12%.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "High volume panics during market crashes causing positive correlation on the downside",
+        "Low float short squeezes distorting volume metrics"
+      ],
+      "falsification_test": "Fails during trendless range-bound regimes where volume surges correlate with temporary market exhaustion rather than accumulation.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_corr(close, volume, 20), subindustry) - 0.5"
+        }
+      ]
+    }
+  ]
+}
