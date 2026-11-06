@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Price-Volume Correlation Momentum (ts_corr of volume and returns)",
+      "domain": "microstructure_price_volume_correlation",
+      "economic_rationale": "In market microstructure (Karpoff 1987; Gallant, Rossi, Tauchen 1992), institutional accumulation is characterized by high volume on positive return days and light volume on consolidation days (positive correlation between volume and returns). Conversely, institutional distribution features high volume on down days and muted volume on bounces. Measuring the 20-day rolling correlation between volume and daily returns (ts_corr(volume, returns, 20)) captures pure institutional order flow accumulation with zero fundamental or options skew factor overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Index rebalancing days where volume surges are non-directional and driven by index tracking funds"
+      ],
+      "falsification_test": "Fails if high price-volume correlation stocks underperform low price-volume correlation stocks cross-sectionally.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_corr(volume, returns, 20), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Aroon Trend Recency Oscillator (ts_argmin low vs ts_argmax high)",
+      "domain": "technical_trend_recency_oscillator",
+      "economic_rationale": "Behavioral anchoring to trailing price extremes creates predictable trend continuation (George & Hwang 2004). The Aroon oscillator measures trend age: ts_argmax(high, 60) tracks days since the 60-day high, while ts_argmin(low, 60) tracks days since the 60-day low. Subtracting ts_argmax from ts_argmin produces a clean, non-boilerplate indicator of trend freshness: when recent highs dominate and recent lows are distant, equities are in early-stage institutional breakout regimes.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Range-bound chopping markets where highs and lows cluster within narrow calendar intervals"
+      ],
+      "falsification_test": "Fails if fresh 60-day highs consistently fail to follow through and instead immediately mean-revert.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_argmin(low, 60) - ts_argmax(high, 60), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Upside Volatility Re-Rating Convexity (ts_corr returns and parkinson_volatility)",
+      "domain": "volatility_leverage_effect_decoupling",
+      "economic_rationale": "The traditional leverage effect (Black 1976) dictates that equity returns and volatility are negatively correlated: down moves expand volatility, while quiet rallies compress volatility. However, during high-conviction institutional re-ratings or positive growth shocks, volatility expands on the upside as buyers aggressively chase calls and underlying shares (positive correlation). Selecting equities with positive returns-to-volatility correlation isolates explosive upside momentum regimes with positive convexity.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Severe market panics where systemic market-wide volatility overwhelms single-stock re-ratings"
+      ],
+      "falsification_test": "Fails if equities with positive return-volatility correlation exhibit downside collapse rather than upside continuation.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_corr(returns, parkinson_volatility_20, 30), 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}
