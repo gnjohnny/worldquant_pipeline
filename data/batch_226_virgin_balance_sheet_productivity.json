@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Net Liquid Cash Solvency Ratio (cash_st - debt_st over assets)",
+      "domain": "fundamental_net_cash_solvency",
+      "economic_rationale": "Financial distress and refinancing risk create severe asymmetric downside for leveraged corporations. In credit tightening cycles, companies with positive net liquid cash (cash_st - debt_st) have zero debt rollover risk, earn attractive yield on cash reserves, and possess opportunistic capital to execute share buybacks. Conversely, firms where short-term debt exceeds liquid cash face acute refinancing and insolvency pressure. Standardizing net liquid cash by total assets across a 1-year time-series range isolates pristine corporate solvency, generating consistent alpha with 100% universal instrument coverage and turnover in the 10-14% sweet spot.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Sudden speculative rallies in high-debt distress equities driven by debt restructuring relief"
+      ],
+      "falsification_test": "Fails if high net cash firms underperform net debtor firms within subindustries.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(cash_st - debt_st, 60) / (ts_backfill(assets, 60) + 1000), 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Corporate Capital Expenditure Discipline vs Empire Building (-capex over assets)",
+      "domain": "fundamental_capital_investment_discipline",
+      "economic_rationale": "Empirical asset pricing research (Titman, Wei, Xie 2004; Cooper, Gulen, Schill 2008) documents that corporate managers frequently overinvest free cash flow into negative-NPV pet projects and dilutive empire building, destroying shareholder value. Firms demonstrating capital expenditure discipline relative to their asset base (-capex / assets) generate higher return on invested capital and superior shareholder returns. Evaluating capex intensity against a 1-year baseline isolates firms expanding margins through capital discipline.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Rapid technological transitions where aggressive capital expenditure expansion is necessary to avoid obsolescence"
+      ],
+      "falsification_test": "Fails if high-capex empire builders systematically outperform capital-disciplined firms over multi-year cycles.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(-ts_backfill(capex, 60) / (ts_backfill(assets, 60) + 1000), 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Core Operating Asset Productivity (Novy-Marx Gross Profitability / ROC) (ebit over assets)",
+      "domain": "fundamental_operating_asset_productivity",
+      "economic_rationale": "Novy-Marx (2013) demonstrated that asset productivity (ebit / assets) is the purest measure of true economic profitability, unclouded by discretionary depreciation or leverage. While price-scaled ratios (ebit / close) suffer from price-momentum feedback loops, scaling operating earnings by the firm's productive asset base identifies true economic moats. Measuring trailing 1-year time-series rank (ts_rank(..., 252)) within each subindustry captures improving asset utilization with ultra-low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Asset-light software or IP-heavy businesses where balance-sheet assets understate true productive capacity"
+      ],
+      "falsification_test": "Fails if high asset productivity firms underperform low-productivity peers within the same subindustry.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(ts_backfill(ebit, 60) / (ts_backfill(assets, 60) + 1000), 252), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
