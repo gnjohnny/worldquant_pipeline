@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Put-Call Open Interest Contrarian Institutional Hedge Ratio (pcr_oi_all)",
+      "domain": "options_put_call_open_interest_positioning",
+      "economic_rationale": "Open interest represents sticky multi-month institutional positioning rather than high-frequency speculative volume. A high put-to-call open interest ratio across all option maturities indicates heavy institutional downside hedging and dealer short-gamma inventory. Selecting equities with the lowest put-to-call open interest ratio (-pcr_oi_all) isolates stocks with bullish institutional call accumulation, insulated from market maker hedging liquidation cascades.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unhedged speculative retail call buying bubbles in distressed micro-caps"
+      ],
+      "falsification_test": "Fails if high put-to-call open interest stocks outperform low put-to-call stocks cross-sectionally.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_backfill(pcr_oi_all, 10), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Synthetic Forward Price Cost-of-Carry Basis (forward_price_180)",
+      "domain": "options_synthetic_forward_cost_of_carry",
+      "economic_rationale": "Put-call parity ties the 180-day synthetic forward price to spot price, risk-free interest rates, and equity borrow fees. Equities whose synthetic forward price is depressed relative to spot reflect exorbitant short-borrow fees, institutional crowding, and expected dividend cuts. Equities with the highest forward basis ((forward_price_180 - close) / close) represent uncrowded compounders with positive carrying value and strong institutional balance-sheet support.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden unexpected dividend initiations that alter forward parity pricing"
+      ],
+      "falsification_test": "Fails if forward basis discount fails to predict negative equity excess returns.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((ts_backfill(forward_price_180, 10) - close) / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Sell-Side Consensus Buy Recommendation Momentum (anl4_buy)",
+      "domain": "analyst_consensus_buy_recommendation_momentum",
+      "economic_rationale": "Sell-side analysts exhibit pronounced herding behavior: when an initial upgrade occurs, competing brokerage desks follow suit with confirmation upgrades over subsequent months. Measuring where current buy recommendations sit within their 120-day historical range (ts_rank(anl4_buy, 120)) captures the acceleration phase of institutional consensus upgrades, generating post-revision drift.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Stale analyst recommendations that fail to reflect sudden negative corporate news"
+      ],
+      "falsification_test": "Fails if 120-day high in buy recommendations is an indicator of sentiment exhaustion rather than ongoing drift.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_rank(anl4_buy, 120), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
