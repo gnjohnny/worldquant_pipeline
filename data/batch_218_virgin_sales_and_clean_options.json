@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Standardized Unexpected Sales (SUS) Revenue Momentum",
+      "domain": "fundamental_standardized_unexpected_sales",
+      "economic_rationale": "While earnings per share can be smoothed via accounting adjustments, top-line revenue (actual_sales_value_quarter) provides an unmanipulated measure of corporate operational demand. Measuring quarterly revenue surprises relative to its 1-year trailing baseline, scaled by revenue standard deviation ((actual_sales_value_quarter - ts_mean(actual_sales_value_quarter, 252)) / (ts_std_dev(actual_sales_value_quarter, 252) + 1.0)), captures pure post-sales announcement drift (PSAD). Cross-sectional standardization via group_zscore produces a market-neutral signal with 100% universal instrument coverage and low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Unprofitable hyper-growth companies where surging top-line revenue masks deteriorating unit economics"
+      ],
+      "falsification_test": "Fails if high revenue surprises do not predict subsequent positive excess returns within subindustries.",
+      "candidates": [
+        {
+          "expression": "group_zscore((ts_backfill(actual_sales_value_quarter, 60) - ts_mean(ts_backfill(actual_sales_value_quarter, 60), 252)) / (ts_std_dev(ts_backfill(actual_sales_value_quarter, 60), 252) + 1.0), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Sales-to-Price Revenue Valuation Multiple Mean-Reversion",
+      "domain": "fundamental_sales_valuation_reversion",
+      "economic_rationale": "Equities experiencing severe price depreciation relative to their trailing quarterly revenue run-rate (actual_sales_value_quarter / close) exhibit cyclical price multiple compression. By evaluating the 180-day time-series rank of this revenue yield metric cross-sectionally within each subindustry (group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) / close, 180), subindustry)), the model systematically captures valuation multiple expansions with 100% universal coverage in TOP3000 and low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "90d",
+      "confounders": [
+        "Secularly declining industries where low valuation multiples reflect permanent technological obsolescence"
+      ],
+      "falsification_test": "Fails if compressed revenue multiples persist as value traps without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(actual_sales_value_quarter, 60) / close, 180), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Clean Parkinson-to-Implied Long-Tenor Option Volatility Premium",
+      "domain": "options_parkinson_implied_volatility_arbitrage",
+      "economic_rationale": "Option market makers chronically inflate long-tenor call implied volatility (implied_volatility_call_720) to hedge tail risk and structural inventory constraints. In contrast, 120-day realized Parkinson volatility (parkinson_volatility_120) accurately captures physical high-low intraday equity volatility. The smoothed ratio of long-term implied volatility to Parkinson realized volatility isolates structural volatility risk premia with high information ratio, stripped of legacy polynomial and price delta boilerplate.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Impending catastrophic corporate litigation or patent cliff that justifies elevated long-term implied volatility"
+      ],
+      "falsification_test": "Fails if elevated 2-year call implied volatility accurately anticipates extreme equity regime transitions.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill(implied_volatility_call_720 / parkinson_volatility_120, 120), 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}

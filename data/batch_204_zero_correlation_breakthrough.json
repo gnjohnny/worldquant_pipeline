@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Destocking x Smoothed Volume Synergy (10-Day Customer Decay)",
+      "domain": "decorrelated_supply_chain_volume",
+      "economic_rationale": "Candidate 6599767a achieved Sharpe 1.23 (missing 1.25 cutoff by just 0.02!) with zero fundamental fields and zero portfolio correlation. Extending customer return decay from 5 to 10 days captures the full multi-tier inventory replenishment cycle while smoothing volume participation over 5 days. Expected to push Sharpe >= 1.45 while keeping self-correlation < 0.35.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unreported supplier inventory write-downs"
+      ],
+      "falsification_test": "Fails during macroeconomic supply shocks where customer signals decouple from production schedules.",
+      "candidates": [
+        {
+          "expression": "-group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) * group_rank(ts_decay_linear(volume / adv20, 5), subindustry), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Linear Rank Combination of Supply Chain Destocking & Volume Participation",
+      "domain": "decorrelated_supply_chain_volume_linear",
+      "economic_rationale": "Multiplicative rank interaction squashes intermediate percentiles (mean 0.25). A linear 70/30 combination of 10-day decayed customer return mean-reversion with 5-day decayed volume participation preserves the full uniform rank gradient across TOP3000, boosting Sharpe and Fitness while retaining zero fundamental correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Low volume holiday trading days"
+      ],
+      "falsification_test": "Fails if volume participation component suffers sudden turnover inflation.",
+      "candidates": [
+        {
+          "expression": "-0.70 * group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) - 0.30 * group_rank(ts_decay_linear(volume / adv20, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Destocking x Direct Relative Volume Intensity Synergy",
+      "domain": "decorrelated_supply_chain_direct_volume",
+      "economic_rationale": "Combines 10-day decayed supply chain customer mean-reversion with immediate daily volume relative to 20-day ADV. Direct relative volume captures urgent institutional trade execution against mean-reverting supplier inventory. Zero overlap with existing portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Single-day block trade volume spikes"
+      ],
+      "falsification_test": "Fails when volume surges reflect corporate secondary offerings rather than active market flow.",
+      "candidates": [
+        {
+          "expression": "-group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) * group_rank(volume / adv20, subindustry), subindustry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Decay-Calibrated Liquidity Absorption Reversion (trade_when + Decay 2/3)",
+      "domain": "microstructure_calibrated_liquidity_absorption",
+      "economic_rationale": "In Batch 219, Candidate 1 achieved 6 PASS metrics with Sharpe 1.39, Sub-universe Sharpe 1.09, and Turnover 26.46% with zero portfolio correlation, but failed Fitness at 0.71. Because trade_when(..., -1) already carries over positions on dry days, simulating at Decay 6 resulted in excessive 6-day decay lag on a 3-day delta reversal, blunting prompt profit-taking. Testing at Decay 2/3 allows the alpha to exit cleanly post-rebound, boosting Annualized Returns from ~6.9% to 12%+ while maintaining turnover in the 35-45% band, mathematically launching Fitness past 1.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "3d",
+      "confounders": [
+        "Persistent multi-day trend breakouts that overwhelm 3-day mean-reversion"
+      ],
+      "falsification_test": "Fails if prompt exit at lower decay increases turnover beyond 70% or degrades Sharpe.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > adv20, -group_rank(ts_delta(close, 3) * (volume / ts_mean(volume, 20)), subindustry), -1)"
+        }
+      ]
+    },
+    {
+      "title": "Statistical Volatility-Normalized Order Flow Absorption",
+      "domain": "microstructure_volatility_normalized_absorption",
+      "economic_rationale": "Raw dollar price deltas (ts_delta(close, 3)) cause high-priced equities to dominate cross-sectional ranks regardless of percentage magnitude. Dividing price displacement by trailing 10-day rolling volatility (ts_delta(close, 3) / ts_std_dev(close, 10)) converts the signal into a dimensionless statistical z-score. Multiplying by relative volume surge (volume / ts_mean(volume, 20)) inside trade_when creates a scale-invariant order absorption engine with superior sub-universe Sharpe and Sharpe ratio.",
+      "expected_direction": "positive",
+      "intended_horizon": "3d",
+      "confounders": [
+        "Low-volatility stocks experiencing sudden non-linear liquidity freeze"
+      ],
+      "falsification_test": "Fails if volatility standardization penalizes high-beta winners that drive aggregate portfolio returns.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > adv20, -group_rank((ts_delta(close, 3) / ts_std_dev(close, 10)) * (volume / ts_mean(volume, 20)), subindustry), -1)"
+        }
+      ]
+    },
+    {
+      "title": "Z-Score Relative Dollar Volume Absorption",
+      "domain": "microstructure_zscore_dollar_volume_absorption",
+      "economic_rationale": "Cross-sectional group_zscore provides optimal weight scaling by rewarding extreme conviction while avoiding rank-flattening. Standardizing price delta multiplied by relative turnover surge (ts_delta(close, 3) * (volume / adv20)) through group_zscore inside trade_when concentrates capital in the most acute liquidity dislocations, driving higher annual return per unit of turnover and maximizing BRAIN Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "3d",
+      "confounders": [
+        "Index inclusion rebalancing dates where volume surges do not reflect fundamental liquidity provision"
+      ],
+      "falsification_test": "Fails if group_zscore produces tail weight concentration that trips the BRAIN instrument weight limit.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > adv20, -group_zscore(ts_delta(close, 3) * (volume / adv20), subindustry), -1)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "hypotheses": [
+    {
+      "title": "Asymmetric Long-Tenor Option Skew Mean-Reversion (360d Put vs 270d Call)",
+      "domain": "options_asymmetric_tenor_skew",
+      "economic_rationale": "Market makers chronically overcharge for 1-year catastrophe put protection (implied_volatility_put_360) relative to 9-month call optionality (implied_volatility_call_270). Shorting this excessive skew harvests an unexploited structural volatility risk premium with 15% turnover and zero platform decay lag.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Systemic equity market crashes"
+      ],
+      "falsification_test": "Fails if 360-day put skew accurately prices prolonged structural recessions.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_decay_linear(ts_backfill(implied_volatility_put_360 - implied_volatility_call_270, 10), 10), market)"
+        }
+      ]
+    },
+    {
+      "title": "Ultra Long-Tenor Option Skew Mean-Reversion (720d Put vs 360d Call)",
+      "domain": "options_ultra_long_tenor_skew",
+      "economic_rationale": "Overpriced 2-year put implied volatility (implied_volatility_put_720) relative to 1-year call implied volatility (implied_volatility_call_360) reflects extreme institutional hedging demand. Mean-reverting this skew generates market-neutral returns with low portfolio correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Severe multi-year bear markets"
+      ],
+      "falsification_test": "Fails if 2-year put skew persists without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_decay_linear(ts_backfill(implied_volatility_put_720 - implied_volatility_call_360, 10), 10), market)"
+        }
+      ]
+    }
+  ]
+}

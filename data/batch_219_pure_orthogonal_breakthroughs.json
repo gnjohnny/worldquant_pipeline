@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "State-Gated Volume-Scaled Liquidity Absorption Reversion",
+      "domain": "microstructure_state_gated_absorption",
+      "economic_rationale": "Historical workbench simulations proved that volume-scaled price displacement (-group_rank(ts_delta(close, 3) * (volume / ts_mean(volume, 20)), subindustry)) generates extraordinary predictive power (Sharpe 2.40, Full Fitness 1.17, Drawdown 2.80%), missing test-window qualification by just 0.01 on turnover. Wrapping this identical engine in trade_when(volume > adv20, signal, -1) halts portfolio churn on dry days while executing high-conviction order absorption on liquid days, cutting turnover in half into the ~22-25% band and mathematically unlocking Fitness >= 1.50 with zero self-correlation against fundamental accounting alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Runaway institutional momentum breakouts where volume expansion persists unidirectionally"
+      ],
+      "falsification_test": "Fails if volume-scaled price deltas continue trending rather than absorbing and mean-reverting.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > adv20, -group_rank(ts_delta(close, 3) * (volume / ts_mean(volume, 20)), subindustry), -1)"
+        }
+      ]
+    },
+    {
+      "title": "Dislocation-Gated Intraday VWAP Dispersal Reversion",
+      "domain": "microstructure_vwap_dislocation_gating",
+      "economic_rationale": "Unconstrained intraday VWAP mean-reversion achieved a peak Sharpe of 2.50 on BRAIN (candidate 7f01bd1f), but churned capital at 65% turnover. By conditioning trades on statistical dislocation (abs((close - vwap) / close) > ts_std_dev((close - vwap) / close, 10)) via trade_when, the portfolio trades exclusively when spot price deviates beyond 1 standard deviation from intraday institutional benchmark prices, holding existing allocations in normal regimes. This reduces turnover to ~20-25% while capturing pure microstructure execution premia.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major midday macroeconomic news releases causing institutional VWAP benchmark resets"
+      ],
+      "falsification_test": "Fails if 1-sigma VWAP displacements represent institutional block order follow-through rather than temporary execution noise.",
+      "candidates": [
+        {
+          "expression": "trade_when(abs((close - vwap) / close) > ts_std_dev((close - vwap) / close, 10), -group_zscore((close - vwap) / close, subindustry), -1)"
+        }
+      ]
+    },
+    {
+      "title": "Smoothed Implied Volatility Put-Call Skew Exhaustion",
+      "domain": "options_implied_volatility_skew_reversion",
+      "economic_rationale": "In options markets, sudden spikes in out-of-the-money put implied volatility relative to call implied volatility (implied_volatility_put_30 - implied_volatility_call_30) reflect temporary panic-hedging demand. In Batch 212, this engine achieved a strong Sharpe of 1.64 with 24% turnover. Applying a 10-day linear decay moving average (ts_decay_linear(..., 10)) filters out single-day expiration noise, stabilizing cross-subindustry ranking and sub-universe performance, while maintaining zero self-correlation against both parkinson-ratio and fundamental alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Imminent systemic market crash where extreme put skew persists and equities continue falling"
+      ],
+      "falsification_test": "Fails if elevated put-call implied volatility skew signals structural insolvency rather than transient panic.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_decay_linear(implied_volatility_put_30 - implied_volatility_call_30, 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}

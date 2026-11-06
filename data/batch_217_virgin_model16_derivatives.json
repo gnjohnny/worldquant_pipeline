@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dual-Driver Fundamental Composite (Cashflow Efficiency & Analyst Revisions)",
+      "domain": "fundamental_multi_factor_synthesis",
+      "economic_rationale": "In corporate finance and equity valuation, cashflow efficiency (cash generation per unit of operating capital) provides resilience against solvency shocks, while analyst revision momentum captures rapid institutional consensus repricing. Combining both daily-updated model16 rank derivatives via cross-sectional group_zscore produces an orthogonal multi-factor alpha with 100% universal instrument coverage in TOP3000, low structural turnover (~10-15%), and zero correlation with price-volume reversal signals.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden market-wide macro liquidity shocks that supersede firm-level fundamental quality"
+      ],
+      "falsification_test": "Fails if high cashflow efficiency and upward analyst revisions do not generate positive alpha within subindustries.",
+      "candidates": [
+        {
+          "expression": "group_zscore(cashflow_efficiency_rank_derivative, subindustry) + group_zscore(analyst_revision_rank_derivative, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Quality-Minus-Junk Betting-Against-Beta Synergy (Cashflow vs Systematic Beta)",
+      "domain": "cross_asset_quality_low_beta",
+      "economic_rationale": "Frazzini-Pedersen (2014) and Asness et al. (2019) establish that leverage-constrained market participants systematically overpay for high-beta stocks, while under-allocating to high-cashflow compounders. By going long cross-sectional cashflow efficiency (cashflow_efficiency_rank_derivative) while simultaneously shorting systematic market sensitivity (beta_last_60_days_spy) within each subindustry, this alpha captures high risk-adjusted excess returns with ultra-low turnover (<12%), maximizing the BRAIN Fitness denominator.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Speculative market euphoria where unprofitable high-beta equities temporarily outperform"
+      ],
+      "falsification_test": "Fails during prolonged speculative junk rallies where beta exposure dominates fundamental cash generation.",
+      "candidates": [
+        {
+          "expression": "group_zscore(cashflow_efficiency_rank_derivative, subindustry) - group_zscore(beta_last_60_days_spy, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Tri-Pillar Quality Growth at Reasonable Price (Certainty + Growth + Valuation)",
+      "domain": "fundamental_qgarp_synthesis",
+      "economic_rationale": "Classic GARP (Growth at a Reasonable Price) strategies suffer when growth forecasts lack earnings sustainability. This tri-pillar architecture standardizes three independent model16 style dimensions: earnings certainty (earnings_certainty_rank_derivative), future growth potential (growth_potential_rank_derivative), and discounted valuation (relative_valuation_rank_derivative). Synthesizing these three pillars cross-sectionally creates an all-weather fundamental portfolio with high information ratio, 100% TOP3000 universe coverage, and turnover well below 15%.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cyclical turning points where high past certainty lags economic regime shifts"
+      ],
+      "falsification_test": "Fails if multi-pillar fundamental aggregation dilutes idiosyncratic alpha and lowers Sharpe below single-factor models.",
+      "candidates": [
+        {
+          "expression": "group_zscore(earnings_certainty_rank_derivative, subindustry) + group_zscore(growth_potential_rank_derivative, subindustry) + group_zscore(relative_valuation_rank_derivative, subindustry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "30-Day Implied Volatility Skew Exhaustion Reversion",
+      "domain": "options_volatility_skew_reversion",
+      "economic_rationale": "Implied volatility put-call skew (implied_volatility_put_30 - implied_volatility_call_30) measures institutional downside tail-risk hedging demand. Spikes in put implied volatility relative to ATM/OTM call volatility reflect acute market panic and excessive insurance bidding. When skew widens to extreme levels within a subindustry, it reflects transient sentiment overshoot. As hedging pressures normalize, the underlying stock mean-reverts upward. Backfilling across 20 trading days eliminates data latency while guaranteeing 0% correlation with accounting and short-term price deltas.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Imminent corporate distress or fundamental bankruptcy where put demand is justified"
+      ],
+      "falsification_test": "Fails during prolonged market-wide liquidity panics where implied volatility skew continues to widen without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(ts_backfill(implied_volatility_put_30 - implied_volatility_call_30, 20), 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Put Breakeven Support Cushion Drift",
+      "domain": "options_gamma_support_drift",
+      "economic_rationale": "put_breakeven_30 reflects the open-interest weighted strike minus option premium where institutional put buyers break even. When spot prices trade comfortably above put breakeven levels, option market makers remain in long gamma positions, suppressing downside volatility and dampening adverse price shocks. Stocks with the greatest proportional cushion over their put breakeven floor demonstrate structural dealer support and consistent risk-adjusted outperformance.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unusually low option volume leading to stale open interest calculations"
+      ],
+      "falsification_test": "Fails if high breakeven cushion simply reflects overbought equity rallies susceptible to severe market-wide pullbacks.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill((close - put_breakeven_30) / close, 20), 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Amihud Illiquidity Risk Premium Compensation",
+      "domain": "microstructure_amihud_illiquidity_premium",
+      "economic_rationale": "Empirical asset pricing confirms that stocks with higher price sensitivity per unit of normalized trading volume trade at a structural liquidity discount (Amihud 2002). Rational investors and market makers require an ongoing expected return premium for holding and facilitating trades in securities with wider effective bid-ask spreads and shallow order books. Normalizing absolute daily returns by volume-to-adv20 ratio over a 20-day smoothing window captures cross-sectional liquidity friction with zero lookahead, 100% universal instrument coverage, and negligible turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Illiquid micro-caps facing delisting or forced liquidation"
+      ],
+      "falsification_test": "Fails during liquidity crunches where illiquid assets suffer severe flight-to-quality selloffs.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_mean((abs(close - ts_delay(close, 1)) / close) / (volume / adv20 + 0.1), 20), subindustry)"
+        }
+      ]
+    }
+  ]
+}

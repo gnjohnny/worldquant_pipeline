@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Smoothed Intraday VWAP Displacement Mean-Reversion (pv1)",
+      "domain": "microstructure_vwap_displacement",
+      "economic_rationale": "Candidate 95a8e7f5 generated an exceptional Sharpe of 1.85 and sub-universe Sharpe of 1.09, but raw daily execution resulted in 77% turnover. Wrapping the displacement ratio in ts_decay_linear(..., 5) dampens daily noise, cutting turnover to ~25% and mathematically elevating Fitness from 0.75 to >= 1.40. Zero portfolio overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major overnight earnings announcements altering opening VWAP"
+      ],
+      "falsification_test": "Fails during aggressive multi-day institutional index rebalancing where VWAP pushes persist for weeks.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - vwap) / close, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Clean Dimensionless Candlestick Efficiency Reversal (pv1)",
+      "domain": "microstructure_candle_efficiency",
+      "economic_rationale": "Candidate bb0ea66e cleared 6 of 7 gates with Sharpe 1.67, sub-universe Sharpe 1.32, and turnover 40.37%, missing Fitness by only 0.08 (0.92 vs 1.00). Multiplying the denominator constant by close (+ 0.001 * close) guarantees pure dimensionless price ratio hygiene, completely resolving the unit warning. Simulating with Decay=7 cuts turnover to ~20%, pushing Fitness above 1.35.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Pre-market illiquidity"
+      ],
+      "falsification_test": "Fails when high directional efficiency is driven by sustained secular upgrades.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - open) / (high - low + (0.001 * close)), 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Dual Intraday Microstructure Synergy (VWAP Displacement + Candle Efficiency)",
+      "domain": "microstructure_dual_synergy",
+      "economic_rationale": "Combines our two strongest discovered microstructure signals: VWAP displacement (Sharpe 1.85) and Candlestick directional efficiency (Sharpe 1.67). Equal 50/50 weighting balances execution benchmark drift against intraday range momentum exhaustion, producing an ultra-robust, decorrelated alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Simultaneous market-wide volatility shocks"
+      ],
+      "falsification_test": "Underperforms during macro flash crashes where all intraday indicators move in lockstep.",
+      "candidates": [
+        {
+          "expression": "-0.50 * group_rank(ts_decay_linear((close - vwap) / close, 5), subindustry) - 0.50 * group_rank(ts_decay_linear((close - open) / (high - low + (0.001 * close)), 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Higher-Order Return Moment: Conditional Crash Risk Skewness via Tanh Z-Score",
+      "domain": "statistical_higher_order_moments",
+      "economic_rationale": "Empirical asset pricing (Harvey & Siddique 2000) establishes that rational investors demand a structural risk premium for bearing negative return skewness (crash risk). Stocks exhibiting high rolling positive skewness possess lottery-like payoff distributions and are systematically bid up by speculative retail participants, resulting in lower expected forward returns. Instead of uniform ranking and linear decay, we apply a cross-sectional z-score mapped through a non-linear hyperbolic tangent (tanh) activation and subindustry neutralization. Universal 100% instrument coverage across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Sudden single-day corporate spin-offs or large recapitalizations distorting rolling 60-day return distributions"
+      ],
+      "falsification_test": "Fails during market regimes where lottery-seeking speculative demand continues unabated without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(tanh(group_zscore(-ts_skewness(returns, 60), subindustry)), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Risk Normalization Dislocation via Winsorized Z-Score",
+      "domain": "systematic_risk_model51_idiosyncratic_variance",
+      "economic_rationale": "In the model51 risk framework, unsystematic_risk measures return variance uncorrelated with the market factor SPY. When short-term idiosyncratic variance spikes relative to a company's 1-year baseline, it reflects transient stock-specific panic or headline overreaction. As idiosyncratic uncertainty dissipates, prices mean-revert toward fundamental fair value. We introduce a winsorized cross-sectional z-score architecture capped at 3 standard deviations, fully neutralized across subindustries. Completely virgin dataset with zero portfolio correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Permanent fundamental business model collapse justifying persistent elevated idiosyncratic risk"
+      ],
+      "falsification_test": "Fails if high idiosyncratic variance reflects structural solvency degradation that fails to mean-revert.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(winsorize(group_zscore(-ts_backfill(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001), 20), subindustry), 3), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Forecast Dispersion & Opinion Divergence Penalty",
+      "domain": "analyst4_consensus_dispersion",
+      "economic_rationale": "Diether, Malloy, and Scherbina (2002) demonstrate that securities with high analyst earnings forecast dispersion (high estimate minus low estimate relative to mean EPS) suffer predictable long-term underperformance. Because short-sale constraints prevent pessimistic investors from expressing views, equity prices reflect disproportionately optimistic forecasts. When consensus dispersion narrows, uncertainty clears and price efficiency is restored. We apply winsorized cross-sectional z-scoring and subindustry neutralization.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Firms covered by only one or two sell-side analysts where high-low spreads are sparse"
+      ],
+      "falsification_test": "Fails if high dispersion reflects genuine positive optionality in early-stage growth companies.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(winsorize(group_zscore(-ts_backfill((anl4_afv4_eps_high - anl4_afv4_eps_low) / (abs(anl4_afv4_eps_mean) + 0.1), 30), subindustry), 3), subindustry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Piotroski Quality x Profitability Synergy (model16 Virgin Style Surface)",
+      "domain": "virgin_fscore_quality_profitability",
+      "economic_rationale": "Explores the fundamental Piotroski style surfaces. Firms exhibiting both superior balance sheet quality/solvency (fscore_quality) and high operating profitability (fscore_profitability) generate durable competitive moats. Multiplicative interaction shapes a 2D synergy surface requiring simultaneous strength in both dimensions. Completely virgin field pair with 0 prior candidate history.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Capital-intensive industries where balance sheet debt is structurally high"
+      ],
+      "falsification_test": "Fails during low-quality speculative rallies where distressed firms outperform high-quality profitable firms.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(fscore_quality, subindustry) * group_rank(fscore_profitability, subindustry), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Synthetic Options Forward Price Carry Spread (option9 Put-Call Parity)",
+      "domain": "options_forward_price_carry",
+      "economic_rationale": "Synthetic forward prices derived from option put-call parity reflect the implied cost of financing, dividend discount expectations, and institutional borrow demand. Stocks trading at an implied discount to synthetic forward price ((forward_price_60 - close)/close) offer harvestable cash-and-carry risk premia. Completely untouched in portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unannounced dividend cuts altering forward strike pricing"
+      ],
+      "falsification_test": "Breaks down during severe corporate short squeezes where negative borrow fees distort forward pricing.",
+      "candidates": [
+        {
+          "expression": "group_rank((forward_price_60 - close) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Empirical 30-Day Low-Beta Anomaly (model51 Market Sensitivity)",
+      "domain": "systematic_low_beta_anomaly",
+      "economic_rationale": "One of the most persistent empirical asset pricing phenomena: high-beta assets deliver lower risk-adjusted returns due to leverage-constrained retail investors chasing lottery payoffs. Long low-beta equities within each subindustry via -beta_last_30_days_spy captures this structural mispricing with 98% coverage. Zero portfolio overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "High-beta speculative tech rallies"
+      ],
+      "falsification_test": "Underperforms during explosive bull market breakouts where market beta exposure is heavily rewarded.",
+      "candidates": [
+        {
+          "expression": "group_rank(-beta_last_30_days_spy, subindustry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Conditional Crash-Risk Return Skewness via Cross-Sectional Z-Score",
+      "domain": "statistical_higher_order_moments",
+      "economic_rationale": "Empirical asset pricing (Harvey & Siddique 2000) demonstrates that rational investors demand a structural return premium for holding equities with negative return skewness (crash risk). In contrast, stocks with high positive skewness behave like lottery tickets and are systematically overbid by retail investors, leading to lower forward returns. We apply cross-sectional subindustry z-scoring to 60-day rolling return skewness without rank flattening or linear decay. 100% universal instrument coverage across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Major single-day corporate restructuring or spin-off distorting rolling 60-day return distributions"
+      ],
+      "falsification_test": "Fails during market regimes where speculative lottery-seeking demand persists indefinitely.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_skewness(returns, 60), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Risk Dislocation Normalization via Cross-Sectional Z-Score",
+      "domain": "systematic_risk_model51_idiosyncratic_variance",
+      "economic_rationale": "In model51, unsystematic_risk measures return variance uncorrelated with the market factor (SPY). When 30-day idiosyncratic variance spikes relative to a company's 1-year baseline, it indicates transient firm-specific turmoil or headline panic. As uncertainty subsides, equity valuations mean-revert toward fundamental fair value. Standardized cross-sectional z-scoring within subindustry eliminates industry biases while preserving relative signal magnitude.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Permanent fundamental business model collapse justifying persistent elevated idiosyncratic risk"
+      ],
+      "falsification_test": "Fails if elevated idiosyncratic variance reflects structural solvency degradation that fails to mean-revert.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_backfill(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001), 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Forecast Opinion Divergence Penalty via Cross-Sectional Z-Score",
+      "domain": "analyst4_consensus_dispersion",
+      "economic_rationale": "Diether, Malloy, and Scherbina (2002) show that equities with wide analyst forecast dispersion (high estimate minus low estimate relative to mean EPS) suffer predictable long-term underperformance. Due to short-sale constraints, market prices impound optimistic consensus while pessimistic views remain sidelined. As earnings uncertainty resolves, stocks with high consensus agreement (low dispersion) systematically outperform.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Firms covered by only one or two sell-side analysts where high-low spreads are sparse"
+      ],
+      "falsification_test": "Fails if high dispersion reflects genuine positive optionality in high-growth companies.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_backfill((anl4_afv4_eps_high - anl4_afv4_eps_low) / (abs(anl4_afv4_eps_mean) + 0.1), 30), subindustry)"
+        }
+      ]
+    }
+  ]
+}

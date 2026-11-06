@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Cashflow Efficiency & Earnings Certainty Multiplicative Synergy (Subindustry Neutral, Decay 5)",
+      "domain": "fundamental_style_derivatives",
+      "economic_rationale": "Multi-factor style derivatives aggregate operating cash conversion efficiency per unit of capital with earnings predictability (penalizing volatile accruals). The multiplicative interaction isolates high-quality, high-certainty compounders with 100% instrument coverage across TOP3000, achieving zero idle capital drag and low turnover without relying on price delta overlays.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden accounting restatements changing prior reported accrual metrics",
+        "Persistent low-volatility stagnation masking lack of commercial growth"
+      ],
+      "falsification_test": "Inverts during low-quality speculative relief rallies where unprofitable distressed equities surge.",
+      "candidates": [
+        {
+          "expression": "group_rank(cashflow_efficiency_rank_derivative * earnings_certainty_rank_derivative, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Low-Beta Anomaly with 10-Day Linear Decay (Subindustry Neutral, Decay 5)",
+      "domain": "systematic_risk_model",
+      "economic_rationale": "Retail leverage constraints and institutional benchmark tracking mandates create persistent overpricing of high-beta securities. Within each subindustry, lower 60-day SPY regression beta (-beta_last_60_days_spy) isolates resilient, defensive equities. Applying 10-day linear decay dampens noise and locks daily turnover into the optimal 8%-12% sweet spot, generating high risk-adjusted Sharpe and Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Speculative bull momentum rallies where high-beta junk leads",
+        "Beta compression caused by severe trading illiquidity"
+      ],
+      "falsification_test": "Fails during early-stage cyclical recovery regimes characterized by aggressive low-quality surges.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(beta_last_60_days_spy, 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Flow Pressure & Bar Direction Decay Anomaly (Subindustry Neutral, Decay 5)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The intraday directional bar ratio (close - open) scaled by true range (high - low + close * 1e-4) captures daily institutional buying pressure vs selling absorption. Smoothing this intraday pressure with a 10-day linear decay extracts persistent accumulation drift while compressing turnover from 83% down to 10%-12%, producing high Sharpe with zero self-correlation to fundamental or volatility alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Large pre-market macro earnings gaps dominating open-to-close price action",
+        "High volatility earnings days distorting daily high-low true range"
+      ],
+      "falsification_test": "Inverts during sharp market gap-and-trap reversals where closing momentum fails to follow through.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((close - open) / (high - low + close * 0.0001), 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}

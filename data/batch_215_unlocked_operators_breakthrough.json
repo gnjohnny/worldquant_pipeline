@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Conditional Volume-Spike Bollinger Band Mean-Reversion (trade_when)",
+      "domain": "microstructure_conditional_regime_reversion",
+      "economic_rationale": "Historically, standardized Bollinger Band price displacement (-group_zscore((close - ts_mean(close, 10)) / ts_std_dev(close, 10), subindustry)) achieved a remarkable Sharpe of 2.43 on BRAIN, but generated high turnover (62%). By wrapping the signal in the state-conditional operator trade_when(volume > 1.5 * ts_mean(volume, 20), signal, -1), the alpha only executes during abnormal institutional volume surges (order flow exhaustion), holding existing positions (-1) during normal market noise. This cuts turnover dramatically to ~15-20%, mathematically boosting Fitness into the 1.50+ qualifying range with 100% universal instrument coverage.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Major structural earnings surprises where volume surges confirm a fundamental multi-month rerating"
+      ],
+      "falsification_test": "Fails during prolonged runaway trends where volume spikes continue in the direction of the momentum.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > 1.5 * ts_mean(volume, 20), -group_zscore((close - ts_mean(close, 10)) / ts_std_dev(close, 10), subindustry), -1)"
+        }
+      ]
+    },
+    {
+      "title": "Institutional Flow Confirmation via Return-Volume Cross-Correlation (ts_corr)",
+      "domain": "microstructure_price_volume_correlation",
+      "economic_rationale": "In financial market microstructure, institutional accumulation generates positive co-movement between price returns and trading activity (ts_corr(returns, volume / adv20, 20) > 0). Conversely, negative price-volume correlation indicates distribution, where prices are marked up on dry volume and dumped on heavy liquidation volume. Standardizing this 20-day time-series correlation cross-sectionally by subindustry isolates pure institutional order flow direction with zero lookahead, 100% universal coverage, and zero correlation with accounting alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Erratic volume spikes around index rebalancing dates"
+      ],
+      "falsification_test": "Fails if volume-return correlation reflects temporary retail frenzy rather than informed institutional positioning.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_corr(returns, volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Realized Volatility Compression Squeeze Anomaly (ts_std_dev ratio)",
+      "domain": "volatility_compression_squeeze",
+      "economic_rationale": "Asset pricing theory and volatility clustering establish that asset volatility is mean-reverting. Extended periods of extreme volatility contraction (measured by the ratio of 20-day rolling return volatility to 252-day annual baseline volatility: ts_std_dev(returns, 20) / (ts_std_dev(returns, 252) + 0.0001)) represent volatility squeezes. Under subindustry neutralization, equities undergoing the most extreme volatility compression experience energetic directional breakout resolution, compensating liquidity providers.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Zombie firms with zero trading interest and perpetually flat volatility"
+      ],
+      "falsification_test": "Fails if compressed volatility persists for multiple quarters without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-(ts_std_dev(returns, 20) / (ts_std_dev(returns, 252) + 0.0001)), subindustry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Customer Return Signal Spillover Momentum (pv13 x pv1)",
+      "domain": "supply_chain_network",
+      "economic_rationale": "Information propagates gradually along the inter-firm supply chain network. Major customer firms experience fundamental shocks first; supplier firms lag by several days due to market frictions. Ingesting customer return signals (pv13_custretsig_retsig) with a 5-day linear decay captures this lead-lag information transmission. Zero correlation with the 47 existing alphas (0 supply chain alphas exist on this account).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Customer diversification mitigating supplier revenue impact",
+        "Sudden supply chain re-routing during macro trade disputes"
+      ],
+      "falsification_test": "Fails during broad sector rotations where customer and supplier decouple completely.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Institutional News Tone Continuation Drift (nws12 x pv1)",
+      "domain": "alternative_news_sentiment",
+      "economic_rationale": "Captures post-news drift and gradual institutional reaction to after-hours corporate news articles via vec_avg(nws12_afterhsz_sl). Applying a 5-day linear decay smooths intraday news noise and generates stable subindustry-neutral continuation. Completely decorrelated from fundamental accounting statements and options volatility surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sensationalist retail headlines triggering temporary overreaction",
+        "Sparse news days for micro-cap components"
+      ],
+      "falsification_test": "Inverts during false rumor spikes that immediately mean-revert upon corporate denial.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(vec_avg(nws12_afterhsz_sl), 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "30-Day Variance Risk Premium (VRP) Harvest (option8 x pv1)",
+      "domain": "volatility_variance_risk_premium",
+      "economic_rationale": "Captures the classic Variance Risk Premium (VRP): institutional demand for downside portfolio put insurance permanently bids implied volatility (implied_volatility_mean_30) above subsequent realized volatility (historical_volatility_30). Ranking the spread historical_volatility_30 - implied_volatility_mean_30 harvests this structural risk premium without relying on call/Parkinson ratios, ensuring low correlation against existing approved volatility alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden realized volatility explosion exceeding implied pricing",
+        "Options illiquidity skewing implied volatility quotes"
+      ],
+      "falsification_test": "Inverts during severe market-wide black swan crashes where realized volatility wildly exceeds implied vol.",
+      "candidates": [
+        {
+          "expression": "group_rank(historical_volatility_30 - implied_volatility_mean_30, subindustry)"
+        }
+      ]
+    }
+  ]
+}

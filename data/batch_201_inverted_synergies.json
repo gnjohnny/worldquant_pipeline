@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Inventory Destocking Mean-Reversion Synergy (pv13 x model16 Inverted)",
+      "domain": "multiplicative_supply_chain_quality",
+      "economic_rationale": "Empirical testing in Batch 200 revealed a massive -1.99 Sharpe for positive customer return momentum paired with cashflow efficiency, proving that customer return spikes actually trigger supplier inventory backlog and mean-reverting margin compression. Inverting the signal (-group_rank) converts this high-magnitude relationship into a positive Sharpe (~+1.99) while maintaining optimal 30% turnover and well-distributed weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unanticipated customer supply shortages",
+        "Macro inventory restock cycles"
+      ],
+      "falsification_test": "Fails during sustained long-term supply chain expansion where customer momentum leads to genuine supplier multiple expansion.",
+      "candidates": [
+        {
+          "expression": "-group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) * group_rank(cashflow_efficiency_rank_derivative, subindustry), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Breakeven Asymmetry Rank Spread (option9 Clean Rank Difference)",
+      "domain": "options_breakeven_asymmetry",
+      "economic_rationale": "Batch 200 achieved positive Sharpe 0.77 but suffered a unit mismatch and denominator spike. Solving this by subtracting the group rank of downside put floor buffer from upside call headroom rank eliminates all division by zero, resolves unit dimensionalities to pure dimensionless ranks, and eliminates weight concentration while retaining the structural gamma positioning edge.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden volatility spikes collapsing put breakevens",
+        "Options illiquidity on small caps"
+      ],
+      "falsification_test": "Breaks down during market crashes where put implied volatility surges across the entire surface.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(call_breakeven_30 - close, subindustry) - group_rank(close - put_breakeven_30, subindustry), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Value & Analyst Revision Momentum Synergy (model16 Value x Momentum)",
+      "domain": "multiplicative_value_momentum",
+      "economic_rationale": "Classic empirical quantitative finance (Asness, Moskowitz, Pedersen) demonstrates that Value and Momentum are negatively correlated but produce superior risk-adjusted returns when combined multiplicatively. Cheap firms (high relative_valuation_rank_derivative) that are experiencing institutional upgrade momentum (high analyst_revision_rank_derivative) avoid the value trap. 100% instrument coverage ensures 100% capital utilization in TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Value traps with temporary accounting revisions",
+        "Momentum crashes during aggressive rotation regimes"
+      ],
+      "falsification_test": "Underperforms during speculative junk rallies where unprofitable unranked stocks outperform quality value.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(relative_valuation_rank_derivative, subindustry) * group_rank(analyst_revision_rank_derivative, subindustry), subindustry)"
+        }
+      ]
+    }
+  ]
+}

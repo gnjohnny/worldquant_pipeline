@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Open-to-Close Return Mean-Reversion (pv1 - 100% Coverage)",
+      "domain": "microstructure_intraday_reversal",
+      "economic_rationale": "Isolates pure daytime active trading from open to close, stripping out overnight macro gap risk. Persistent multi-day daytime buying exhausts retail liquidity, compensating market makers who absorb inventory for next-day mean-reversion. 100% instrument coverage across TOP3000 and 0 portfolio collision.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major midday news announcements triggering runaway multi-day momentum"
+      ],
+      "falsification_test": "Fails during aggressive bull trend regimes where daytime momentum continues uninterrupted for weeks.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - open) / close, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Accumulation/Distribution Oscillator Mean-Reversion (pv1 - 100% Coverage)",
+      "domain": "microstructure_ad_oscillator",
+      "economic_rationale": "Classic Chaikin Money Flow multiplier: computes where close finished relative to the daily high-low midpoint ((2*close - high - low) / (high - low)). Strictly bounded in [-1, 1]. Equities pinned near daily extremes for 5 consecutive days face sharp inventory rebalancing reversion. 100% coverage eliminates weight concentration risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Zero-range trading days on halted stocks"
+      ],
+      "falsification_test": "Underperforms when extreme closes reflect durable fundamental multiple reratings.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((2 * close - high - low) / (high - low + (0.001 * close)), 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Candlestick Shadow Asymmetry Rejection Reversal (pv1 - 100% Coverage)",
+      "domain": "microstructure_shadow_asymmetry",
+      "economic_rationale": "Measures net structural rejection: upper shadow (selling pressure at highs) minus lower shadow (buying support at lows), divided by total daily range. When upper shadow dominates persistently over 5 days, buyers are repeatedly rejected by institutional overhead supply. Zero portfolio overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Low-volume wide bid-ask spreads"
+      ],
+      "falsification_test": "Fails during low-liquidity holiday regimes where shadow wicks reflect random noise.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(((high - max(open, close)) - (min(open, close) - low)) / (high - low + (0.001 * close)), 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}

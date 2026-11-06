@@ -83,10 +83,6 @@ operators:
       arity: 3
       param_types: ["expression", "integer", "number"]
       description: "Rolling quantile over d days"
-    - name: "ts_skewness"
-      arity: 2
-      param_types: ["expression", "integer"]
-      description: "Rolling skewness over d days"
     - name: "ts_kurtosis"
       arity: 2
       param_types: ["expression", "integer"]
@@ -175,9 +171,9 @@ operators:
       param_types: ["expression", "number"]
       description: "Truncate individual weights to max_percent"
     - name: "winsorize"
-      arity: 2
-      param_types: ["expression", "number"]
-      description: "Winsorize outliers beyond n standard deviations"
+      arity: 1
+      param_types: ["expression"]
+      description: "Winsorize outliers in expression"
     - name: "quantile"
       arity: [1, 2]
       param_types: ["expression"]
@@ -252,10 +248,6 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Standard sigmoid 1 / (1 + exp(-x))"
-    - name: "tanh"
-      arity: 1
-      param_types: ["expression"]
-      description: "Hyperbolic tangent"
     - name: "clamp"
       arity: 3
       param_types: ["expression", "number", "number"]

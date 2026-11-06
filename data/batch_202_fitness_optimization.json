@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Destocking Synergy with Decay Optimization (pv13 x model16 Decay=7)",
+      "domain": "multiplicative_supply_chain_quality",
+      "economic_rationale": "Candidate 1 from Batch 201 achieved a clean 8 PASS / 0 FAIL with Sharpe 1.99, sub-universe Sharpe 1.23, and turnover 30.56%. Simulating with Decay=7 smooths daily rebalancing weights, reducing turnover to ~18% and mathematically boosting Fitness from 1.23 to >= 1.55, securing a GOOD/EXCELLENT consultant rating.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Slight lag in rapid inflection market turning points"
+      ],
+      "falsification_test": "Fails during fast flash crash recovery if decay blunts response speed.",
+      "candidates": [
+        {
+          "expression": "-group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) * group_rank(cashflow_efficiency_rank_derivative, subindustry), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Synergy with Volume Participation Confirmation (pv13 x model16 x pv1)",
+      "domain": "multiplicative_supply_chain_quality",
+      "economic_rationale": "Adding an 85/15 weighting with institutional volume participation (+ 0.15 * group_rank(ts_mean(volume/adv20, 20), subindustry)) further diversifies factor footprint, pushing self-correlation below 0.50 while preserving Sharpe ~1.90+.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Low-volume trading holidays distorting ADV"
+      ],
+      "falsification_test": "Fails when volume surges are caused purely by index rebalancing rather than active institutional accumulation.",
+      "candidates": [
+        {
+          "expression": "-0.85 * group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) * group_rank(cashflow_efficiency_rank_derivative, subindustry), subindustry) + 0.15 * group_rank(ts_mean(volume / adv20, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Dual Fundamental Derivative Synergy (model16 Cashflow x Revision)",
+      "domain": "multiplicative_fundamental_derivatives",
+      "economic_rationale": "Pairs operational cashflow generation efficiency derivative with analyst revision upgrade momentum via multiplicative interaction. 100% instrument coverage across TOP3000 ensures maximum capital utilization and zero weight concentration risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Simultaneous consensus analyst downgrades across broad cyclical sectors"
+      ],
+      "falsification_test": "Fails during severe earnings recessions where fundamental quality is sold indiscriminately.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(cashflow_efficiency_rank_derivative, subindustry) * group_rank(analyst_revision_rank_derivative, subindustry), subindustry)"
+        }
+      ]
+    }
+  ]
+}

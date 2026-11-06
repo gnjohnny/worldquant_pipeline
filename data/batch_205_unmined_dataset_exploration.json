@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quarterly Sales Surprise Z-Score Momentum (analyst4 - 100% Coverage)",
+      "domain": "analyst_sales_surprise",
+      "economic_rationale": "Exploits Post-Earnings Announcement Drift (PEAD) in top-line corporate revenue. Analysts anchor to consensus forecast models and adjust revenue estimates too slowly following earnings releases. Comparing quarterly reported sales to its trailing 1-year rolling mean standardized by 1-year sales standard deviation captures genuine top-line revenue momentum. 100% instrument coverage and completely unmined in the portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "One-off revenue spikes from asset sales or non-operating items",
+        "Seasonal retail sales volatility"
+      ],
+      "falsification_test": "Fails during broad macro recessions where sales growth is accompanied by severe margin compression.",
+      "candidates": [
+        {
+          "expression": "group_rank((ts_backfill(actual_sales_value_quarter, 63) - ts_mean(ts_backfill(actual_sales_value_quarter, 63), 252)) / (ts_std_dev(ts_backfill(actual_sales_value_quarter, 63), 252) + 1.0), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Market Correlation Decoupling Spread (model51 - 98% Coverage)",
+      "domain": "systematic_risk_decoupling",
+      "economic_rationale": "Equities that decouple from overall market co-movement (correlation with SPY) are driven by idiosyncratic pricing power and firm-specific catalysts rather than broad beta exposure. Capturing the rate of change where 30-day SPY correlation falls below 90-day baseline identifies stocks entering idiosyncratic dispersion regimes. Zero correlation to existing portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Low liquidity names with artificially low beta/correlation",
+        "Broad market panic where all correlations converge to 1.0"
+      ],
+      "falsification_test": "Underperforms during market liquidity panics where correlations spike across all sectors simultaneously.",
+      "candidates": [
+        {
+          "expression": "group_rank(-(correlation_last_30_days_spy - correlation_last_90_days_spy), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Growth Potential x Earnings Certainty Quality Synergy (model16 - 100% Coverage)",
+      "domain": "multiplicative_growth_certainty",
+      "economic_rationale": "High forecasted growth often carries high operational fragility (growth traps). Multiplicatively pairing growth potential derivative with earnings certainty derivative requires stocks to exhibit both high revenue/earnings expansion and predictable, low-accrual earnings quality. 100% coverage ensures full capital allocation across TOP3000 with zero portfolio collinearity.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Mature utility companies with high certainty but plateauing growth",
+        "Disruptive tech startups with low earnings certainty"
+      ],
+      "falsification_test": "Fails during speculative junk rallies where unprofitable, highly uncertain growth stocks outperform high-certainty quality.",
+      "candidates": [
+        {
+          "expression": "group_rank(growth_potential_rank_derivative * earnings_certainty_rank_derivative, subindustry)"
+        }
+      ]
+    }
+  ]
+}

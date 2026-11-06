@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Spillover & Cashflow Conversion Synergy (pv13 x model16)",
+      "domain": "multiplicative_supply_chain_quality",
+      "economic_rationale": "Information propagates gradually along the supply chain. A customer return shock (pv13_custretsig_retsig) only converts into durable equity appreciation for suppliers possessing superior cash conversion efficiency (cashflow_efficiency_rank_derivative). Multiplicative interaction shapes a non-linear 2D synergy surface where only firms exhibiting both positive customer momentum and operational quality receive top allocations. Completely distinct from univariate power boilerplates.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Customer inventory de-stocking cycles",
+        "Supplier working capital strain"
+      ],
+      "falsification_test": "Fails when customer return shock is driven purely by temporary non-operating accounting adjustments rather than real order volume.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) * group_rank(cashflow_efficiency_rank_derivative, subindustry), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Breakeven Asymmetry & Hedging Support Ratio (option9)",
+      "domain": "options_breakeven_asymmetry",
+      "economic_rationale": "Breakeven prices reflect market maker gamma positioning and open interest conviction. When upside call breakeven distance exceeds downside put floor cushion, market makers face asymmetric upside convexity. Direct ratio of call headroom to put buffer captures institutional positioning without percentile compression or power transforms.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Deep out-of-the-money retail lottery ticket buying",
+        "Short squeeze dynamics distorting call open interest"
+      ],
+      "falsification_test": "Breaks down during broad market flash crashes where all option strikes trade at panic volatility.",
+      "candidates": [
+        {
+          "expression": "group_rank((call_breakeven_30 - close) / (close - put_breakeven_30 + 0.001), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Low-Beta Anomaly & Idiosyncratic Risk Mean-Reversion Spread (model51)",
+      "domain": "systematic_risk_dispersion",
+      "economic_rationale": "The empirical Low-Beta anomaly shows high-beta assets underperform on a risk-adjusted basis due to leverage-constrained retail demand. Pairing the low-beta factor with a mean-reverting unsystematic risk spike ratio via continuous group z-scores constructs a market-neutral relative-value spread. Completely avoids uniform rank flattening and eliminates weight concentration spikes.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sustained high-beta momentum regimes (e.g., speculative tech bull runs)",
+        "Structural changes in company business model altering rolling beta"
+      ],
+      "falsification_test": "Underperforms during explosive speculative market rallies where high-beta leverage is heavily rewarded.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(-beta_last_60_days_spy, subindustry) - group_zscore(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.001), subindustry), subindustry)"
+        }
+      ]
+    }
+  ]
+}

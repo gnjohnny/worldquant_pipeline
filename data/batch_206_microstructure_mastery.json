@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday VWAP Displacement Mean-Reversion (pv1 - 100% Coverage)",
+      "domain": "microstructure_vwap_displacement",
+      "economic_rationale": "Volume-Weighted Average Price (VWAP) represents the institutional execution benchmark. Stocks closing significantly above their daily VWAP reflect aggressive late-day retail/momentum chasing that overshoots fair value. Market makers absorb inventory and profit from predictable next-day mean-reversion. 100% instrument coverage and completely orthogonal to the existing portfolio (zero fundamental collinearity).",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major structural news breaks in the final trading hour"
+      ],
+      "falsification_test": "Fails during aggressive breakout momentum regimes where closing above VWAP triggers multi-day trend following.",
+      "candidates": [
+        {
+          "expression": "group_rank(-(close - vwap) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "20-Day Channel Range Extremum Reversion (pv1 ts_scale - 100% Coverage)",
+      "domain": "microstructure_channel_oscillator",
+      "economic_rationale": "Uses native WorldQuant ts_scale(close, 20) to compute exact position within the rolling 20-day dynamic channel. Stocks pinned to the absolute top of their 20-day range face profit-taking and institutional rebalancing supply, while stocks at the channel floor experience short covering. Bounded [0, 1] transformation guarantees zero weight concentration risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sustained secular breakout trends lasting longer than 20 days"
+      ],
+      "falsification_test": "Underperforms during powerful structural macro bull runs where equities trend along the top channel boundary for months.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_scale(close, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Intraday Candlestick Efficiency Mean-Reversion (pv1 - 100% Coverage)",
+      "domain": "microstructure_candle_efficiency",
+      "economic_rationale": "Measures the ratio of net daily directional move (close - open) to total intraday volatility (high - low), smoothed over a 5-day linear decay. Persistent one-sided directional intraday thrust exhausts liquidity, compensating contrarian liquidity providers. Dimensionless ratio eliminates all unit errors.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Pre-market gap openings with zero subsequent intraday movement"
+      ],
+      "falsification_test": "Fails when high-efficiency candles are driven by sustained fundamental multi-quarter revision cycles.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - open) / (high - low + 0.001), 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}
