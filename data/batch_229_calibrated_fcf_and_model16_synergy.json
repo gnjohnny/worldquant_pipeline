@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Inverted model16 Dual Synergy with Microstructure Counterweight",
+      "domain": "fundamental_model16_calibrated_synergy",
+      "economic_rationale": "In Batch 228, inverting the model16 rank derivatives (-rank_derivative) jumped Sharpe from -0.87 to +0.86 with positive sub-universe Sharpe (0.57), but turnover was too low (2.68%) because fundamental ranks move slowly. Adding the 5-day price-delta mean-reversion counterweight lifts turnover from 2.7% into the optimal 12-16% window, damping short-term overextension and providing the necessary agile rebalancing to push Sharpe well past the 1.25 cutoff.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden sector-wide macro liquidity shocks that supersede firm-level fundamental ranks"
+      ],
+      "falsification_test": "Fails if adding price-delta counterweight deteriorates Sharpe or drives turnover above 40%.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(-cashflow_efficiency_rank_derivative, subindustry) + 0.40 * group_rank(-analyst_revision_rank_derivative, subindustry) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Free Cash Flow Return on Productive Assets with Cross-Sectional Ranking",
+      "domain": "fundamental_free_cash_flow_roa_cross_sectional",
+      "economic_rationale": "In Batch 226, disciplined capital expenditure (-capex/assets) achieved Sharpe 1.15. Combining capex discipline with cash generation (fnd6_fopo - capex) standardizes true Free Cash Flow return on assets. In Batch 226, time-series ranking ts_rank(..., 252) suffered from quarterly ties; switching to pure cross-sectional group_rank across 3,000 peers eliminates ties, concentrating capital in firms with the strongest unencumbered cash generation per dollar of assets.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Highly cyclical industries where capital expenditure investments precede cash flow generation by several quarters"
+      ],
+      "falsification_test": "Fails if cross-sectional FCF/assets underperforms capital-consuming peers within subindustries.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_backfill(fnd6_fopo - capex, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Volume-Gated model16 Inverted Revision Execution (trade_when)",
+      "domain": "microstructure_gated_fundamental_momentum",
+      "economic_rationale": "Rather than continuous rebalancing, this alpha uses trade_when to rebalance only during institutional liquidity surges (volume > adv20). On high-volume days, capital is allocated to top-tier inverted model16 consensus revision and cashflow efficiency leaders (-group_zscore(...)), while holding positions flat (-1) on quiet days. This achieves ~18-22% turnover with zero decay drag and high execution efficiency.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Extended periods of low market volume where trade_when holds stale fundamental positions"
+      ],
+      "falsification_test": "Fails if volume gating fails to filter out noisy fundamental trades.",
+      "candidates": [
+        {
+          "expression": "trade_when(volume > adv20, -group_zscore(cashflow_efficiency_rank_derivative + analyst_revision_rank_derivative, subindustry), -1)"
+        }
+      ]
+    }
+  ]
+}
