@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Return Spillover Momentum (pv13)",
+      "domain": "alternative_supply_chain_customer_spillover",
+      "economic_rationale": "Information diffuses slowly along customer-supplier economic networks. Large corporate customers experience demand shocks first, while suppliers' stock prices adjust with a multi-day lag due to investor inattention to cross-firm dependencies. Cumulating customer return signals through a 10-day decay-weighted window captures this gradual price discovery, while subtracting a 3-day price delta counterweight neutralizes short-term price overextension. Because supply chain linkages evolve over months, this signal maintains low turnover (10-15%), boosting BRAIN Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Supplier customer contract cancellations not yet reflected in trailing linkage maps"
+      ],
+      "falsification_test": "Fails if customer return signal has zero predictive power for supplier forward excess returns.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(ts_decay_linear(ts_backfill(pv13_custretsig_retsig, 5), 10), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Put Breakeven Institutional Gamma Cushion (option9)",
+      "domain": "options_breakeven_institutional_cushion",
+      "economic_rationale": "The 30-day put breakeven price (strike minus option premium) represents the critical threshold where market makers face severe short gamma exposure. When a stock trades comfortably above put breakeven ((close - put_breakeven_30) / close), the equity enjoys strong institutional support and is insulated from forced delta-hedge liquidations. Using a quadratic power transform concentrates weight in equities with the widest safety cushions, paired with 5-day delta reversion to capture optimal entry points.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Severe broad market liquidity sell-offs that breach all option breakeven strikes"
+      ],
+      "falsification_test": "Fails if stocks near put breakeven exhibit higher forward returns than stocks with wide buffers.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank((close - ts_backfill(put_breakeven_30, 5)) / close, subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Intra-Subindustry Low-Beta Defensive Anomaly (model51)",
+      "domain": "risk_model_intra_industry_low_beta",
+      "economic_rationale": "The low-beta anomaly is a well-documented behavioral anomaly driven by leverage-constrained investors bidding up high-beta equities for lottery-like payoffs. By selecting low-beta equities within each subindustry (-beta_last_60_days_spy), we eliminate sector-level macro exposure and capture pure idiosyncratic alpha. With a 60-day rolling baseline, portfolio turnover is naturally suppressed (under 10%), creating high capital efficiency and high Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Rapid market regime shifts where high-beta growth stocks experience sustained speculative rallies"
+      ],
+      "falsification_test": "Fails if intra-subindustry low-beta stocks underperform high-beta peers over multi-year cycles.",
+      "candidates": [
+        {
+          "expression": "0.85 * signed_power(group_rank(-ts_backfill(beta_last_60_days_spy, 5), subindustry) - 0.5, 2) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}
