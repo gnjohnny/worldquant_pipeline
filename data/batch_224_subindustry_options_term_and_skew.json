@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry-Neutralized Intermediate Put-Call Skew (180d Put vs 90d Call)",
+      "domain": "options_subindustry_intermediate_skew",
+      "economic_rationale": "In Batch 221, market-neutralized long-tenor options skew achieved 8 PASS (Sharpe 1.61, Fitness 1.62, Turnover 15.30%). This alpha adapts the structural skew mechanism to intermediate tenors (6-month put vs 3-month call) and neutralizes by subindustry. Subindustry neutralization zeroes out broad market volatility shifts and compares each equity's put-call tail premium against its direct peer group. This isolates pure idiosyncratic volatility mispricing while guaranteeing low correlation with market-wide skew signals.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Subindustry-wide regulatory or earnings shocks that alter peer group skew uniformly"
+      ],
+      "falsification_test": "Fails if intermediate put-call skew fails to predict peer-relative stock performance.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_decay_linear(ts_backfill(implied_volatility_put_180 - implied_volatility_call_90, 10), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Subindustry Put Term Structure Inversion Reversion (360d Put vs 90d Put)",
+      "domain": "options_subindustry_put_term_structure",
+      "economic_rationale": "Under normal market conditions, options implied volatility trades in contango (longer maturities trade at higher IV than shorter maturities). When front-month put IV spikes relative to 1-year put IV (put_90 > put_360), the put curve inverts into backwardation, reflecting acute near-term institutional panic hedging. Shorting this inversion within each subindustry harvests the volatility term structure roll-down premium as panic subsides and the curve flattens back to normal.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Persistent distress regimes where short-term corporate default risk remains elevated for multiple quarters"
+      ],
+      "falsification_test": "Fails if put term structure backwardation persists indefinitely without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_decay_linear(ts_backfill(implied_volatility_put_90 - implied_volatility_put_360, 10), 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Subindustry Call Term Structure Contango Momentum (360d Call vs 90d Call)",
+      "domain": "options_subindustry_call_term_structure",
+      "economic_rationale": "Institutional investors pay a premium for long-dated call options (implied_volatility_call_360) over short-dated calls (implied_volatility_call_90) when they possess high conviction in sustained multi-quarter earnings expansion. Going long equities with the steepest call contango relative to their subindustry peers captures positive upside optionality and institutional flow momentum with minimal turnover (~14%).",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Overoptimistic institutional consensus that fails to materialize in realized earnings"
+      ],
+      "falsification_test": "Fails if high call term structure slope reflects unhedged speculative retail buying rather than institutional flow.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(implied_volatility_call_360 - implied_volatility_call_90, 10), 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}
