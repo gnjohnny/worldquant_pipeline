@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "150-Day Intermediate Options Call-Put Skew Surface Asymmetry with Intraday VWAP Reversion",
+      "domain": "options_volatility_skew_150d_vwap_synergy",
+      "economic_rationale": "150-day options skew (implied_volatility_call_150 - implied_volatility_put_150) captures intermediate 5-month institutional hedging positioning, filtering out near-term monthly roll noise. When call implied volatility exceeds put IV over this intermediate horizon, institutional allocators are positioning for multi-month upside expansion without aggressive downside tail hedging. Cross-sectional z-score scaling across the entire market ensures continuous, uniform weight distribution. 10-day decay smooths turnover into the optimal 18-20% sweet spot, and 5-day VWAP reversion optimizes short-term liquidity provision.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Broad macroeconomic shocks altering intermediate risk-free term structures across all maturities simultaneously"
+      ],
+      "falsification_test": "Fails if positive intermediate skew equities underperform negative skew peers across quarterly cycles.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(implied_volatility_call_150 - implied_volatility_put_150, 60), 10), market) - 0.15 * group_zscore(ts_decay_linear((close - vwap) / close, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "150-Day Intermediate Options Skew with Volume Liquidity Dampening",
+      "domain": "options_volatility_skew_150d_volume_dampener",
+      "economic_rationale": "Applies cross-sectional z-score standardization to 150-day intermediate call-put implied volatility skew, paired with a volume-to-adv20 liquidity dampener. Penalizing equities undergoing abnormal volume turnover spikes prevents entering crowded institutional rebalancing trades and stabilizes execution alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Prolonged low-volume drift in illiquid equities causing stale options skew interpolation"
+      ],
+      "falsification_test": "Fails if volume dampening reduces risk-adjusted return relative to unconstrained skew.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(implied_volatility_call_150 - implied_volatility_put_150, 60), 10), market) - 0.20 * group_zscore(ts_decay_linear(volume / adv20, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "150-Day Intermediate Options Skew with 5-Day Price Delta Low-Churn Rebalancing",
+      "domain": "options_volatility_skew_150d_price_delta_rebalance",
+      "economic_rationale": "Combines 150-day options skew with 5-day price-delta mean-reversion rebalancing using percentile ranking. 5-day price delta operates at lower frequency than intraday VWAP, lowering portfolio turnover to 12-15% and driving the Fitness score into the Gold Consultant threshold (>= 1.50).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Persistent momentum regimes where 5-day price delta reversals generate adverse selection"
+      ],
+      "falsification_test": "Fails if price delta rebalancing dampens sub-universe Sharpe below platform threshold.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill(implied_volatility_call_150 - implied_volatility_put_150, 60), 10), market) - 0.12 * group_rank(ts_delta(close, 5) / close, market)"
+        }
+      ]
+    }
+  ]
+}

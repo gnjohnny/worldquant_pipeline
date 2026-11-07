@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Short-Tenor Option Open-Interest Breakeven Gamma Floor Distance (20d)",
+      "domain": "options_breakeven_gamma_support_20d",
+      "economic_rationale": "The combined call and put breakeven price (option_breakeven_20) reflects the collective open-interest-weighted pivot price of option market participants expiring in 20 days. When spot price trades comfortably above this combined breakeven ((close - option_breakeven_20) / close > 0), market makers operate in positive gamma positioning, suppressing downside volatility and dampening inventory liquidations. Liquid volume decay prevents chasing temporary spikes.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Low overall option liquidity causing stale open-interest breakeven calculations"
+      ],
+      "falsification_test": "Fails if equities trading above option breakeven break through downside support during market corrections.",
+      "candidates": [
+        {
+          "expression": "group_rank((close - option_breakeven_20) / close, market) - group_rank(ts_decay_linear(volume / adv20, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "Intermediate-Tenor Option Open-Interest Breakeven Gamma Floor Distance (60d)",
+      "domain": "options_breakeven_gamma_support_60d",
+      "economic_rationale": "60-day combined option breakeven (option_breakeven_60) captures quarterly institutional positioning around earnings cycles. Equities trading at a substantial buffer above their 60-day open-interest breakeven floor have established durable institutional accumulation with minimal near-term gamma flip risk. Market-wide cross-sectional ranking ensures complete universe coverage with zero subindustry starvation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Major quarterly earnings guidance reductions breaking established options pinning levels"
+      ],
+      "falsification_test": "Fails if quarterly breakeven support fails to protect against post-earnings drawdowns.",
+      "candidates": [
+        {
+          "expression": "group_rank((close - option_breakeven_60) / close, market) - group_rank(ts_decay_linear(volume / adv20, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "60-Day Options Implied Volatility Skew Exhaustion Reversion",
+      "domain": "options_volatility_skew_reversion_60d",
+      "economic_rationale": "Implied volatility skew measured as (implied_volatility_put_60 - implied_volatility_call_60) captures medium-term institutional tail-risk hedging demand. When panic buying pushes put implied volatility far above call IV, downside hedging costs become excessive. Equities with the lowest relative skew (-(implied_volatility_put_60 - implied_volatility_call_60)) exhibit strong institutional balance sheet confidence and outperform during relief rallies.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Fundamental credit degradation where elevated put skew accurately discounts credit rating downgrades"
+      ],
+      "falsification_test": "Fails if low-skew equities fail to outperform high-skew peers over 15-day holding horizons.",
+      "candidates": [
+        {
+          "expression": "group_rank(-(implied_volatility_put_60 - implied_volatility_call_60), market) - 0.25 * group_rank(ts_decay_linear((close - vwap) / close, 5), market)"
+        }
+      ]
+    }
+  ]
+}

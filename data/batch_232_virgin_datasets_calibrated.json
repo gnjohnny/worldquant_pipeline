@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Subindustry Low-Beta Anomaly with Idiosyncratic Risk Dampening",
+      "domain": "systematic_risk_low_beta_anomaly",
+      "economic_rationale": "The Low-Beta / Low-Volatility anomaly is one of the most robust asset pricing phenomena: retail leverage constraints and institutional tracking error mandates systematically inflate high-beta equities, leading to negative alpha. Within subindustries, low-beta firms with low idiosyncratic volatility compound superior risk-adjusted returns while providing smooth portfolio diversification with zero weight concentration.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Speculative bull rallies where high-beta junk stocks temporarily outperform quality compounders"
+      ],
+      "falsification_test": "Fails if high-beta stocks consistently outperform low-beta peers within subindustries.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(-beta_last_60_days_spy, subindustry) + 0.40 * group_rank(-unsystematic_risk_last_30_days, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Shock Spillover with Linear Decay",
+      "domain": "supply_chain_customer_spillover",
+      "economic_rationale": "Customer return shocks propagate to suppliers over a 10-day window due to gradual supply-chain information diffusion. Using the platform-supported linear decay operator ts_decay_linear combined with subindustry neutralization and quiet trading volume weighting isolates institutional under-reaction in neglected suppliers.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Supplier contract cancellations rendering historical customer return signals irrelevant"
+      ],
+      "falsification_test": "Fails if customer shocks are already instantaneous and fully priced on Day 0.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) * (1 - group_rank(volume / adv20, subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Options Put/Call Open Interest Sentiment and Cycle Extrema Timing (Bounded)",
+      "domain": "options_sentiment_temporal_timing",
+      "economic_rationale": "In Batch 231, this exact signal combination achieved a positive Sub-Universe Sharpe of +0.37 and 28.58% turnover, but failed weight concentration because of unbounded z-score cross-multiplication. Replacing the product with a bounded convex rank combination strictly distributes capital across all 3,000 instruments, eliminating weight concentration while preserving the predictive power of options contrarian sentiment and cyclical low timing.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Prolonged structural bear trends where put open interest continues rising without recovery"
+      ],
+      "falsification_test": "Fails if high put open interest accurately predicts further price collapse rather than a contrarian bottom.",
+      "candidates": [
+        {
+          "expression": "0.55 * group_rank(-pcr_oi_30, subindustry) + 0.45 * group_rank(ts_argmax(high, 30) - ts_argmin(low, 30), subindustry)"
+        }
+      ]
+    }
+  ]
+}

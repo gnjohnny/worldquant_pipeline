@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Beta Decoupling with Idiosyncratic Risk Normalization",
+      "domain": "risk_model_beta_decoupling",
+      "economic_rationale": "Evaluates decoupling between intraday pricing dynamics (close / vwap) and 60-day market sensitivity (beta_last_60_days_spy) alongside idiosyncratic variance shocks (unsystematic_risk_last_30_days / unsystematic_risk_last_360_days). Equities undergoing temporary idiosyncratic variance spikes while their correlation to systematic market beta decouples represent temporary non-fundamental liquidity dislocations that mean-revert strongly.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Genuine corporate solvency events that permanently elevate idiosyncratic risk without mean-reversion"
+      ],
+      "falsification_test": "Fails if elevated idiosyncratic variance persists and indicates structural bankruptcy rather than temporary liquidity dislocation.",
+      "candidates": [
+        {
+          "expression": "-group_zscore(ts_corr(close / vwap, beta_last_60_days_spy, 30), subindustry) * group_zscore(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.001), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Shock Spillover with Liquidity Exhaustion",
+      "domain": "supply_chain_customer_spillover",
+      "economic_rationale": "Customer return shocks propagate to suppliers over a multi-day horizon due to gradual information diffusion. Propagating the signal through exponential decay (ts_decay_exp_window(..., 10, 0.5)) and weighting by low trading volume (1 - group_rank(volume / adv20, subindustry)) exploits quiet institutional under-reaction before the customer shock is fully reflected in supplier equity prices.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden supplier contract cancellation rendering historical customer return signals irrelevant"
+      ],
+      "falsification_test": "Fails if customer return signals have already been fully priced in by market makers on Day 0.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_exp_window(pv13_custretsig_retsig, 10, 0.5), subindustry) * (1 - group_rank(volume / adv20, subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Options Put/Call Open Interest Sentiment Interacted with Cycle Extrema Timing",
+      "domain": "options_sentiment_temporal_timing",
+      "economic_rationale": "Options Put/Call Open Interest (pcr_oi_30) is an inverted institutional hedging sentiment indicator; excessive put OI indicates bearish retail crowding. Interacting contrarian put/call sentiment with the temporal difference between the 30-day peak and trough (ts_argmax(high, 30) - ts_argmin(low, 30)) isolates equities at the end of exhaustive downtrends where bearish put demand is peaked and forward recovery is asymmetric.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sustained institutional hedging driven by material non-public fundamental deterioration"
+      ],
+      "falsification_test": "Fails if high put open interest accurately forecasts persistent downside continuation.",
+      "candidates": [
+        {
+          "expression": "-group_zscore(pcr_oi_30, subindustry) * group_zscore(ts_argmax(high, 30) - ts_argmin(low, 30), subindustry)"
+        }
+      ]
+    }
+  ]
+}

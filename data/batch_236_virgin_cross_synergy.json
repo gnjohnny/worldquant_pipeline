@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cross-Dataset Synergy: Inverted Supply Chain Spillover & Earnings Certainty Anchor",
+      "domain": "cross_dataset_supply_chain_earnings_certainty",
+      "economic_rationale": "In Batch 235, Candidate 2 achieved Sharpe 1.29 and Sub-Universe Sharpe 0.69 with 32.7% turnover, while Candidate 3 (model16 quality) achieved Sharpe 0.87 with an ultra-low 2.68% turnover. Uniting these two completely orthogonal virgin alpha drivers creates a high-Sharpe multi-factor alpha. The slow earnings certainty anchor locks core capital in high-predictability firms, compressing portfolio turnover from 32.7% into the optimal 16-20% window and projecting Sharpe > 1.45 and Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Simultaneous industry-wide earnings revisions and supply-chain contract cancellations"
+      ],
+      "falsification_test": "Fails if combining earnings certainty with customer shocks increases portfolio drawdown or fails to lower turnover.",
+      "candidates": [
+        {
+          "expression": "0.55 * (group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 5), subindustry) / (1 + group_rank(volume / adv20, subindustry))) + 0.45 * group_rank(-earnings_certainty_rank_derivative, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Cross-Dataset Synergy: Inverted Customer Shock & Composite Quality Momentum",
+      "domain": "cross_dataset_supply_chain_composite_quality",
+      "economic_rationale": "Combines agile 5-day inverted customer return shocks with 5-day linearly smoothed volume damping and the unmined model16 composite factor score derivative. Blending fast supply-chain mean-reversion with medium-term multi-factor operational quality anchors portfolio turnover at ~18%, driving platform Fitness past 1.50 with near-zero correlation to approved alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Protracted market drawdowns where composite factor momentum temporarily underperforms"
+      ],
+      "falsification_test": "Fails if composite factor score derivative fails to maintain positive returns across market sub-universes.",
+      "candidates": [
+        {
+          "expression": "0.50 * (group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 5), subindustry) * (1 - group_rank(ts_decay_linear(volume / adv20, 5), subindustry))) + 0.50 * group_rank(-composite_factor_score_derivative, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "5-Day Smoothed Volume Ratio Scaled Customer Shock with Extended Decay 10",
+      "domain": "supply_chain_ratio_smoothed_decay10",
+      "economic_rationale": "Candidate 2 of Batch 235 achieved Sharpe 1.29 with raw daily volume ranking. Smoothing the volume ratio over 5 days (ts_mean(volume / adv20, 5)) eliminates single-day volume spikes, and simulating with platform Decay 10 directly smooths daily portfolio holdings across days, cutting turnover from 32.7% to under 20% while preserving the Sharpe 1.29 customer shock engine.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sustained liquidity drought causing 5-day volume mean to misrepresent current execution costs"
+      ],
+      "falsification_test": "Fails if Decay 10 over-smooths the alpha and causes Sharpe to drop below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 5), subindustry) / (1 + group_rank(ts_mean(volume / adv20, 5), subindustry))"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Calibrated 6-Day Smoothing on Options Put-to-Call Volume Ratio",
+      "domain": "options_pcr_volume_calibrated_decay6",
+      "economic_rationale": "Applies 6-day decay smoothing on close-to-open body reversal to reduce turnover while preserving contrarian options volume information coefficient.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Over-smoothing of short-term overnight liquidity provision"
+      ],
+      "falsification_test": "Fails if longer decay dampens Sharpe ratio below platform cutoff.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 10), market) - 0.10 * group_zscore(ts_decay_linear((close - open) / open, 6), market)"
+        }
+      ]
+    },
+    {
+      "title": "12-Day PCR Volume Decay with 5-Day Smoothing",
+      "domain": "options_pcr_volume_decay12",
+      "economic_rationale": "Lengthens options volume holding window to 12 days to reduce churn down to ~15-20% and maximize risk-adjusted returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Stale volume ratio signals over extended decay horizons"
+      ],
+      "falsification_test": "Fails if 12-day holding window reduces sub-universe Sharpe below platform threshold.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 12), market) - 0.08 * group_zscore(ts_decay_linear((close - open) / open, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "Range-Normalized Intraday Shadow Reversal with PCR Volume Contrarian Squeeze",
+      "domain": "options_pcr_volume_true_range_reversal",
+      "economic_rationale": "Normalizes close-to-open return by intraday true range to eliminate outlier churn on high-beta names.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Compression of signals in low-volatility regimes"
+      ],
+      "falsification_test": "Fails if true range normalization increases turnover without improving Sharpe.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 10), market) - 0.12 * group_zscore(ts_decay_linear((close - open) / (high - low + 0.001 * close), 5), market)"
+        }
+      ]
+    }
+  ]
+}

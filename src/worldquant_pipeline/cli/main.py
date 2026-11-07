@@ -20,6 +20,7 @@ from worldquant_pipeline.cli.views import (
     render_cross_dataset_batch,
     render_dashboard,
     render_discovered_fields,
+    render_existence_check,
     render_gate_results,
     render_ingestion_report,
     render_parsed_metrics,
@@ -28,6 +29,7 @@ from worldquant_pipeline.cli.views import (
     render_submission_card,
 )
 from worldquant_pipeline.config.settings import get_settings
+from worldquant_pipeline.evaluation.existence_checker import AlphaExistenceChecker
 from worldquant_pipeline.evaluation.gates import QualityGateRunner
 from worldquant_pipeline.hypotheses.cross_engine import CrossDatasetEngine
 from worldquant_pipeline.hypotheses.importer import HypothesisImporter
@@ -466,7 +468,7 @@ def record_batch(
                 with open(pf, "r", encoding="utf-8") as f:
                     content = f.read()
                 # Split by delimiters like '---' or '===' or multiple blank lines or Candidate headers
-                raw_splits = re.split(r"(?:\n\s*[-=]{3,}\s*\n|\n{3,}|\n+(?=Candidate\s+\d+:))", content)
+                raw_splits = re.split(r"(?:\n\s*[-=]{3,}\s*\n|\n{3,}|\n+(?=Candidate\s+\d+.*?:))", content)
                 paste_blocks = [s.strip() for s in raw_splits if s.strip()]
 
         batch_results: list[dict[str, Any]] = []
@@ -715,6 +717,112 @@ def generate_v2(
                 batch_data = json.load(f)
             report = importer.ingest_data(batch_data)
             render_ingestion_report(report)
+
+
+@app.command("check-exists")
+def check_exists(
+    expression: Annotated[
+        str | None,
+        typer.Argument(help="Alpha formula expression to check against research memory"),
+    ] = None,
+    file_path: Annotated[
+        str | None,
+        typer.Option("--file", "-f", help="JSON batch file to check all candidates"),
+    ] = None,
+    field_key: Annotated[
+        str | None,
+        typer.Option("--field", help="Search for all candidates using a specific data field"),
+    ] = None,
+    status_filter: Annotated[
+        str | None,
+        typer.Option("--status", "-s", help="Filter matching candidates by status (e.g. APPROVED, VALIDATED)"),
+    ] = None,
+) -> None:
+    """Check if an alpha expression, driver factor, or data field already exists in PostgreSQL research memory."""
+    with get_session() as session:
+        if field_key:
+            fk_clean = field_key.strip().lower()
+            console.print(f"\n[bold cyan]Searching database for candidates using field:[/bold cyan] [bold yellow]{fk_clean}[/bold yellow]\n")
+            cands = session.query(AlphaCandidate).all()
+            matches = []
+            for c in cands:
+                all_f, _prim_f = AlphaExistenceChecker.extract_driver_fields(c.expression_raw)
+                if (fk_clean in all_f or fk_clean in c.expression_raw.lower()) and (
+                    not status_filter or c.status == status_filter.upper()
+                ):
+                    matches.append(c)
+
+            if not matches:
+                console.print(f"[bold green]No candidates found using field '{fk_clean}'. This field is 100% UNMINED & VIRGIN in your portfolio![/bold green]\n")
+                return
+
+            table = Table(title=f"Candidates Referencing Field '{fk_clean}' ({len(matches)} matches)", show_header=True, header_style="bold white")
+            table.add_column("Candidate ID", style="bold magenta")
+            table.add_column("Status", style="bold yellow")
+            table.add_column("Expression")
+
+            for m in matches[:25]:
+                table.add_row(m.id[:8], m.status, m.expression_raw[:65] + ("..." if len(m.expression_raw) > 65 else ""))
+            console.print(table)
+            console.print()
+            return
+
+        expressions_to_check: list[str] = []
+        if file_path:
+            fp = Path(file_path)
+            if not fp.exists():
+                console.print(f"[bold red]File not found:[/bold red] {file_path}")
+                raise typer.Exit(code=1)
+            with open(fp, "r", encoding="utf-8") as f:
+                bdata = json.load(f)
+            for hypo in bdata.get("hypotheses", []):
+                for cand in hypo.get("candidates", []):
+                    expr = cand.get("expression")
+                    if expr:
+                        expressions_to_check.append(expr)
+        elif expression:
+            expressions_to_check.append(expression)
+        else:
+            console.print("[bold red]Please provide an expression string, a --file path, or a --field key.[/bold red]")
+            raise typer.Exit(code=1)
+
+        for expr in expressions_to_check:
+            res = AlphaExistenceChecker.check_expression(expr, session)
+            render_existence_check(res)
+
+
+@app.command("companion")
+def companion(
+    batch_file: Annotated[
+        Path | None,
+        typer.Argument(help="Optional batch JSON file to inspect"),
+    ] = None,
+    show_bookmarklet: Annotated[
+        bool,
+        typer.Option("--bookmarklet", "-b", help="Print bookmarklet installation code"),
+    ] = False,
+) -> None:
+    """WorldQuant BRAIN Simulator Companion (Browser HUD) helper."""
+    bookmarklet_path = Path("tools/companion/bookmarklet.txt")
+    if show_bookmarklet or not batch_file:
+        console.print("[bold cyan]=========================================================================[/bold cyan]")
+        console.print("[bold green]WorldQuant BRAIN Simulator Companion (Browser HUD)[/bold green]")
+        console.print("[bold cyan]=========================================================================[/bold cyan]")
+        console.print("A client-side browser helper that auto-fills simulator parameters and harvests results.")
+        console.print("\n[bold yellow]Setup Instructions (10 seconds):[/bold yellow]")
+        console.print("1. Open Chrome/Edge Bookmarks Manager ([bold white]Ctrl+Shift+O[/bold white])")
+        console.print("2. Add a new bookmark named '[bold green]WQ Companion[/bold green]'")
+        console.print("3. In the URL field, paste the bookmarklet code from [bold cyan]tools/companion/bookmarklet.txt[/bold cyan]")
+        console.print("4. On [bold underline]platform.worldquantbrain.com/simulate[/bold underline], click the bookmark!")
+        if bookmarklet_path.exists():
+            bm_text = bookmarklet_path.read_text(encoding="utf-8").strip()
+            console.print(f"\n[dim]Bookmarklet code ({len(bm_text)} chars ready in tools/companion/bookmarklet.txt)[/dim]")
+        if not batch_file:
+            return
+
+    if batch_file and batch_file.exists():
+        console.print(f"\n[bold green]Batch file ready: {batch_file.name}[/bold green]")
+        console.print("Copy the batch content and click '[bold cyan]Load Batch from Clipboard[/bold cyan]' in the browser HUD.")
 
 
 def main() -> None:

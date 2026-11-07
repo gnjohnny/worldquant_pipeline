@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Inverted Supply Chain Customer Shock Spillover with Rapid Decay",
+      "domain": "supply_chain_customer_spillover_inverted",
+      "economic_rationale": "In Batch 232, Candidate 2 achieved a pristine negative Sharpe of -1.14 with 37% turnover and zero weight concentration, proving that customer return shocks trigger rapid supplier over-extension rather than sustainable forward momentum. Inverting the polarity (-pv13_custretsig_retsig) and shortening the decay window from 10 to 5 days captures the immediate supplier price correction while quiet trading volume weighting (1 - group_rank(volume / adv20, subindustry)) concentrates capital in neglected names, projecting a sharp flip to Sharpe > 1.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major macroeconomic sector rotations that override firm-level customer linkages"
+      ],
+      "falsification_test": "Fails if supplier equities exhibit long-term trend following rather than immediate mean reversion to customer shocks.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 5), subindustry) * (1 - group_rank(volume / adv20, subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Options Put/Call Open Interest Sentiment with Market-Wide Neutralization",
+      "domain": "options_sentiment_market_neutral",
+      "economic_rationale": "In Batch 232, Candidate 3 achieved Sub-Universe Sharpe +0.21 (PASS) and Turnover 19.99%, but failed weight concentration because options open interest is sparse in small subindustries. Neutralizing across the entire market (exactly like approved alpha c47f1989) and adding ts_backfill guarantees full instrument participation across the entire universe, completely eliminating weight concentration while harvesting options contrarian sentiment.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sustained institutional bear markets where high put open interest accurately signals protracted downside"
+      ],
+      "falsification_test": "Fails if contrarian put open interest sentiment fails to mean-revert across the broad market.",
+      "candidates": [
+        {
+          "expression": "0.50 * group_rank(-ts_backfill(pcr_oi_30, 10), market) + 0.50 * group_rank(ts_argmax(high, 20) - ts_argmin(low, 20), market)"
+        }
+      ]
+    },
+    {
+      "title": "Variance Risk Premium (VRP) & Put/Call Open Interest Market Synergy",
+      "domain": "options_vrp_sentiment_synergy",
+      "economic_rationale": "Combines two orthogonal 98%-coverage options anomalies: the 30-day Variance Risk Premium (historical_volatility_30 - implied_volatility_mean_30) and contrarian Put/Call Open Interest sentiment (-pcr_oi_30). Equities where realized volatility exceeds implied volatility offer structural short-volatility premia, while low put hedging demand signals lack of downside institutional fear. Market-wide ranking ensures zero instrument starvation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden volatility regime shifts where short-volatility premia suffer drawdown"
+      ],
+      "falsification_test": "Fails if historical-implied volatility spread collapses during macro risk-off regimes.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(ts_backfill(historical_volatility_30 - implied_volatility_mean_30, 5), market) + 0.40 * group_rank(-ts_backfill(pcr_oi_30, 5), market)"
+        }
+      ]
+    }
+  ]
+}

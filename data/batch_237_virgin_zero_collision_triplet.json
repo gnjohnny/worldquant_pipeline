@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Forward Price Borrow-Cost Squeeze Anomaly",
+      "domain": "options_forward_price_borrow_cost",
+      "economic_rationale": "Forward price curves (forward_price_20 / close) reflect the net cost of carry and institutional borrowing expectations. Stocks where forward prices trade at an abnormal discount to spot price (forward_price_20 < close) reflect high borrowing demand from short sellers (hard-to-borrow pressure). When short borrow demand normalizes, these equities experience sharp short squeezes and mean reversion. Market-wide ranking ensures complete universe coverage with zero subindustry starvation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Persistent hard-to-borrow distress leading to direct equity restructuring or delisting"
+      ],
+      "falsification_test": "Fails if forward discount stocks continue falling without experiencing a short-squeeze rebound.",
+      "candidates": [
+        {
+          "expression": "group_rank(close / (forward_price_20 + 0.001), market) - group_rank(ts_decay_linear(volume / adv20, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Market Correlation Decoupling and Intraday VWAP Reversion",
+      "domain": "systematic_risk_correlation_decoupling",
+      "economic_rationale": "Equities with low rolling correlation to SPY (-correlation_last_60_days_spy) provide structural diversification and insulation from market-wide macroeconomic shocks. Combining low market correlation with short-term intraday price-VWAP mean-reversion isolates idiosyncratic outperformance with minimal portfolio market risk.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden correlation breakdown caused by idiosyncratic operational crisis rather than defensive quality"
+      ],
+      "falsification_test": "Fails if low correlation stocks exhibit negative excess returns during broader market advances.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(-correlation_last_60_days_spy, subindustry) - 0.40 * group_rank(ts_decay_linear((close - vwap) / close, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Cash Dividend Yield with Price Delta Rebalancing",
+      "domain": "fundamental_dividend_yield_growth",
+      "economic_rationale": "Dividend declarations represent direct, unencumbered cash return to shareholders. Cash dividend yields (actual_dividend_value_qua / close) normalized within subindustries identify disciplined capital-returning firms with strong balance-sheet resilience. Coupling with 5-day price-delta mean reversion maintains turnover in the optimal 12-16% sweet spot.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Dividend traps where management maintains unsustainable payout ratios from borrowed debt"
+      ],
+      "falsification_test": "Fails if dividend-paying firms suffer valuation multiple contraction compared to capital-reinvesting peers.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(actual_dividend_value_qua, 60) / close, subindustry) - 0.20 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

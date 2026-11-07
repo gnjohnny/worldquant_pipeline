@@ -39,10 +39,7 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Linearly weighted moving average over d days"
-    - name: "ts_decay_exp_window"
-      arity: 3
-      param_types: ["expression", "integer", "number"]
-      description: "Exponential decay moving average over d days with smoothing factor"
+    # ts_decay_exp_window is inaccessible on BRAIN simulator
     - name: "ts_mean"
       arity: 2
       param_types: ["expression", "integer"]

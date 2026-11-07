@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Net Income Forecast Dispersion Compression and Institutional Consensus Clarity",
+      "domain": "analyst_net_income_dispersion_compression",
+      "economic_rationale": "Analyst earnings forecast dispersion (adj_net_income_stddev) measures institutional disagreement and future operational uncertainty. According to the Diether-Malloy-Scherbina disagreement anomaly, equities with high analyst dispersion suffer from speculative retail overbidding and severe future underperformance. Normalizing dispersion via ts_rank over a 252-day trailing baseline (-ts_rank(ts_backfill(adj_net_income_stddev, 60), 252)) isolates equities entering periods of high institutional earnings clarity and low surprise risk. Paired with liquidity dampening to prevent micro-cap churn.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Uncontested consensus clarity that accurately anticipates terminal corporate revenue contraction"
+      ],
+      "falsification_test": "Fails if low dispersion equities suffer higher earnings announcement volatility than high dispersion peers.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_rank(ts_backfill(adj_net_income_stddev, 60), 252), subindustry) - 0.20 * group_zscore(ts_decay_linear(volume / adv20, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Annual EPS Estimate Standard Deviation Compression Anomaly",
+      "domain": "analyst_eps_dispersion_compression",
+      "economic_rationale": "Measures consensus dispersion across annual diluted earnings per share forecasts (anl4_afv4_dts_spe). When Wall Street analysts converge on tight EPS estimates relative to the firm's 1-year historical range, valuation ambiguity drops and institutional fundamental allocators expand long positions. Z-score normalization within subindustries neutralizes sector-wide cyclical differences.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Low analyst coverage where low standard deviation reflects lack of research interest rather than fundamental certainty"
+      ],
+      "falsification_test": "Fails if firms with compressed EPS forecast variance deliver lower forward returns than the broad market.",
+      "candidates": [
+        {
+          "expression": "group_zscore(-ts_rank(ts_backfill(anl4_afv4_dts_spe, 60), 252), subindustry) - 0.20 * group_zscore(ts_decay_linear(volume / adv20, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Consensus Clarity and Intraday VWAP Mean-Reversion Synergy",
+      "domain": "analyst_dispersion_vwap_synergy",
+      "economic_rationale": "Combines structural analyst consensus clarity (70% weight on compressed net income forecast dispersion) with 5-day intraday VWAP mean-reversion (30% weight). The fundamental dispersion component provides low-turnover medium-term direction, while the VWAP reversion component captures short-term microstructure liquidity provision, optimizing overall information coefficient and turnover balance.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Strong momentum regimes where intraday VWAP deviations persist without mean reverting"
+      ],
+      "falsification_test": "Fails if combining VWAP reversion increases portfolio turnover without improving Sharpe ratio.",
+      "candidates": [
+        {
+          "expression": "0.70 * group_zscore(-ts_rank(ts_backfill(adj_net_income_stddev, 60), 252), subindustry) - 0.30 * group_zscore(ts_decay_linear((close - vwap) / close, 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}

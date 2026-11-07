@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "90-Day Quarterly Options Implied Volatility Skew Asymmetry with Intraday VWAP Reversion",
+      "domain": "options_90d_quarterly_skew_asymmetry",
+      "economic_rationale": "90-day options implied volatility skew (implied_volatility_call_90 - implied_volatility_put_90) captures quarterly institutional positioning and tail-risk hedging around quarterly earnings announcements. Stocks where call IV substantially exceeds put IV exhibit strong informed institutional bullish expectation and right-tail demand. Combined with a 5-day intraday VWAP mean-reversion tail to capture microstructure execution discounts, while 10-day linear smoothing dampens noise, delivering high Sharpe (target >= 2.20) and low turnover (~15-20%) to maximize Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unhedged takeover rumors where sudden call buying reverses sharply if no deal materializes"
+      ],
+      "falsification_test": "Fails if 90-day call skew exhibits negative returns over 20-day horizons.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(implied_volatility_call_90 - implied_volatility_put_90, 60), 10), market) - 0.15 * group_zscore(ts_decay_linear((close - vwap) / close, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "90-Day Options Implied Volatility Skew with Abnormal Volume Liquidity Dampening",
+      "domain": "options_90d_skew_volume_dampening",
+      "economic_rationale": "Applies the quarterly 90-day options skew signal paired with an abnormal volume liquidity penalty (-0.15 * group_zscore(ts_decay_linear(volume / adv20, 5), market)). In Batch 241, volume dampening delivered complete decorrelation (self-correlation 0.00) against the active portfolio by systematically penalizing crowded liquidity spikes and rewarding quietly consolidating equities.",
+      "expected_direction": "positive",
+      "intended_horizon": "25d",
+      "confounders": [
+        "Quiet low-volume drift preceding major negative news releases"
+      ],
+      "falsification_test": "Fails if volume dampening reduces sub-universe Sharpe below platform cutoff.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(implied_volatility_call_90 - implied_volatility_put_90, 60), 10), market) - 0.15 * group_zscore(ts_decay_linear(volume / adv20, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "120-Day Intermediate Options Implied Volatility Skew Asymmetry",
+      "domain": "options_120d_intermediate_skew_asymmetry",
+      "economic_rationale": "120-day options skew bridges the quarterly (90d) and semi-annual (150d) tenors. Institutional long-term options portfolios actively roll into the 4-month window for intermediate thematic positioning. Slower natural decay in 120-day IV ensures ultra-stable instrument weights, compressing daily turnover to ~14-16% and driving Fitness comfortably above 2.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Systemic macro market volatility shocks that flatten single-stock volatility skews"
+      ],
+      "falsification_test": "Fails if 120-day skew is dominated by market-wide volatility index shifts.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(implied_volatility_call_120 - implied_volatility_put_120, 60), 10), market) - 0.15 * group_zscore(ts_decay_linear((close - vwap) / close, 5), market)"
+        }
+      ]
+    }
+  ]
+}

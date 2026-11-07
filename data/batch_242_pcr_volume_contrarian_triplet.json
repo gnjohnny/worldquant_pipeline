@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "60-Day Options Put-to-Call Volume Ratio Contrarian Squeeze with Liquidity Dampening",
+      "domain": "options_pcr_volume_contrarian_squeeze",
+      "economic_rationale": "Put-to-call trading volume ratio (pcr_vol_60) captures tactical speculative sentiment and institutional tail-hedging surges across 60-day options expirations. When retail traders and hedgers panic-buy puts (pcr_vol_60 spikes), options market makers absorb the inventory. Once the hedging surge exhausts, market makers unwind delta hedges and fear premiums collapse, triggering systematic contrarian short squeezes. Cross-sectional z-score scaling across market ensures uniform weights. Paired with volume-to-adv20 dampening to filter out crowded execution anomalies.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Fundamental insolvency where elevated put volume correctly anticipates bankruptcy or delisting"
+      ],
+      "falsification_test": "Fails if high put volume equities continue to underperform without experiencing relief rebounds.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 10), market) - 0.20 * group_zscore(ts_decay_linear(volume / adv20, 5), market)"
+        }
+      ]
+    },
+    {
+      "title": "60-Day PCR Volume Contrarian Alpha with Intraday Close-to-Open Reversal",
+      "domain": "options_pcr_volume_close_open_reversal",
+      "economic_rationale": "Combines medium-term options volume contrarian positioning with 3-day close-to-open body reversal ((close - open) / open). Intraday close-to-open reversal captures overnight order imbalances and liquidity provision compensation without sharing any overlap with intraday VWAP microstructure signals, ensuring zero self-correlation against active portfolio alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Persistent overnight earnings gaps where open-to-close momentum carries over multiple days"
+      ],
+      "falsification_test": "Fails if close-to-open reversal increases turnover without improving Sharpe ratio.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 10), market) - 0.15 * group_zscore(ts_decay_linear((close - open) / open, 3), market)"
+        }
+      ]
+    },
+    {
+      "title": "60-Day PCR Volume Sentiment with 5-Day Price Delta Low-Churn Rebalancing",
+      "domain": "options_pcr_volume_price_delta_rebalance",
+      "economic_rationale": "Uses percentile ranking with 5-day price-delta mean-reversion rebalancing. 5-day price delta operates at lower frequency than intraday signals, reducing daily portfolio turnover into the 12-15% range while preserving the contrarian options volume information coefficient, directly maximizing the Fitness denominator.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Strong directional momentum trends where 5-day price reversals generate adverse selection"
+      ],
+      "falsification_test": "Fails if price delta rebalancing dampens sub-universe Sharpe below platform cutoff.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 10), market) - 0.12 * group_rank(ts_delta(close, 5) / close, market)"
+        }
+      ]
+    }
+  ]
+}

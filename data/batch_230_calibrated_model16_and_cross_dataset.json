@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Calibrated 3-Day Volatility-Normalized Microstructure Counterweight on Inverted model16",
+      "domain": "fundamental_model16_calibrated_microstructure",
+      "economic_rationale": "In Batch 229, Candidate 1 achieved Sharpe 1.23, Fitness 0.98, and Sub-universe Sharpe 0.78 with 8.52% turnover. Turnover was slightly sub-optimal (< 12%), causing lingering holding of post-catalyst fundamental positions. Increasing the microstructure counterweight from 0.15 to 0.25 and accelerating to a 3-day price delta normalized via group_zscore directly penalizes rapid short-term price overshoots. This is projected to lift turnover from 8.5% into the 12-16% sweet spot, unlocking Sharpe > 1.35 and Fitness > 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "High intraday market-wide volatility spikes that distort 3-day z-scores across subindustries"
+      ],
+      "falsification_test": "Fails if 3-day z-score counterweight increases turnover beyond 35% or degrades Sub-universe Sharpe below 0.50.",
+      "candidates": [
+        {
+          "expression": "0.75 * group_rank(-cashflow_efficiency_rank_derivative - analyst_revision_rank_derivative, subindustry) - 0.25 * group_zscore(ts_delta(close, 3) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Quiet Institutional Accumulation: Inverted model16 with Volume Exhaustion Interaction",
+      "domain": "fundamental_microstructure_volume_interaction",
+      "economic_rationale": "Institutions quietly accumulate shares in firms undergoing operational efficiency upgrades and positive analyst revisions during low-volume consolidation windows. Interacting the inverted model16 composite with volume exhaustion (1 - group_rank(volume / adv20, subindustry)) concentrates exposure in neglected quality upgrades, while the 5-day delta mean-reversion counterweight suppresses momentum chasing.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Illiquid microcap stocks dominating the low-volume rank within subindustries"
+      ],
+      "falsification_test": "Fails if low-volume interaction leads to extreme concentration or negative returns during market drawdowns.",
+      "candidates": [
+        {
+          "expression": "group_rank(-cashflow_efficiency_rank_derivative - analyst_revision_rank_derivative, subindustry) * (1 - group_rank(volume / adv20, subindustry)) - 0.15 * group_rank(ts_delta(close, 5) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Cross-Dataset Synergy: Inverted model16 Quality and Capital Discipline Return on Assets",
+      "domain": "cross_dataset_fundamental_solvency_synergy",
+      "economic_rationale": "Combines two proven uncorrelated alpha sources: inverted cashflow efficiency and balance-sheet scaled capital discipline (-capex / assets, which achieved Sharpe 1.15 and 0.00 correlation in Batch 226). Firms with rising operational margins and low capital expenditure intensity generate superior unencumbered free cash flow. A 4-day price mean-reversion term ensures continuous agile rebalancing and optimal 14-18% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Cyclical industries where capex requirements precede revenue realization by multiple quarters"
+      ],
+      "falsification_test": "Fails if capex discipline fails to add orthogonal information to model16 efficiency.",
+      "candidates": [
+        {
+          "expression": "0.45 * group_rank(-cashflow_efficiency_rank_derivative, subindustry) + 0.35 * group_rank(-ts_backfill(capex, 60) / (ts_backfill(assets, 60) + 1000), subindustry) - 0.20 * group_rank(ts_delta(close, 4) / close, subindustry)"
+        }
+      ]
+    }
+  ]
+}

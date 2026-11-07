@@ -16,6 +16,8 @@ class ParsedSimulationMetrics:
     pass_count: int | None = None
     fail_count: int | None = None
     weight_well_distributed: bool = True
+    sub_universe_sharpe_passed: bool = True
+    self_correlation_passed: bool = True
     raw_text: str = ""
 
     def to_metric_dict(self) -> dict[str, float]:
@@ -59,6 +61,8 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     )
     if sub_sharpe_m:
         result.sub_universe_sharpe = float(sub_sharpe_m.group(1))
+        if re.search(r"(?i)sub-?universe\s+sharpe.*below\s+cutoff", cleaned_text):
+            result.sub_universe_sharpe_passed = False
 
     # 3. Overall Sharpe
     # Negative lookbehinds prevent matching "sub-universe sharpe" or "subuniverse sharpe"
@@ -99,6 +103,12 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
     )
     if self_corr_m:
         result.self_correlation = float(self_corr_m.group(1))
+        if re.search(r"(?i)self-?correlation.*above cutoff.*and Sharpe not better", cleaned_text):
+            result.self_correlation_passed = False
+        elif re.search(r"(?i)or Sharpe is better by 10\.0% or more", cleaned_text):
+            result.self_correlation_passed = True
+        elif result.self_correlation >= 0.70:
+            result.self_correlation_passed = False
 
     # 7. Max Drawdown
     dd_pct_m = re.search(
@@ -142,11 +152,14 @@ def evaluate_consultant_track_decision(
         is_approved = False
         reasons.append(f"Turnover {metrics.turnover:.2%} outside [1%, 70%] bounds")
 
-    if metrics.sub_universe_sharpe is not None and metrics.sub_universe_sharpe < 0.0:
+    if not metrics.sub_universe_sharpe_passed:
+        is_approved = False
+        reasons.append(f"Sub-universe Sharpe {metrics.sub_universe_sharpe} below platform cutoff")
+    elif metrics.sub_universe_sharpe is not None and metrics.sub_universe_sharpe < 0.0:
         is_approved = False
         reasons.append(f"Sub-universe Sharpe {metrics.sub_universe_sharpe} < 0.0")
 
-    if metrics.self_correlation is not None and metrics.self_correlation >= 0.70:
+    if metrics.self_correlation is not None and not metrics.self_correlation_passed:
         is_approved = False
         reasons.append(f"Self-correlation {metrics.self_correlation} >= 0.70 collision threshold")
 
@@ -162,11 +175,14 @@ def evaluate_consultant_track_decision(
             f"Sub-universe Sharpe {metrics.sub_universe_sharpe}."
         )
         if metrics.self_correlation is not None:
-            full_reason += f" Self-correlation {metrics.self_correlation} < 0.70 (Clean pass)."
+            if metrics.self_correlation < 0.70:
+                full_reason += f" Self-correlation {metrics.self_correlation} < 0.70 (Clean pass)."
+            else:
+                full_reason += f" Self-correlation {metrics.self_correlation} passed with 10% Sharpe override."
     else:
         # If platform hard checks failed (self-correlation, turnover, weight), it is strictly REJECTED
         hard_fail = (
-            (metrics.self_correlation is not None and metrics.self_correlation >= 0.70)
+            (metrics.self_correlation is not None and not metrics.self_correlation_passed)
             or (metrics.turnover is not None and (metrics.turnover < 0.01 or metrics.turnover > 0.70))
             or (not metrics.weight_well_distributed)
             or (metrics.sharpe is not None and metrics.sharpe < 1.25)

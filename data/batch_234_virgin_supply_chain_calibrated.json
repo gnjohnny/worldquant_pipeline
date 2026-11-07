@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Calibrated Inverted Supply Chain Spillover with 10-Day Volume Smoothing",
+      "domain": "supply_chain_customer_spillover_calibrated",
+      "economic_rationale": "In Batch 233, Candidate 1 proved the power of inverted customer return shocks, achieving Sharpe 1.51 and Sub-Universe Sharpe 1.02 with 6 PASS / 1 FAIL. The sole fail was Fitness (0.77) caused by 48.7% turnover from noisy daily volume fluctuations. Smoothing the volume exhaustion weight over 10 days (ts_mean(volume / adv20, 10)) and expanding the customer shock decay to 10 days damps high-frequency noise, compressing turnover into the optimal 14-18% window and unlocking Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Major macroeconomic industry rotations that override firm-level customer linkages"
+      ],
+      "falsification_test": "Fails if volume smoothing degrades Sub-Universe Sharpe below 0.65.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 10), subindustry) * (1 - group_rank(ts_mean(volume / adv20, 10), subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Multi-Week Supply Chain Customer Reversion with Dual Linear Decay",
+      "domain": "supply_chain_customer_spillover_dual_decay",
+      "economic_rationale": "Extends the customer shock decay window to 15 days to capture the full multi-week supply-chain re-pricing cycle. Pairing 15-day customer decay with 10-day linearly decayed volume exhaustion (ts_decay_linear(volume / adv20, 10)) and platform Decay 8 ensures smooth position transitions and strict turnover minimization (projected 12-14%), maximizing platform Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Persistent customer trend continuation lasting beyond 15 trading days"
+      ],
+      "falsification_test": "Fails if 15-day decay dilutes the alpha signal or causes Sharpe to drop below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 15), subindustry) * (1 - group_rank(ts_decay_linear(volume / adv20, 10), subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Additive Neutralized Customer Shock and Smoothed Volume Exhaustion",
+      "domain": "supply_chain_customer_spillover_additive",
+      "economic_rationale": "Replaces multiplicative interaction with an additive difference between the rank of neutralized customer shocks and smoothed volume exhaustion. This bounded linear formulation guarantees uniform instrument weight distribution across TOP3000 and eliminates high-beta outlier churn, targeting Sharpe >= 1.50 and Fitness >= 1.60.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Uncorrelated volume shocks driven by earnings announcements rather than institutional accumulation"
+      ],
+      "falsification_test": "Fails if additive formulation weakens the cross-sectional ranking precision relative to multiplicative weighting.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 10), subindustry), subindustry) - 0.5 * group_rank(ts_mean(volume / adv20, 10), subindustry)"
+        }
+      ]
+    }
+  ]
+}

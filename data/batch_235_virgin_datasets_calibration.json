@@ -1,0 +1,52 @@
+{
+  "hypotheses": [
+    {
+      "title": "Inverted Supply Chain Spillover with 3-Day Volume Damping (Fast Horizon Calibration)",
+      "domain": "supply_chain_fast_horizon_calibration",
+      "economic_rationale": "Batch 233 and 234 proved that customer shock mean-reversion is an agile 4-to-5 day phenomenon (Sharpe 1.51 at 5d vs 0.89 at 10d). To compress turnover from 48% to ~18% without diluting the 4-day signal, we apply short 3-day linear volume damping alongside platform Decay 8. This preserves the agile customer signal while smoothing daily execution churn, targeting Sharpe >= 1.45 and Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden sector-wide macro liquidations that override supplier-customer relationship links"
+      ],
+      "falsification_test": "Fails if 3-day volume damping fails to reduce turnover or causes Sharpe to drop below 1.25.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 4), subindustry) * (1 - group_rank(ts_decay_linear(volume / adv20, 3), subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Inverse Volume Scaled Supply Chain Spillover (Ratio Smoothing)",
+      "domain": "supply_chain_ratio_smoothing",
+      "economic_rationale": "Instead of linear subtraction (1 - rank), dividing by (1 + rank) smooths the sensitivity to extreme daily volume spikes and produces gentler portfolio weight adjustments. When simulated with Decay 8, this directly dampens daily churn while keeping the 5-day inverted customer shock engine fully intact.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Extreme illiquid stocks where volume / adv20 denominator approaches zero"
+      ],
+      "falsification_test": "Fails if ratio scaling weakens signal responsiveness during major customer earnings announcements.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_decay_linear(-pv13_custretsig_retsig, 5), subindustry) / (1 + group_rank(volume / adv20, subindustry))"
+        }
+      ]
+    },
+    {
+      "title": "Virgin model16 Earnings Certainty and Composite Quality Synergy",
+      "domain": "fundamental_model16_virgin_quality",
+      "economic_rationale": "Explores completely virgin model16 composite fields with 100% coverage across TOP3000. Inverting the polarity (-earnings_certainty_rank_derivative) penalizes accounting accruals and volatile earnings streams, while -composite_factor_score_derivative rewards multi-factor operational momentum. Cross-sectional ranking within subindustries ensures balanced sector allocation.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Speculative momentum regimes where unprofitable firms with low earnings certainty lead the market"
+      ],
+      "falsification_test": "Fails if high earnings certainty firms underperform low-quality peers during risk-on market rallies.",
+      "candidates": [
+        {
+          "expression": "0.60 * group_rank(-earnings_certainty_rank_derivative, subindustry) + 0.40 * group_rank(-composite_factor_score_derivative, subindustry)"
+        }
+      ]
+    }
+  ]
+}

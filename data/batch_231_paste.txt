@@ -1,0 +1,29 @@
+Candidate 1 (f734b4c5):
+
+3 PASS
+Turnover of 40.01% is above cutoff of 1%.
+Turnover of 40.01% is below cutoff of 70%.
+Competition [Challenge](https://platform.worldquantbrain.com/competition/challenge) matches.
+4 FAIL
+[Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/20251383456663) of -0.65 is below cutoff of 1.25.
+[Fitness](https://support.worldquantbrain.com/hc/en-us/articles/20251386376471) of -0.15 is below cutoff of 1.
+[Weight concentration](https://support.worldquantbrain.com/hc/en-us/articles/19248385997719) 15.90% is above cutoff of 10% on 1/25/2022.
+[Sub-universe Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/6568644868375) of -0.77 is below cutoff of -0.28.
+---
+Candidate 2 (1c605f08):
+
+0 PASS
+1 FAIL
+Attempted to use inaccessible or unknown operator "ts_decay_exp_window"
+---
+Candidate 3 (eaa5e44d):
+
+4 PASS
+Turnover of 28.58% is above cutoff of 1%.
+Turnover of 28.58% is below cutoff of 70%.
+Sub-universe Sharpe of 0.37 is above cutoff of -0.17.
+Competition [Challenge](https://platform.worldquantbrain.com/competition/challenge) matches.
+3 FAIL
+[Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/20251383456663) of -0.39 is below cutoff of 1.25.
+[Fitness](https://support.worldquantbrain.com/hc/en-us/articles/20251386376471) of -0.08 is below cutoff of 1.
+Weight is too strongly concentrated or too few instruments are assigned weight.

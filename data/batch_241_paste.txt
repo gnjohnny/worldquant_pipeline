@@ -1,0 +1,33 @@
+Candidate 1 (99882fd1):
+7 PASS
+Sharpe of 2.23 is above cutoff of 1.25.
+Fitness of 2.73 is above cutoff of 1.
+Turnover of 15.54% is above cutoff of 1%.
+Turnover of 15.54% is below cutoff of 70%.
+Weight is well distributed over instruments.
+Sub-universe Sharpe of 1.13 is above cutoff of 0.97.
+Competition Challenge matches.
+1 FAIL
+Self-correlation 0.8681 is above cutoff of 0.7 and Sharpe not better by 10.0% or more.
+
+Candidate 2 (65b37e3b):
+6 PASS
+Sharpe of 1.78 is above cutoff of 1.25.
+Fitness of 2.04 is above cutoff of 1.
+Turnover of 13.77% is above cutoff of 1%.
+Turnover of 13.77% is below cutoff of 70%.
+Weight is well distributed over instruments.
+Competition Challenge matches.
+1 FAIL
+Sub-universe Sharpe of 0.71 is below cutoff of 0.77.
+
+Candidate 3 (e72aad8f):
+4 PASS
+Turnover of 12.61% is above cutoff of 1%.
+Turnover of 12.61% is below cutoff of 70%.
+Weight is well distributed over instruments.
+Competition Challenge matches.
+3 FAIL
+Sharpe of 0.88 is below cutoff of 1.25.
+Fitness of 0.64 is below cutoff of 1.
+Sub-universe Sharpe of 0.37 is below cutoff of 0.38.

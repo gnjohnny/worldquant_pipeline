@@ -1,0 +1,35 @@
+Candidate 1 (169780d6):
+
+3 PASS
+Turnover of 20.87% is above cutoff of 1%.
+Turnover of 20.87% is below cutoff of 70%.
+Competition [Challenge](https://platform.worldquantbrain.com/competition/challenge) matches.
+4 FAIL
+[Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/20251383456663) of -0.15 is below cutoff of 1.25.
+[Fitness](https://support.worldquantbrain.com/hc/en-us/articles/20251386376471) of -0.05 is below cutoff of 1.
+[Weight concentration](https://support.worldquantbrain.com/hc/en-us/articles/19248385997719) 15.38% is above cutoff of 10% on 1/25/2022.
+[Sub-universe Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/6568644868375) of -0.1 is below cutoff of -0.06.
+---
+Candidate 2 (076a73d8):
+
+4 PASS
+Turnover of 37.02% is above cutoff of 1%.
+Turnover of 37.02% is below cutoff of 70%.
+Weight is well distributed over instruments.
+Competition [Challenge](https://platform.worldquantbrain.com/competition/challenge) matches.
+3 FAIL
+[Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/20251383456663) of -1.14 is below cutoff of 1.25.
+[Fitness](https://support.worldquantbrain.com/hc/en-us/articles/20251386376471) of -0.57 is below cutoff of 1.
+[Sub-universe Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/6568644868375) of -0.65 is below cutoff of -0.49.
+---
+Candidate 3 (f6be3107):
+
+4 PASS
+Turnover of 19.99% is above cutoff of 1%.
+Turnover of 19.99% is below cutoff of 70%.
+Sub-universe Sharpe of 0.21 is above cutoff of 0.13.
+Competition [Challenge](https://platform.worldquantbrain.com/competition/challenge) matches.
+3 FAIL
+[Sharpe](https://support.worldquantbrain.com/hc/en-us/articles/20251383456663) of 0.29 is below cutoff of 1.25.
+[Fitness](https://support.worldquantbrain.com/hc/en-us/articles/20251386376471) of 0.09 is below cutoff of 1.
+Weight is too strongly concentrated or too few instruments are assigned weight.

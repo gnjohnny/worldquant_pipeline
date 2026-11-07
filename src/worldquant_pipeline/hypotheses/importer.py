@@ -4,7 +4,10 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from worldquant_pipeline.evaluation.fingerprint import FactorFingerprintAuditor
+from worldquant_pipeline.evaluation.existence_checker import (
+    AlphaExistenceChecker,
+    ExistenceVerdict,
+)
 from worldquant_pipeline.evaluation.turnover_proxy import TurnoverProxyCalculator
 from worldquant_pipeline.exceptions import (
     ASTSyntaxError,
@@ -96,22 +99,19 @@ class HypothesisImporter:
                 canonical_expr = canonicalize_expression(expr_raw)
                 expr_hash = compute_expression_hash(canonical_expr)
 
-                # 4. Gate G3: Deduplication check
-                existing = (
-                    self.session.query(AlphaCandidate)
-                    .filter_by(expression_hash=expr_hash)
-                    .first()
-                )
-                if existing:
+                # 4. Gate G3: Existence & Duplicate Check across all statuses
+                exist_res = AlphaExistenceChecker.check_expression(expr_raw, self.session)
+                if exist_res.is_exact_duplicate:
                     report.duplicates += 1
+                    dup_id = exist_res.exact_match.candidate_id[:8] if exist_res.exact_match else "unknown"
+                    dup_st = exist_res.exact_match.status if exist_res.exact_match else "DB"
                     report.errors.append({
                         "expression": expr_raw,
-                        "reason": f"Duplicate of existing candidate ID: {existing.id}",
+                        "reason": f"Duplicate of existing candidate ID: {dup_id} (Status: {dup_st})",
                     })
                     continue
 
                 # 5. Pre-simulation Fingerprint & Turnover Audit
-                fp_res = FactorFingerprintAuditor.audit_against_database(expr_raw, self.session)
                 turnover_est = TurnoverProxyCalculator.estimate(expr_raw)
 
                 # 6. Register Valid Candidate
@@ -128,12 +128,17 @@ class HypothesisImporter:
                 self.session.flush()
 
                 report.valid_candidates += 1
+                risk_str = (
+                    "HIGH"
+                    if exist_res.verdict == ExistenceVerdict.HIGH_PORTFOLIO_COLLISION
+                    else ("MEDIUM" if exist_res.portfolio_collisions else "LOW")
+                )
                 report.registered_candidates.append({
                     "id": candidate.id,
                     "expression": expr_raw,
                     "canonical": canonical_expr,
                     "complexity": candidate.complexity_score,
-                    "correlation_risk": fp_res.risk_level,
+                    "correlation_risk": risk_str,
                     "estimated_turnover": turnover_est.estimated_turnover,
                 })
 
