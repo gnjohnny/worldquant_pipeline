@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Pure 180-Day Option Net Breakeven Asymmetry with Cubic Polynomial Conviction Scaling",
+      "domain": "options_breakeven_cubic_conviction",
+      "economic_rationale": "In Batch 283 Candidate 1 (70ae5ef0), pure 180-day option net breakeven asymmetry cleared 6 out of 7 platform quality gates (Sharpe 1.29, SubSharpe 0.87, Turnover 22.66%) with zero price overlays. Applying a cubic polynomial transform power(group_rank(...) - 0.5, 3) naturally preserves zero-mean antisymmetry while aggressively flattening noisy middle percentiles and concentrating capital in the top 10% highest conviction option upside expansion opportunities. This concentration widens the annualized return spread by 2x, directly propelling Fitness from 0.74 past the 1.00 - 1.50 threshold without increasing turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Cap-weighted concentration in a few extreme outlier names during market-wide earnings shocks"
+      ],
+      "falsification_test": "Fails if cubic conviction scaling causes weight concentration failures or reduces Sharpe below 1.25.",
+      "candidates": [
+        {
+          "expression": "power(group_rank(ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.5, 3)",
+          "rationale": "Cubic polynomial conviction weighting applied to the Batch 283 champion pure breakeven signal."
+        }
+      ]
+    },
+    {
+      "title": "Quantile-Ranked Robust Lookback (90-Day ts_rank) on 180d Net Breakeven Asymmetry",
+      "domain": "options_breakeven_ts_rank_smoothing",
+      "economic_rationale": "Replacing ts_zscore with ts_rank over a 90-day window (ts_rank(..., 90)) maps the raw net breakeven asymmetry into a strictly uniform rolling quantile distribution [0, 1]. This eliminates sensitivity to single-day option quote spikes while extending historical memory. The smoother trajectory dampens portfolio turnover from 22.66% toward 14%-16%, mechanically elevating Fitness above 1.00 by increasing the returns-to-turnover ratio.",
+      "expected_direction": "positive",
+      "intended_horizon": "18d",
+      "confounders": [
+        "Structural regime shifts in market volatility where a 90-day window reacts too slowly to sudden upside trend reversals"
+      ],
+      "falsification_test": "Fails if 90-day ts_rank fails to achieve Sharpe >= 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 90), subindustry) - 0.5",
+          "rationale": "90-day rolling quantile rank of net breakeven asymmetry, subindustry-neutralized and uniformly ranked."
+        }
+      ]
+    },
+    {
+      "title": "Dual-Horizon Net Breakeven Asymmetry Divergence Momentum (30d vs 90d)",
+      "domain": "options_breakeven_dual_horizon_divergence",
+      "economic_rationale": "Measuring the divergence between a fast 30-day z-score and a slow 90-day baseline z-score of net breakeven asymmetry isolates equities experiencing rapid institutional option accumulation relative to their trailing quarter baseline. This acceleration signal identifies newly inflecting upside conviction before it is fully reflected in broader equity market prices.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Temporary earnings announcement option volume surges that quickly mean-revert post-event"
+      ],
+      "falsification_test": "Fails if dual-horizon breakeven divergence yields Sharpe < 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 30) - ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 90), subindustry) - 0.5",
+          "rationale": "Subindustry-standardized spread between 30-day fast and 90-day slow z-scores of net breakeven asymmetry."
+        }
+      ]
+    }
+  ]
+}
