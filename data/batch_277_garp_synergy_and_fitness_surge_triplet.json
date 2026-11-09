@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Style Surface GARP with Daily Analyst Revision Synergy",
+      "domain": "fundamental_garp_analyst_revision_synergy",
+      "economic_rationale": "In Batch 274, the fundamental GARP interaction (fscore_growth * fscore_value) proved to be an exceptional structural predictor (Sharpe 1.35, Sub-universe Sharpe 0.99, weight distributed), but suffered from low turnover (5.35%) and sluggish capital rotation (Fitness 0.74). Combining the 120-day quarterly GARP anchor with daily analyst revision momentum (analyst_revision_rank_derivative, 100% coverage) provides the exact active catalyst needed to trigger timely rebalancing. Using additive subindustry z-scores preserves unit safety while boosting returns to target Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Firms where consensus analyst revisions lag fundamental growth decelerations"
+      ],
+      "falsification_test": "Fails if GARP plus analyst revision synergy fails to achieve Fitness > 1.40 or Sharpe > 1.35.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) + 0.35 * group_zscore(analyst_revision_rank_derivative, subindustry), subindustry)",
+          "rationale": "Subindustry z-scored GARP 120-day interaction combined with 35% weight on daily analyst revision momentum z-score, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP with Daily Cashflow Conversion Efficiency Synergy",
+      "domain": "fundamental_garp_cashflow_efficiency_synergy",
+      "economic_rationale": "High growth potential and attractive multiples are most sustainable when supported by superior cash conversion efficiency per unit of deployed capital. Combining the quarterly GARP z-score anchor with daily cashflow efficiency rank derivatives (cashflow_efficiency_rank_derivative, 100% coverage) filters out leveraged growth traps, improving win rate and portfolio return velocity while keeping turnover within the optimal 10%–15% window.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Financial institutions with non-standard cash conversion cycles"
+      ],
+      "falsification_test": "Fails if cashflow efficiency synergy fails to achieve Sharpe > 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) + 0.35 * group_zscore(cashflow_efficiency_rank_derivative, subindustry), subindustry)",
+          "rationale": "Subindustry z-scored GARP 120-day interaction combined with 35% weight on daily cashflow efficiency derivative z-score, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP with Intraday VWAP Liquidity Rebalancing",
+      "domain": "fundamental_garp_vwap_liquidity_rebalance",
+      "economic_rationale": "Combining the slow quarterly fundamental GARP anchor with an intraday price-to-VWAP reversion overlay ((close - vwap) / vwap) exploits short-term liquidity provision. When high-conviction GARP stocks close temporarily below their volume-weighted average price due to transient order-flow imbalance, buying the dip captures intraday spread without diluting the multi-month fundamental alpha trajectory, elevating portfolio returns and Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden market-wide liquidity shocks where prices diverge from VWAP across all sectors simultaneously"
+      ],
+      "falsification_test": "Fails if VWAP liquidity overlay increases turnover beyond 35% or fails to achieve Sharpe > 1.30.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.20 * group_zscore((close - vwap) / vwap, subindustry), subindustry)",
+          "rationale": "Subindustry z-scored GARP 120-day interaction combined with negative 20% weight on intraday VWAP dislocation, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

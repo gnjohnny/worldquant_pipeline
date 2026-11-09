@@ -1,0 +1,49 @@
+================================================================================
+BATCH 277: GARP SYNERGY & FITNESS SURGE TRIPLET (RULE 9 COMPLIANT)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (a805ec18): Style Surface GARP with Daily Analyst Revision Synergy
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) + 0.35 * group_zscore(analyst_revision_rank_derivative, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (f7491a19): Style Surface GARP with Daily Cashflow Conversion Efficiency Synergy
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) + 0.35 * group_zscore(cashflow_efficiency_rank_derivative, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (a3daa722): Style Surface GARP with Intraday VWAP Liquidity Rebalancing
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.20 * group_zscore((close - vwap) / vwap, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================
