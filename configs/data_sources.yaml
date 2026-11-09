@@ -647,11 +647,23 @@ fields:
   unit: ratio
   region: USA
   permitted_use: true
-- field_key: implied_volatility_mean_sk
+- field_key: implied_volatility_mean_skew_10
   category: volatility
-  description: "ew_360 Skew steepness for the implied volatility duration of 360 calendar\
-    \ days by subtracting the mean implied volatility of the call and put options\
-    \ with strikes at\u2026"
+  description: Skew steepness for implied volatility duration of 10 calendar days
+  timing_delay: 1
+  unit: ratio
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_mean_skew_60
+  category: volatility
+  description: Skew steepness for implied volatility duration of 60 calendar days
+  timing_delay: 1
+  unit: ratio
+  region: USA
+  permitted_use: true
+- field_key: implied_volatility_mean_skew_360
+  category: volatility
+  description: Skew steepness for implied volatility duration of 360 calendar days
   timing_delay: 1
   unit: ratio
   region: USA

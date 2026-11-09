@@ -1,0 +1,58 @@
+================================================================================
+BATCH 288: VIRGIN VOLATILITY RISK PREMIUM & SKEW SURFACES (UNMINED TOP3000)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (5737a775): Physical Realized vs Implied Volatility Risk Premium Spread
+--------------------------------------------------------------------------------
+Dataset: Volatility Data (historical_volatility_10 98% coverage, implied_volatility_mean_10 97% coverage)
+Economic Rationale: historical_volatility_10 measures 10-day physical realized close-to-close volatility, while implied_volatility_mean_10 measures market-implied forward-looking options volatility. When option implied volatility trades at a substantial premium over realized volatility, options market makers and hedgers are extracting excessive insurance fees due to temporary anxiety. Equities with compressed or inverted volatility risk premiums (historical_volatility_10 - implied_volatility_mean_10 > 0) consistently outperform as overpriced option panic deflates.
+
+Expression:
+group_rank(ts_decay_linear(historical_volatility_10 - implied_volatility_mean_10, 10), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (68bbc066): Options Implied Volatility Term Structure Slope (Contango vs Backwardation)
+--------------------------------------------------------------------------------
+Dataset: Volatility Data (implied_volatility_mean_60 97% coverage, implied_volatility_mean_10 97% coverage)
+Economic Rationale: In equilibrium options pricing, the volatility term structure is normally in contango (implied_volatility_mean_60 > implied_volatility_mean_10). When acute near-term panic or liquidity shocks invert the curve into backwardation (short-term 10-day IV exceeds 60-day IV), underlying equities suffer transient price depression. Selecting equities with the steepest term structure slope (implied_volatility_mean_60 - implied_volatility_mean_10) captures the recovery momentum as near-term volatility risk normalizes.
+
+Expression:
+group_rank(ts_decay_linear(implied_volatility_mean_60 - implied_volatility_mean_10, 10), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (c28090e3): Options Implied Volatility Skew Steepness Tail-Risk Penalty
+--------------------------------------------------------------------------------
+Dataset: Volatility Data (implied_volatility_mean_skew_10, 95% matrix coverage across TOP3000)
+Economic Rationale: implied_volatility_mean_skew_10 measures the slope of the options volatility smile over 10 calendar days. Informed institutional options traders bid up out-of-the-money puts relative to calls when they anticipate severe downside events. Consequently, equities with extreme skew steepness face ongoing negative price drift. Penalizing skew steepness (-implied_volatility_mean_skew_10) concentrates capital in names with benign tail risk, low hedging demand, and resilient forward returns.
+
+Expression:
+group_rank(-ts_decay_linear(implied_volatility_mean_skew_10, 10), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================

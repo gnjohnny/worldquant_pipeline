@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Physical Realized vs Options Implied Volatility Risk Premium Spread",
+      "domain": "volatility_risk_premium_discount",
+      "economic_rationale": "historical_volatility_10 measures the 10-day physical realized close-to-close volatility (Matrix, 98% coverage in TOP3000), while implied_volatility_mean_10 measures the market-implied forward-looking options volatility (Matrix, 97% coverage). When implied volatility trades at a substantial premium over realized volatility, options market makers and hedgers are extracting excessive insurance fees due to temporary anxiety. Equities with compressed or inverted volatility risk premiums (historical_volatility_10 - implied_volatility_mean_10 > 0) consistently outperform as overpriced option panic deflates.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Impending corporate mergers, FDA drug approvals, or binary earnings catalysts where heightened implied volatility is structurally justified"
+      ],
+      "falsification_test": "Fails if realized vs implied volatility spread yields Sharpe < 1.25 or Fitness < 1.00 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(historical_volatility_10 - implied_volatility_mean_10, 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day decayed spread between 10-day realized volatility and 10-day option implied volatility."
+        }
+      ]
+    },
+    {
+      "title": "Options Implied Volatility Term Structure Slope (Contango vs Backwardation)",
+      "domain": "volatility_term_structure_contango",
+      "economic_rationale": "In equilibrium options pricing, the volatility term structure is normally in contango (implied_volatility_mean_60 > implied_volatility_mean_10, 97% matrix coverage). When acute near-term panic or liquidity shocks invert the curve into backwardation (short-term 10-day IV exceeds 60-day IV), underlying equities suffer transient price depression. Selecting equities with the steepest term structure slope (implied_volatility_mean_60 - implied_volatility_mean_10) captures the recovery momentum as near-term volatility risk normalizes.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Persistent macro rate shocks or multi-quarter fundamental distress that keeps short-term volatility elevated"
+      ],
+      "falsification_test": "Fails if implied volatility term slope fails to achieve Sharpe >= 1.25 and Fitness >= 1.00 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(implied_volatility_mean_60 - implied_volatility_mean_10, 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day decay of implied volatility term structure spread (60-day IV minus 10-day IV)."
+        }
+      ]
+    },
+    {
+      "title": "Options Implied Volatility Skew Steepness Tail-Risk Penalty",
+      "domain": "volatility_skew_tail_risk",
+      "economic_rationale": "implied_volatility_mean_skew_10 measures the slope of the options volatility smile over 10 calendar days (Matrix, 95% coverage across TOP3000). Informed institutional options traders bid up out-of-the-money puts relative to calls when they anticipate severe downside events. Consequently, equities with extreme skew steepness face ongoing negative price drift. Penalizing skew steepness (-implied_volatility_mean_skew_10) concentrates capital in names with benign tail risk, low hedging demand, and resilient forward returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Systemic market-wide flash crashes where all single-stock option skews blow out simultaneously"
+      ],
+      "falsification_test": "Fails if inverse skew steepness yields Sharpe < 1.25 or Fitness < 1.00 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(implied_volatility_mean_skew_10, 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day decayed penalty on 10-day options implied volatility skew steepness."
+        }
+      ]
+    }
+  ]
+}
