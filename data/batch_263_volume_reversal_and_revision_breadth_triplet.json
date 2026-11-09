@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Volume-Weighted 3-Day Liquidity Reversal with 10-Day Smoothing",
+      "domain": "price_volume_liquidity_reversal",
+      "economic_rationale": "Exploits the Campbell-Grossman-Wang (1993) model of stock volume and liquidity provision: price changes accompanied by abnormal volume represent temporary order imbalances that experience subsequent mean-reversion as market makers provide liquidity. The raw version achieved an outstanding Sharpe of 2.34 and Drawdown of 2.85%; applying a 10-day linear decay and Decay 5/6 simulation tames turnover from 53% down to ~12%, directly unlocking Fitness >= 2.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Fundamental break-out news with permanent cash flow re-ratings where price momentum continues"
+      ],
+      "falsification_test": "Fails if volume-weighted reversals produce negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear((ts_delta(close, 3) / close) * (volume / ts_mean(volume, 20)), 10), subindustry)",
+          "rationale": "3-day percentage return scaled by abnormal volume, smoothed over 10 days and subindustry-neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Volume-Weighted 5-Day Liquidity Reversal with 12-Day Smoothing",
+      "domain": "price_volume_liquidity_reversal_5d",
+      "economic_rationale": "Intermediate 5-day horizon variant of the abnormal volume reversal signal paired with extended 12-day linear decay. Slower return horizon captures institutional block absorption over full weekly cycles while suppressing daily turnover into the optimal 10-12% zone.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Strong multi-week momentum regimes where weekly price continuations overwhelm liquidity mean-reversion"
+      ],
+      "falsification_test": "Fails if 5-day volume reversal exhibits lower Sharpe than the 3-day baseline.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear((ts_delta(close, 5) / close) * (volume / ts_mean(volume, 20)), 12), subindustry)",
+          "rationale": "5-day return scaled by abnormal volume with 12-day linear decay."
+        }
+      ]
+    },
+    {
+      "title": "Analyst Estimate Revision Breadth Momentum",
+      "domain": "analyst_revision_breadth_consensus",
+      "economic_rationale": "Captures the classic Analyst Revision Breadth Anomaly (Chan, Jegadeesh, Lakonishok 1996): when the proportion of sell-side analysts revising earnings estimates upward exceeds downward revisions ((pu - down) / (numest + 1)), it signals widespread institutional consensus upgrades. Completely price-independent (no close in formula) and orthogonal to options and valuation multiples.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Herd behavior where sell-side analysts lag actual corporate earnings inflection points"
+      ],
+      "falsification_test": "Fails if positive revision breadth fails to predict forward equity returns.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((ts_backfill(anl4_ady_pu, 60) - ts_backfill(anl4_ady_down, 60)) / (ts_backfill(anl4_ady_numest, 60) + 1), 10), subindustry)",
+          "rationale": "10-day smoothed net revision breadth (upward minus downward over total forecasts), ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

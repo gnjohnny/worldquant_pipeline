@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Systematic Risk Decile Inversion Anomaly (Betting Against Beta)",
+      "domain": "systematic_risk_low_beta",
+      "economic_rationale": "Exploits the structural low-beta anomaly (Baker et al. 2011; Frazzini & Pedersen 2014). Institutional investors constrained by leverage limits over-allocate to high-beta stocks to achieve higher nominal returns, creating persistent overvaluation in high-beta names. Subindustry-neutralized negative 60-day rolling beta (-beta_last_60_days_spy) isolates defensive, high-quality equities that produce positive risk-adjusted returns while immunizing against market down-draws. Natural slow variation in rolling regression parameters ensures low turnover (~7-9%) to maximize Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Prolonged market melt-up rallies where speculative high-beta equities temporarily outpace defensive names"
+      ],
+      "falsification_test": "Fails if low-beta equities consistently underperform within subindustries during sideways or bear market regimes.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(ts_backfill(beta_last_60_days_spy, 5), 5), subindustry)",
+          "rationale": "5-day linear decay on backfilled 60-day market beta, cross-sectionally ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Spillover Momentum",
+      "domain": "supply_chain_customer_momentum",
+      "economic_rationale": "Capitalizes on customer-supplier information diffusion friction (Cohen & Frazzini 2008). Return signals of major corporate customers (pv13_custretsig_retsig) predict the subsequent equity performance of their suppliers over intermediate horizons due to market inattention to cross-firm economic linkages. Smoothing with 5-day linear decay filters transient noise while capturing institutional supply-chain drift with ~6-8% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Customer-specific idiosyncratic shocks that do not translate into supplier order book changes"
+      ],
+      "falsification_test": "Fails if customer return signal exhibits zero forward predictive power on supplier returns over 15-day horizons.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_backfill(pv13_custretsig_retsig, 10), 5), subindustry)",
+          "rationale": "10-day backfilled customer return signal smoothed over 5 days with subindustry neutralization."
+        }
+      ]
+    },
+    {
+      "title": "Balance Sheet Liquidity Buffer \u2014 Cash to Short-Term Debt Solvency",
+      "domain": "balance_sheet_liquidity_buffer",
+      "economic_rationale": "Evaluates corporate solvency resilience via the cash-to-short-term-debt coverage ratio relative to its trailing 1-year historical baseline (ts_rank(..., 252)). Equities expanding liquid reserves against impending debt maturities are insulated from debt rollover crunches and liquidity shocks, outperforming leveraged peers. Unit-safe 0.0001*assets term prevents division by zero without dimension mismatch.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Cash hoarding driven by lack of productive capital expenditure opportunities"
+      ],
+      "falsification_test": "Fails if cash-rich companies underperform highly levered firms in tightening credit environments.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(cash_st, 60) / (ts_backfill(debt_st, 60) + 0.0001 * ts_backfill(assets, 60)), 252), subindustry)",
+          "rationale": "1-year percentile rank of cash-to-short-term-debt ratio with asset-scaled division safeguard."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Annual Foreign Exchange Translation Adjustment to Total Assets",
+      "domain": "fundamental_fx_translation_asset_efficiency",
+      "economic_rationale": "Measures after-tax foreign currency transaction gains and tax translation adjustments scaled by total balance sheet assets. This factor systematically boosted composite alphas to Sharpe > 1.80, but has never been simulated as a pure standalone signal. Multi-national corporations benefiting from favorable structural FX exposure enjoy expanded cash flow translation margins and earnings resilience, completely decorrelated from standard domestic equity factors.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Sudden adverse currency peg devaluations in non-convertible emerging market jurisdictions"
+      ],
+      "falsification_test": "Fails if foreign currency translation efficiency fails to predict forward equity returns over trailing 60-day windows.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_mean(ts_backfill(fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a, 252), 252) / (ts_backfill(assets, 60) + 0.0001 * ts_backfill(assets, 60)), subindustry)",
+          "rationale": "1-year smoothed annual FX translation gain scaled by balance sheet assets, cross-sectionally ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Foreign Operating Capital Productivity (International ROA)",
+      "domain": "fundamental_foreign_capital_productivity",
+      "economic_rationale": "Evaluates corporate international operational efficiency via foreign operating income (fnd2_ebitfr) divided by total assets, measured against its 1-year historical baseline (ts_rank(..., 252)). Prior alphas paired fnd2_ebitfr with stock price (P/E), inheriting market beta correlation. This formulation removes price entirely, isolating pure operational asset efficiency and international pricing power with optimal ~10% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Geopolitical trade sanctions or tariffs that disproportionately disrupt foreign operating subsidiaries"
+      ],
+      "falsification_test": "Fails if firms with expanding foreign capital productivity deliver lower Sharpe than domestic-only peers.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(fnd2_ebitfr, 60) / (ts_backfill(assets, 60) + 0.0001 * ts_backfill(assets, 60)), 252), subindustry)",
+          "rationale": "1-year percentile rank of foreign EBIT divided by total assets, neutralized by subindustry."
+        }
+      ]
+    },
+    {
+      "title": "DuPont Capital Intensity & Revenue Asset Turnover Velocity",
+      "domain": "fundamental_dupont_asset_turnover",
+      "economic_rationale": "Measures capital utilization velocity via annualized quarterly net sales divided by total balance sheet assets relative to its 1-year baseline (ts_rank(..., 252)). According to DuPont analysis and empirical asset pricing (Novy-Marx 2013), high asset turnover reflects operational lean manufacturing and superior capacity utilization, generating higher economic rents per unit of capital. 100% price-independent and free of options skew correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Low-margin retail businesses generating high sales volume with negligible net cash conversion"
+      ],
+      "falsification_test": "Fails if asset turnover improvements do not generate positive alpha within subindustries.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank((ts_backfill(actual_sales_value_quarter, 60) * 4) / (ts_backfill(assets, 60) + 0.0001 * ts_backfill(assets, 60)), 252), subindustry)",
+          "rationale": "1-year percentile rank of annualized sales to total assets, cross-sectionally ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

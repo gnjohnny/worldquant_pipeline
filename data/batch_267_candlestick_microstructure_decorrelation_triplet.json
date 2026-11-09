@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Close-to-Open Candle Reversal Scaled by True Range",
+      "domain": "intraday_candlestick_microstructure_reversal",
+      "economic_rationale": "Exploits overnight inventory compensation and liquidity provision imbalances: equities that experience strong directional pushes from open to close ((open - close) / (high - low)) force intraday market makers into asymmetric overnight inventory positions, triggering systematic mean-reversion at the subsequent market open. Precedent a79cf49a achieved Sharpe 1.55, Sub-universe Sharpe 1.16, and ZERO correlation against the portfolio. Using 6-day smoothing with simulation Decay 7 tames turnover into the optimal 14-17% corridor while maintaining self-correlation < 0.15.",
+      "expected_direction": "positive",
+      "intended_horizon": "6d",
+      "confounders": [
+        "Major scheduled earnings release dates where open-to-close momentum reflects permanent information revelation"
+      ],
+      "falsification_test": "Fails if candlestick reversal produces negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((open - close) / (high - low + 0.001 * close), 6), subindustry)",
+          "rationale": "Open minus close scaled by daily high-low range with price-scaled denominator safety, smoothed over 6 days and subindustry-ranked."
+        }
+      ]
+    },
+    {
+      "title": "Close-Location-Value (CLV) Intraday Pressure Reversal",
+      "domain": "close_location_value_inventory_rebalance",
+      "economic_rationale": "Captures the classic Close Location Value (Chaikin 1981): (2 * close - high - low) / (high - low). Values near +1 indicate stock settlement at the absolute upper wick of the daily candle; values near -1 indicate settlement at the extreme lower wick. Reversing this extreme intraday positioning (-group_rank) profits from market-maker inventory rebalancing. Precedent bf9781bd achieved Sharpe 1.50, Sub-universe Sharpe 0.98, and ZERO correlation warnings.",
+      "expected_direction": "positive",
+      "intended_horizon": "6d",
+      "confounders": [
+        "Strong multi-day trend regimes where close at high indicates sustained institutional accumulation"
+      ],
+      "falsification_test": "Fails if close location value reversal generates negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((2 * close - high - low) / (high - low + 0.001 * close), 6), subindustry)",
+          "rationale": "Negative of the 6-day decayed Close Location Value, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Intraday Directional Exhaustion Scaled by Abnormal Trading Volume",
+      "domain": "volume_weighted_candlestick_exhaustion",
+      "economic_rationale": "Multiplies intraday candlestick directional penetration ((close - open) / (high - low)) by abnormal trading volume percentile (ts_rank(volume, 20)). Directional pushes that occur on abnormally heavy volume represent order book liquidity exhaustion where aggressive market orders consume depth, leading to sharp price retracements. Precedent 574e34ba generated an exceptional Sharpe of 1.93 with ZERO portfolio correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "6d",
+      "confounders": [
+        "Index rebalancing days where volume surges are accompanied by permanent price shifts"
+      ],
+      "falsification_test": "Fails if volume-weighted candlestick exhaustion fails to generate positive Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(((close - open) / (high - low + 0.001 * close)) * ts_rank(volume, 20), 6), subindustry)",
+          "rationale": "Negative of 6-day decayed candlestick penetration scaled by 20-day volume rank, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

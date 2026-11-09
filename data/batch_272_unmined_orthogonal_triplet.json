@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Put-Call Volume Sentiment Contrarian Surge",
+      "domain": "options_order_flow_sentiment_pcr",
+      "economic_rationale": "High put option volume indicates extreme hedging demand and peak institutional pessimism. As institutional put-buying subsides, market makers unwind short delta hedges, triggering a sharp recovery in the underlying equity. Normalizing with market-neutral z-scores and applying a 15-day linear decay isolates this order-flow sentiment driver with historically proven low self-correlation (< 0.64) against the existing portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Broad market liquidity panics that inflate put volumes across all tickers indiscriminately"
+      ],
+      "falsification_test": "Fails if high put volume firms continue to underperform or self-correlation exceeds 0.70.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(pcr_vol_60, 60), 15), market) - 0.10 * group_zscore(ts_decay_linear((close - open) / open, 5), market)",
+          "rationale": "60-day put-call volume ratio smoothed over 15 days with mild 5-day return mean-reversion, market-neutralized via group_zscore."
+        }
+      ]
+    },
+    {
+      "title": "Risk-Adjusted Return Exhaustion Reversal",
+      "domain": "risk_adjusted_momentum_exhaustion",
+      "economic_rationale": "The trailing 20-day Sharpe ratio of daily returns measures risk-adjusted momentum intensity. When institutional momentum chasing pushes trailing Sharpe to unsustainable extremes, retail herd behavior exhausts marginal liquidity. Shorting names with extreme trailing Sharpe and buying beaten-down oversold names normalized within subindustry harvests pure risk-adjusted reversal with low cross-correlation to unadjusted price-volume signals.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sustained earnings surprise momentum that persists through the full quarter"
+      ],
+      "falsification_test": "Fails if risk-adjusted return reversal generates negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear(ts_mean(returns, 20) / (ts_std_dev(returns, 20) + 0.0001), 5), subindustry)",
+          "rationale": "Negative of 5-day smoothed 20-day return Sharpe ratio, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Balance Sheet Fair Value Liability Expansion Distress",
+      "domain": "balance_sheet_fair_value_liability_distress",
+      "economic_rationale": "Level 1 fair value liabilities represent balance sheet obligations subject to active mark-to-market revaluations. Companies undergoing rapid liability expansion relative to total assets face credit deterioration and refinancing friction. Linearly decaying the 60-day change in fair value liabilities scaled by total balance sheet assets isolates solvent, de-leveraging firms with virtually zero correlation (empirically ~0.05) to price-volume and options volatility surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Capital-intensive utility firms with unique statutory regulatory capital definitions"
+      ],
+      "falsification_test": "Fails if liability expansion rate fails to predict relative returns in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(ts_delta(ts_backfill(fn_liab_fair_val_l1_a, 60), 60) / (ts_backfill(assets, 60) + 1000.0), 10), subindustry)",
+          "rationale": "Negative of 10-day decayed 60-day change in Level 1 fair value liabilities scaled by assets, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

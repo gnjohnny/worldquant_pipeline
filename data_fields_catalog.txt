@@ -1,0 +1,439 @@
+price_volume | close | Daily closing price adjusted for splits and dividends
+price_volume | open | Daily opening price adjusted
+price_volume | high | Daily high price adjusted
+price_volume | low | Daily low price adjusted
+price_volume | volume | Daily trading volume in shares
+price_volume | returns | Daily total return (close to close)
+price_volume | vwap | Volume-weighted average price
+price_volume | sharesout | Number of common shares outstanding
+price_volume | cap | Market capitalization (close * sharesout)
+group | subindustry | GICS Subindustry classification code
+group | industry | GICS Industry classification code
+group | sector | GICS Sector classification code
+fundamental | bookvalue_ps | Book value per share (point in time)
+fundamental | ebitda | Earnings before interest, taxes, depreciation, and amortization
+fundamental | operating_income | Operating income / earnings before interest and tax (point in time)
+model_fundamental_scores | analyst_revision_rank_derivative | Daily-indicator variant of momentum capturing recent price moves and analyst estimate revisions
+model_fundamental_scores | cashflow_efficiency_rank_derivative | Ranks stocks by their ability to generate cash flows and operational profitability
+model_fundamental_scores | composite_factor_score_derivative | Momentum score based on analyst revisions; intraday variant
+model_fundamental_scores | earnings_certainty_rank_derivative | Measures the sustainability and certainty of earnings quality
+model_fundamental_scores | growth_potential_rank_derivative | Composite growth score qualifying the stock's expected medium-term growth potential
+model_fundamental_scores | multi_factor_acceleration_score_derivative | Change in the acceleration of multi-factor score compared to previous period
+model_fundamental_scores | multi_factor_static_score_derivative | Change in static multi-factor score compared to previous period
+model_fundamental_scores | relative_valuation_rank_derivative | Assesses whether the stock is under or overpriced based on standard valuation multiples indicator va
+model_fundamental_scores | fscore_bfl_growth | Growth composite estimating expected medium-term growth potential (0-100)
+model_fundamental_scores | fscore_bfl_momentum | Composite momentum measure reflecting recent price dynamics and analyst revisions
+model_fundamental_scores | fscore_bfl_profitability | Profitability composite ranking firms by cash flows and operational efficiency (0-100)
+model_fundamental_scores | fscore_bfl_quality | Composite measuring earnings quality, stability, and balance-sheet resilience
+model_fundamental_scores | fscore_bfl_surface | Static composite style surface score aggregating five primary style scores
+model_fundamental_scores | fscore_bfl_surface_accel | Acceleration (derivative) of pentagon surface score relative to previous month
+model_fundamental_scores | fscore_bfl_total | Blended composite M-Score combining static pentagon surface score and acceleration
+model_fundamental_scores | fscore_bfl_value | Valuation composite indicating under/overpricing versus common valuation measures (0-100)
+model_fundamental_scores | fscore_growth | Composite measuring expected medium-term growth potential
+model_fundamental_scores | fscore_momentum | Composite momentum metric focused on recent analyst estimate revisions
+model_fundamental_scores | fscore_profitability | Composite ranking stocks by ability to generate cash flows and operational profitability
+model_fundamental_scores | fscore_quality | Composite measuring sustainability and certainty of earnings
+model_fundamental_scores | fscore_surface | Static overall style surface score combining Value, Growth, Profitability, Momentum, Quality
+model_fundamental_scores | fscore_surface_accel | Acceleration (derivative) of pentagon surface score versus previous month
+model_fundamental_scores | fscore_total | Final blended score combining static pentagon surface score with acceleration
+model_fundamental_scores | fscore_value | Composite assessing whether stock is under/overpriced using standard valuation multiples
+model_systematic_risk | beta_last_30_days_spy | Rolling beta of security relative to SPY over last 30 calendar days
+model_systematic_risk | beta_last_60_days_spy | Rolling beta of security relative to SPY over last 60 calendar days
+model_systematic_risk | beta_last_90_days_spy | Rolling beta of security relative to SPY over last 90 calendar days
+model_systematic_risk | beta_last_360_days_spy | Rolling beta of security relative to SPY over last 360 calendar days
+model_systematic_risk | correlation_last_30_days_spy | Pearson correlation coefficient of daily log returns with SPY over last 30 calendar days
+model_systematic_risk | correlation_last_60_days_spy | Pearson correlation coefficient of daily log returns with SPY over last 60 calendar days
+model_systematic_risk | correlation_last_90_days_spy | Pearson correlation coefficient of daily log returns with SPY over last 90 calendar days
+model_systematic_risk | correlation_last_360_days_spy | Pearson correlation coefficient of daily log returns with SPY over last 360 calendar days
+model_systematic_risk | systematic_risk_last_30_days | Portion of return variance attributed to systematic risk (R^2 to SPY) over last 30 calendar days
+model_systematic_risk | systematic_risk_last_60_days | Portion of return variance attributed to systematic risk (R^2 to SPY) over last 60 calendar days
+model_systematic_risk | systematic_risk_last_90_days | Portion of return variance attributed to systematic risk (R^2 to SPY) over last 90 calendar days
+model_systematic_risk | systematic_risk_last_360_days | Portion of return variance attributed to systematic risk (R^2 to SPY) over last 360 calendar days
+model_systematic_risk | unsystematic_risk_last_30_days | Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 30 calendar day
+model_systematic_risk | unsystematic_risk_last_60_days | Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 60 calendar day
+model_systematic_risk | unsystematic_risk_last_90_days | Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 90 calendar day
+model_systematic_risk | unsystematic_risk_last_360_days | Portion of return variance not explained by SPY (idiosyncratic risk 1-R^2) over last 360 calendar da
+option | implied_volatility_call_720 | 720-day call implied volatility
+option | parkinson_volatility_120 | 120-day realized Parkinson high-low volatility
+sentiment | scl12_buzz | Social media buzz volume score
+news | nws12_afterhsz_sl | After-hours news sentiment level vector
+price_volume | adjfactor | Adjustment factor applied to historical prices and dividends to account for splits and other corpora
+price_volume | adv20 | Average daily volume in past 20 days
+price_volume | country | Country grouping
+price_volume | currency | Currency
+price_volume | cusip | CUSIP Value
+price_volume | dividend | Dividend
+price_volume | exchange | Exchange grouping
+price_volume | isin | ISIN Value
+price_volume | market | Market grouping
+volatility | historical_volatility_10 | Historical close-to-close volatility for approximately 10 calendar days
+volatility | historical_volatility_120 | Historical close-to-close volatility for approximately 120 calendar days
+volatility | historical_volatility_150 | Historical close-to-close volatility for approximately 150 calendar days
+volatility | historical_volatility_180 | Historical close-to-close volatility for approximately 180 calendar days
+volatility | historical_volatility_20 | Historical close-to-close volatility for approximately 20 calendar days
+volatility | historical_volatility_30 | Historical close-to-close volatility for approximately 30 calendar days
+volatility | historical_volatility_60 | Historical close-to-close volatility for approximately 60 calendar days
+volatility | historical_volatility_90 | Historical close-to-close volatility for approximately 90 calendar days
+volatility | implied_volatility_call_10 | Implied volatility of the at-the-money call for the stock with an expiration 10 calendar days from t
+volatility | implied_volatility_call_1080 | Implied volatility of the at-the-money call for the stock with an expiration 1080 calendar days from
+volatility | implied_volatility_mean_10 | The average of IvCall10 and IvPut10
+volatility | implied_volatility_mean_12 | The average of IvCall120 and IvPut120
+volatility | implied_volatility_mean_15 | The average of IvCall150 and IvPut150
+volatility | implied_volatility_mean_18 | The average of IvCall180 and IvPut180
+volatility | implied_volatility_mean_20 | The average of IvCall20 and IvPut20
+volatility | implied_volatility_mean_27 | The average of IvCall270 and IvPut270
+volatility | implied_volatility_mean_30 | The average of IvCall30 and IvPut30
+volatility | implied_volatility_mean_36 | The average of IvCall360 and IvPut360
+volatility | implied_volatility_mean_60 | The average of IvCall60 and IvPut60
+volatility | implied_volatility_mean_sk | ew_360 Skew steepness for the implied volatility duration of 360 calendar days by subtracting the me
+volatility | implied_volatility_put_10 | At-the-money implied volatility of put options with 10 calendar days to expiration, annualized decim
+volatility | implied_volatility_put_1080 | At-the-money implied volatility of put options with 1080 calendar days to expiration, annualized dec
+volatility | implied_volatility_put_120 | At-the-money implied volatility of put options with 120 calendar days to expiration, annualized deci
+volatility | implied_volatility_put_150 | At-the-money implied volatility of put options with 150 calendar days to expiration, annualized deci
+volatility | implied_volatility_put_180 | At-the-money implied volatility of put options with 180 calendar days to expiration, annualized deci
+option | call_breakeven_10 | Price at which a stock's call options with expiration 10 days in the future break even based on its 
+option | call_breakeven_1080 | Price at which a stock's call options with expiration 1080 days in the future break even based on it
+option | call_breakeven_120 | Price at which a stock's call options with expiration 120 days in the future break even based on its
+option | call_breakeven_150 | Price at which a stock's call options with expiration 150 days in the future break even based on its
+option | call_breakeven_180 | Open-interest-weighted mean breakeven price at which buyers of call options break even for options e
+option | call_breakeven_20 | Open-interest-weighted average breakeven price of call options expiring in 20 days, representing the
+option | call_breakeven_270 | Price at which a stock's call options with expiration 270 days in the future break even based on its
+option | call_breakeven_30 | Open-interest-weighted average breakeven price of call options expiring in 30 days, representing the
+option | forward_price_360 | Synthetic forward price at 360 days derived from put-call parity using ATM call and put prices, refl
+option | forward_price_60 | Synthetic forward price at 60 days derived from at-the-money call and put options reflecting the mar
+option | forward_price_720 | Synthetic forward price at 720 days derived from at-the-money call and put options reflecting the ma
+option | forward_price_90 | Synthetic forward price at 90 days derived from put-call parity using ATM call and put prices, refle
+option | option_breakeven_10 | Open-interest-weighted mean breakeven price at which buyers of calls and puts combined break even fo
+option | option_breakeven_1080 | Open-interest-weighted mean breakeven price at which buyers of calls and puts combined break even fo
+option | option_breakeven_120 | Weighted mean breakeven price for combined call and put options with expiration 120 days in the futu
+option | option_breakeven_150 | Price at which a stock's options with expiration 150 days in the future break even based on its rece
+option | pcr_oi_180 | Ratio of total put option open interest to call option open interest for options expiring in 180 day
+option | pcr_oi_20 | Ratio of put open interest to call open interest on a stock's options with expiration 20 days in the
+option | pcr_oi_270 | Ratio of put open interest to call open interest for options expiring in 270 days, indicating longer
+option | pcr_oi_30 | Ratio of put open interest to call open interest for options expiring in 30 days, reflecting medium-
+option | pcr_oi_360 | Ratio of total put option open interest to call option open interest for options expiring in 360 day
+option | pcr_oi_60 | Ratio of put open interest to call open interest for options expiring in 60 days, reflecting medium-
+option | pcr_oi_720 | Ratio of put open interest to call open interest for options expiring in 720 days, indicating very l
+option | pcr_oi_90 | Ratio of put open interest to call open interest for options expiring in 90 days, reflecting longer-
+option | pcr_oi_all | Ratio of total put option open interest to call option open interest aggregated across all option ma
+option | pcr_vol_90 | Ratio of put options volume to call options volume for stock options expiring in 90 days, indicating
+option | pcr_vol_all | Ratio of total put option volume to call option volume aggregated across all maturities, measuring s
+option | put_breakeven_10 | Open interest-weighted mean breakeven price for put options expiring in 10 days, average price at wh
+option | put_breakeven_1080 | Price at which a stock's put options with expiration 1080 days in the future break even based on its
+option | put_breakeven_120 | Price at which a stock's put options with expiration 120 days in the future break even based on its 
+option | put_breakeven_150 | Open-interest-weighted mean breakeven price at which buyers of put options break even for options ex
+option | put_breakeven_180 | Weighted mean breakeven price of put options expiring in 180 days derived from open interest or volu
+option | put_breakeven_20 | Price at which a stock's put options with expiration 20 days in the future break even based on its r
+model_fundamental_scores | analyst_revision_rank_deri | vative Daily-indicator variant of momentum capturing recent price moves and analyst estimate revisio
+model_fundamental_scores | cashflow_efficiency_rank_d | erivative Ranks stocks by their ability to generate cash flows and operational profitability
+model_fundamental_scores | composite_factor_score_d | erivative Momentum score based on analyst revisions; intraday variant
+model_fundamental_scores | earnings_certainty_rank_d | erivative Measures the sustainability and certainty of earnings quality
+model_systematic_risk | correlation_last_30_days_s | py The Pearson correlation coefficient of daily log returns between the security and SPY, calculated
+model_systematic_risk | correlation_last_60_days_s | py The Pearson correlation coefficient of daily log returns between the security and SPY, calculated
+model_systematic_risk | correlation_last_90_days_s | py The Pearson correlation coefficient of daily log returns between the security and SPY, calculated
+analyst | actual_cashflow_per_share_value_quarterly | Cash Flow Per Share - actual value for the quarter
+analyst | actual_dividend_value_qua | rterly Dividend - Actual value for the quarter
+analyst | actual_eps_value_quarterly | Earnings Per Share (Income Statement/Per Share) (Actual)
+analyst | actual_sales_value_annual | Sales - Actual Value
+analyst | actual_sales_value_quarter | ly Sales - Value in financial services income statement (in millions)
+analyst | actuals_reporting_currency | Home currency of instrument
+analyst | actuals_value_currency_co | de Pricing Currency where the security trades
+analyst | adj_net_income_avg | Average adjusted net profit, excluding non-recurring items, for the period.
+analyst | adj_net_income_median | Median adjusted net profit, excluding non-recurring items, for the period.
+analyst | adj_net_income_stddev | Standard deviation of adjusted net profit estimates, excluding non-recurring items.
+analyst | anl4_adxqfv110_high | The highest estimation
+analyst | anl4_adxqfv110_low | The lowest estimation
+analyst | anl4_adxqfv110_mean | Mean of estimations
+analyst | anl4_adxqfv110_median | Median of estimations
+analyst | anl4_adxqfv110_numest | The number of forecasts counted in aggregation
+analyst | anl4_adxqfv110_pu | The number of upper estimations
+analyst | anl4_ady_down | Number of lower estimations
+analyst | anl4_ady_high | The highest estimation
+analyst | anl4_ady_low | The lowest estimation
+analyst | anl4_ady_mean | Mean of estimations
+analyst | anl4_ady_median | Median of estimations
+analyst | anl4_ady_numest | The number of forecasts counted in aggregation
+analyst | anl4_ady_pu | The number of upper estimations
+analyst | anl4_afv4_cfps_median | Cash Flow Per Share - Median value among forecasts for the annual frequency
+analyst | anl4_afv4_cfps_number | Cash Flow Per Share - number of estimations for annual frequency
+analyst | anl4_afv4_div_high | Dividend per share - The highest estimation for the annual forecast.
+analyst | anl4_afv4_div_low | Dividend - The lowest estimation for the annual forecast
+analyst | anl4_afv4_div_mean | Dividend per share - average of estimations for annual frequency
+analyst | anl4_afv4_div_median | Dividend per share - Median value among forecasts
+analyst | anl4_afv4_div_number | Number of estimations for Dividend per share - annually
+analyst | anl4_afv4_div_std | Dividend per share - standard deviation of estimations
+analyst | anl4_afv4_dts_spe | Earnings per share - standard deviation of estimations
+analyst | anl4_afv4_eps_high | Earnings per share - The highest estimation
+analyst | anl4_afv4_eps_low | Earnings per share - The lowest estimation for annual frequency
+analyst | anl4_afv4_eps_mean | Earnings per share - mean of estimations for annual frequency
+analyst | anl4_bac1conqfv110_item | Financial item
+analyst | anl4_bac1conrecv110_item | Financial item
+analyst | anl4_bac1detailafv110_ite | m Financial item
+analyst | anl4_bac1detaillt_item | Financial item
+analyst | anl4_bac1detailqfv110_ite | m Financial item
+analyst | anl4_bac1detailrec_item | Financial item
+analyst | anl4_basicafv4_actual | Announced financial data for the annual period.
+analyst | anl4_basicconafv110_dow | n Number of lower estimations
+analyst | anl4_basicconafv110_high | The highest estimation
+analyst | anl4_basicconafv110_low | The lowest estimation
+analyst | anl4_basicconltv110_pu | The number of upper estimations
+analyst | anl4_basicconqfv110_dow | n Number of lower estimations
+analyst | anl4_basicconqfv110_high | The highest estimation
+analyst | anl4_basicconqfv110_low | The lowest estimation
+analyst | anl4_basicconqfv110_mea | n Mean of estimations
+analyst | anl4_basicconqfv110_medi | an Median of estimations
+analyst | anl4_basicconqfv110_num | est The number of forecasts counted in aggregation
+analyst | anl4_basicconqfv110_pu | The number of upper estimations
+analyst | anl4_basicdetaillt_bk | Broker name (int)
+analyst | anl4_basicdetaillt_estvalue | Estimation value
+analyst | anl4_basicdetaillt_person | Broker Id
+analyst | anl4_basicqfv4_maxguidan | ce Max guidance value
+analyst | anl4_basicqfv4_minguidan | ce Min guidance value
+analyst | anl4_baz1v110_bk | Broker name (int)
+analyst | anl4_baz1v110_estvalue | Estimation value
+analyst | anl4_baz1v110_person | Broker Id
+analyst | anl4_baz1v110_prevval | The previous estimation of financial item
+analyst | anl4_buy | The number of recommendations to long the instrument
+analyst | anl4_bvps_flag | Book value per share - forecast type (revision/new/...)
+analyst | anl4_bvps_high | Book value - the highest estimation, per share
+analyst | anl4_bvps_low | Book value - the lowest estimation, per share
+analyst | anl4_bvps_mean | Book value per share - average of estimations
+analyst | anl4_bvps_median | Book value per share - Median value among forecasts
+analyst | anl4_capex_value | Capital Expenditures - announced financial value
+analyst | anl4_cff_flag | Cash Flow From Financing Activities - forecast type (revision/new/...)
+analyst | anl4_cff_high | Cash Flow From Financing - The highest of forecasted values
+analyst | anl4_cff_low | Cash Flow From Financing - The lowest estimation
+analyst | anl4_cff_mean | Cash Flow From Financing - mean of estimations
+analyst | anl4_cff_median | Cash Flow From Financing Activities - Median value among forecasts
+analyst | anl4_cff_number | Cash Flow From Financing - number of estimations
+analyst | anl4_cff_value | Cash Flow From Financing - announced financial value
+analyst | anl4_cfi_flag | Cash Flow From Investing - forecast type (revision/new/...)
+analyst | anl4_cfi_high | Cash Flow From Investing - The highest estimation
+analyst | anl4_cfi_low | Cash Flow From Investing - The lowest estimation
+analyst | anl4_cfi_mean | Cash Flow From Investing - mean of estimations
+analyst | anl4_cfi_median | Cash Flow From Investing - median of estimations
+analyst | anl4_cfo_number | Cash Flow From Operations - number of estimations
+analyst | anl4_cfo_value | Cash Flow From Operations - announced financial value
+analyst | anl4_cuo1actualqfv110_act | ual Announced financial data
+analyst | anl4_cuo1actualqfv110_ite | m Financial item
+analyst | anl4_cuo1conafv110_item | Financial item
+analyst | anl4_cuo1conqfv110_item | Financial item
+analyst | anl4_cuo1detailafv110_ite | m Financial item
+analyst | anl4_cuo1detailqfv110_ite | m Financial item
+analyst | anl4_cuo1guidaf_item | Financial item
+analyst | anl4_cuo1guidaf_maxguid | ance Max guidance value
+analyst | anl4_cuo1guidaf_minguida | nce Minimum guidance value
+analyst | anl4_detailltv4v104_preest | The previous estimation of financial item
+analyst | anl4_detailrecv4_est | Estimation value for recommendation detail
+analyst | anl4_detailrecv4v104_est | Estimation value
+analyst | anl4_dez1afv4_est | Estimation value
+analyst | anl4_dez1afv4_preest | The previous estimation of finanicial item
+analyst | anl4_dez1basicafv4_est | Estimation value
+analyst | anl4_dez1basicafv4_preest | The previous estimation of finanicial item
+analyst | anl4_dez1basicafv4v104_e | st Estimation value
+analyst | anl4_dez1basicafv4v104_p | reest The previous estimation of financial item
+analyst | anl4_dez1basicqfv4_est | Estimation value
+analyst | anl4_dez1basicqfv4_preest | The previous estimation of finanicial item
+analyst | anl4_eaz1laf_estvalue | Estimation value
+analyst | anl4_eaz1laf_person | Broker Id
+analyst | anl4_eaz1laf_prevval | The previous estimation of financial item
+analyst | anl4_eaz1lqfv110_bk | Broker name (int)
+analyst | anl4_eaz1lqfv110_estvalue | Estimation value
+analyst | anl4_eaz1lqfv110_person | Broker Id
+analyst | anl4_eaz1lqfv110_prevval | The previous estimation of financial item
+analyst | anl4_eaz2lafv110_bk | Broker name (int)
+analyst | anl4_eaz2lafv110_estvalue | Estimation value
+analyst | anl4_eaz2lafv110_person | Broker Id
+analyst | anl4_eaz2lafv110_prevval | The previous estimation of financial item
+analyst | anl4_eaz2lltv110_bk | Broker name (int)
+relationship | primary_sector_focused_c | ompany_count Number of companies primarily focused in a given sector.
+relationship | pv13_1l_scibr | grouping fields
+relationship | pv13_2l_scibr | grouping fields
+relationship | pv13_3l_scibr | grouping fields
+relationship | pv13_4l_scibr | grouping fields
+relationship | pv13_5l_scibr | grouping fields
+relationship | pv13_6l_scibr | grouping fields
+relationship | pv13_com_page_rank | the PageRank of competitors
+relationship | pv13_com_rk_au | the HITS authority score of competitors
+relationship | pv13_custretsig_retsig | Sign of customer return
+relationship | pv13_di_5l | grouping fields
+relationship | pv13_di_6l | grouping fields
+relationship | pv13_h2_min2_1k_sector | Grouping fields for top 1000
+relationship | pv13_h_min24_500_sector | Grouping fields for top 500
+relationship | pv13_h_min2_3000_sector | grouping fields
+relationship | pv13_h_min2_focused_pur | eplay_3000_sector grouping fields
+relationship | pv13_h_min2_focused_sect | or Grouping fields for top 200
+relationship | pv13_h_min30_3000_mapp | ed_sector grouping fields
+relationship | pv13_h_min51_f3_sector | grouping fields
+relationship | pv13_h_min52_1k_sector | Grouping fields for top 1000
+relationship | pv13_h_min52_3000_secto | r grouping fields
+relationship | pv13_h_min5_3000_sector | grouping fields
+relationship | pv13_h_min5_500_sector | Grouping fields
+relationship | pv13_hierarchy_min100_2 | 000_513_sector grouping fields
+relationship | pv13_hierarchy_min100_co | rr21_513_sector grouping fields
+relationship | pv13_hierarchy_min10_10 | 00_513_sector grouping fields
+relationship | pv13_hierarchy_min10_2k_513_sector | grouping fields
+relationship | pv13_hierarchy_min10_2k_sector | grouping fields
+relationship | pv13_hierarchy_min10_3k_all_sector | grouping fields
+relationship | pv13_hierarchy_min10_51 | 3_sector grouping fields
+relationship | pv13_hierarchy_min10_ind | ustry_3000_513_sector grouping fields
+relationship | pv13_hierarchy_min22_10 | 00_513_sector grouping fields
+relationship | pv13_hierarchy_min22_51 | 3_sector grouping fields
+relationship | pv13_hierarchy_min22_sec | tor grouping fields
+relationship | pv13_hierarchy_min25_51 | 3_sector grouping fields
+relationship | pv13_hierarchy_min25_sec | tor grouping fields
+relationship | pv13_hierarchy_min2_100 | 0_513_sector grouping fields
+relationship | pv13_hierarchy_min2_300 | 0_513_sector grouping fields
+relationship | pv13_hierarchy_min2_513_sector | grouping fields
+relationship | pv13_hierarchy_min2_focu | sed_only_513_sector grouping fields
+relationship | pv13_hierarchy_min40_30 | 00_513_sector grouping fields
+relationship | pv13_hierarchy_min50_f3_513_sector | grouping fields
+relationship | pv13_hierarchy_min51_f1_513_sector | grouping fields
+relationship | pv13_hierarchy_min51_f1_sector | grouping fields
+relationship | pv13_hierarchy_min51_f2_513_sector | grouping fields
+relationship | pv13_hierarchy_min51_f2_sector | grouping fields
+relationship | pv13_hierarchy_min51_f3_513_sector | grouping fields
+relationship | pv13_hierarchy_min51_f4_513_sector | grouping fields
+relationship | pv13_hierarchy_min51_f4_sector | grouping fields
+relationship | pv13_hierarchy_min52_1k_513_sector | grouping fields
+relationship | pv13_hierarchy_min5_sect | or grouping fields
+relationship | pv13_hierarchy_sector | grouping fields
+relationship | pv13_hierarchys32_513_se | ctor grouping fields
+relationship | pv13_hierarchys32_sector | grouping fields
+relationship | pv13_new_1l_scibr | grouping fields
+relationship | pv13_new_2l_scibr | grouping fields
+relationship | pv13_new_3l_scibr | grouping fields
+relationship | pv13_new_4l_scibr | grouping fields
+relationship | pv13_new_5l_scibr | grouping fields
+relationship | pv13_new_6l_scibr | grouping fields
+relationship | pv13_ompetitorgraphrank_hub_rank | the HITS hub score of competitors
+relationship | pv13_r2_liquid_min10_sect | or grouping fields
+relationship | pv13_r2_min5_1000_sector | grouping fields
+relationship | pv13_r2_min5_3000_sector | grouping fields
+relationship | pv13_rcsed_6l | grouping fields
+relationship | pv13_revere_city | City code
+relationship | pv13_revere_company_tot | al Total number of companies in the sector
+relationship | pv13_revere_comproduct_company | Company product
+relationship | pv13_revere_country | Country code
+relationship | pv13_revere_index_cap | Company market capitalization
+relationship | pv13_revere_index_value | Value of specified index for the date
+relationship | pv13_revere_key_sector_to | tal Number of key focus sectors for the company
+relationship | pv13_revere_level | Level of the sector within the hierarchy
+relationship | pv13_revere_parent | Code of parent sector
+relationship | pv13_rha2_min20_3000_51 | 3_sector grouping fields
+relationship | pv13_rha2_min20_513_sec | tor grouping fields
+relationship | pv13_rha2_min20_sector | grouping fields
+relationship | pv13_rha2_min2_1000_513_sector | grouping fields
+relationship | pv13_rha2_min2_3000_513_sector | grouping fields
+relationship | pv13_rha2_min2_513_sect | or grouping fields
+relationship | pv13_rha2_min2_sector | grouping fields
+relationship | pv13_rha2_min30_3000_51 | 3_sector grouping fields
+relationship | pv13_rha2_min40_3000_51 | 3_sector grouping fields
+relationship | pv13_rha2_min5_1000_513_sector | grouping fields
+fundamental | fn_liab_fair_val_l1_a | Annual Level 1 fair value of liabilities from balance sheet SEC filings
+fundamental | fn_liab_fair_val_l1_q | Quarterly Level 1 fair value of liabilities from balance sheet SEC filings
+fundamental | liabilities | Total liabilities reported on balance sheet
+fundamental | assets | Total assets reported on balance sheet
+fundamental | fnd6_fopo | Funds from Operations (operating cash flow generated)
+fundamental | debt_lt | Long-term debt reported on balance sheet
+fundamental | fn_oth_income_loss_fx_transaction_and_tax_translation_adj_a | After-tax foreign currency transaction gain/loss and tax translation adjustments (annual)
+fundamental | fn_oth_income_loss_fx_transaction_and_tax_translation_adj_q | After-tax foreign currency transaction gain/loss and tax translation adjustments (quarterly)
+fundamental | ebit | Earnings before interest and taxes (operating income)
+fundamental | capex | Capital expenditures (funds spent on fixed assets/growth)
+fundamental | fnd2_ebitdm | Domestic EBIT (operating income generated domestically)
+fundamental | fnd2_ebitfr | Foreign EBIT (operating income generated internationally)
+fundamental | fn_assets_fair_val_a | Fair value of total assets from SEC balance sheet filings (annual)
+fundamental | cash_st | Cash and short-term liquid investments on balance sheet
+fundamental | debt_st | Short-term debt and current portion of long-term debt
+analyst | 67anl4_af_cfps_value | Cash Flow Per Share - Actual Value
+analyst | anl4_af_div_value | Dividend - Actual value
+analyst | anl4_af_eps_value | Earnings Per Share - Actual Value
+analyst | anl4_afv4_actual | Announced financial data
+analyst | anl4_afv4_cfps_high | Cash Flow Per Share - The highest estimation for the annual forecast
+analyst | anl4_afv4_cfps_low | Cash Flow Per Share - The lowest estimation for the upcoming fiscal year
+analyst | anl4_afv4_cfps_mean | Cash Flow Per Share - average of estimations for the annual frequency
+analyst | 67anl4_afv4_eps_number | Earnings per share - number of estimations for annual frequency
+analyst | anl4_afv4_maxguidance | Max guidance value
+analyst | anl4_afv4_median_eps | Earnings per share - median of estimations
+analyst | anl4_afv4_minguidance | Min guidance value
+analyst | anl4_basicqfv4_actual | Announced financial data
+analyst | anl4_bvps_value | Book value per share - announced financial value
+analyst | anl4_cfi_value | Cash Flow From Investing - announced financial value
+analyst | anl4_detailltv4_est | Long term estimation value
+analyst | anl4_detailltv4_preest | The previous estimation of financial item
+analyst | anl4_dez1qfv4_est | Estimation value
+analyst | anl4_dez1qfv4_preest | The previous estimation of finanicial item
+analyst | anl4_dez1safv4_est | Estimation value
+analyst | anl4_dez1safv4_preest | The previous estimation of finanicial item
+fundamental | score | combining Value, Growth, Profitability, Momentum, and Quality; larger surface implies higher rank
+fundamental | term | growth potential
+fundamental | multi_factor_static_score_d | erivative Change in static multi-factor score compared to previous period.
+fundamental | relative_valuation_rank_de | rivative Assesses whether the stock is under or overpriced based on standard valuation multiples ind
+options | call_breakeven_360 | Weighted mean break-even price of call options expiring in 360 days, based on recent bid/ask prices
+options | call_breakeven_60 | Open interest-weighted mean breakeven price for call options expiring in 60 days, showing average pr
+options | call_breakeven_720 | Weighted mean breakeven price of call options expiring in 720 days indicating the price at which cal
+options | call_breakeven_90 | Price at which a stock's call options with expiration 90 days in the future break even based on its 
+options | forward_price_10 | Synthetic forward price for the underlying at 10 days derived from put- call parity using ATM option
+options | forward_price_120 | Synthetic forward price at 120 days derived from at-the-money call and put options reflecting the ma
+options | forward_price_150 | Synthetic forward price at 150 days derived from at-the-money call and put options reflecting the ma
+options | forward_price_180 | Synthetic forward price at 180 days derived from put-call parity using at-the- money calls and puts 
+options | forward_price_20 | Synthetic forward price for the underlying at 20 days derived from put- call parity using ATM option
+options | forward_price_270 | Synthetic forward price at 270 days expiry derived from ATM calls and puts reflecting the market-con
+options | forward_price_30 | Synthetic forward price at 30 days expiry, derived from at-the-money call and put options, reflectin
+options | option_breakeven_180 | Weighted mean break-even price for combined call and put options expiring in 180 days, based on rece
+options | option_breakeven_20 | Price at which a stock's options with expiration 20 days in the future break even based on its recen
+options | option_breakeven_270 | The weighted mean price at which buyers of call and put options combined break even at 270 days to e
+options | option_breakeven_60 | The weighted mean price at which buyers of call and put options combined break even at 60 days to ex
+options | option_breakeven_720 | Price at which a stock's options with expiration 720 days in the future break even based on its rece
+options | option_breakeven_90 | Open-interest-weighted mean breakeven price at which buyers of calls and puts combined break even fo
+options | pcr_oi_10 | Ratio of put open interest to call open interest for options expiring in 10 days, indicating short-t
+options | pcr_oi_1080 | Ratio of put option open interest to call option open interest for stock options expiring in 1080 da
+options | pcr_oi_120 | Ratio of total put option open interest to total call option open interest for options expiring in 1
+options | pcr_oi_150 | Ratio of total put option open interest to total call option open interest for options expiring in 1
+options | pcr_vol_10 | Ratio of total put option volume to call option volume for options expiring in 10 days, reflecting v
+options | pcr_vol_1080 | Ratio of put volume to call volume on a stock's options with expiration 1080 days in the future.
+options | pcr_vol_120 | Ratio of put options volume to call options volume for contracts expiring in 120 days on a stock's o
+options | pcr_vol_150 | Ratio of total put options volume to call options volume for options expiring in 150 days, reflectin
+options | pcr_vol_180 | Ratio of total put option volume to call option volume for options expiring in 180 days, capturing s
+options | pcr_vol_20 | Ratio of put option volume to call option volume for options expiring in 20 days, signaling short-te
+options | pcr_vol_30 | Ratio of put volume to call volume on a stock's options with expiration 30 days in the future
+options | pcr_vol_360 | Ratio of put volume to call volume on a stock's options with expiration 360 days in the future
+options | pcr_vol_60 | Ratio of total put options volume to call options volume for contracts expiring 60 days in the futur
+options | pcr_vol_720 | Ratio of put options volume to call options volume for contracts expiring in 720 days on a stock's o
+options | put_breakeven_270 | Weighted mean breakeven price of put options expiring in 270 days indicating the break even price fo
+options | put_breakeven_30 | The weighted mean break-even price of put options expiring in 30 days based on recent bid/ask prices
+options | put_breakeven_360 | Open-interest-weighted mean breakeven price at which buyers of put options break even for options ex
+options | put_breakeven_60 | Price at which a stock's put options with expiration 60 days in the future break even based on its r
+options | put_breakeven_720 | Weighted mean breakeven price of put options expiring in 720 days indicating the put buyers break-ev
+options | put_breakeven_90 | Open-interest-weighted mean breakeven price at which buyers of put options break even for options ex
+price_volume | TOPSP500 | 1/2 Page size 20 out of 24 1 2 open Daily open price
+alternative | primary_sector_focused_company_count | Number of companies primarily focused in a given sector.
+alternative | pv13_reveremap | Mapping data
+alternative | single_sector_pureplay_company_count | Number of companies exclusively operating in a single sector.
+risk | correlation_last_360_days_ | spy The Pearson correlation coefficient of daily log returns between the security and SPY, calculate
+risk | over | the last 90 calendar days
+options | implied_volatility_call_120 | Implied volatility of the at-the-money call for the stock with an expiration 120 calendar days from 
+options | implied_volatility_call_150 | Implied volatility of the at-the-money call for the stock with an expiration 150 calendar days from 
+options | implied_volatility_call_180 | Implied volatility of the at-the-money call for the stock with an expiration 180 calendar days from 
+options | implied_volatility_call_20 | Implied volatility of the at-the-money call for the stock with an expiration 20 calendar days from t
+options | implied_volatility_call_270 | Implied volatility of the at-the-money call for the stock with an expiration 270 calendar days from 
+options | implied_volatility_call_30 | Implied volatility of the at-the-money call for the stock with an expiration 30 calendar days from t
+options | implied_volatility_call_360 | Implied volatility of the at-the-money call for the stock with an expiration 360 calendar days from 
+options | implied_volatility_call_60 | Implied volatility of the at-the-money call for the stock with an expiration 60 calendar days from t
+options | implied_volatility_call_90 | Implied volatility of the at-the-money call for the stock with an expiration 90 calendar days from t
+options | implied_volatility_mean_72 | 0 The average of IvCall720 and IvPut720
+options | implied_volatility_mean_90 | The average of IvCall90 and IvPut90
+options | implied_volatility_put_20 | At-the-money implied volatility of put options with 20 calendar days to expiration, annualized decim
+options | implied_volatility_put_270 | Implied volatility of the at-the-money put for the stock with an expiration 270 calendar days from t
+options | implied_volatility_put_30 | Implied volatility of the at-the-money put for the stock with an expiration 30 calendar days from th
+options | implied_volatility_put_360 | Implied volatility of the at-the-money put for the stock with an expiration 360 calendar days from t
+options | implied_volatility_put_60 | Implied volatility of the at-the-money put for the stock with an expiration 60 calendar days from th
+options | implied_volatility_put_720 | Implied volatility of the at-the-money put for the stock with an expiration 720 calendar days from t
+options | implied_volatility_put_90 | Implied volatility of the at-the-money put for the stock with an expiration 90 calendar days from th
+options | parkinson_volatility_10 | Historical Parkinson volatility for approximately 10 calendar days
+options | parkinson_volatility_150 | Historical Parkinson volatility for approximately 150 calendar days
+options | parkinson_volatility_180 | Historical Parkinson volatility for approximately 180 calendar days
+options | parkinson_volatility_20 | Historical volatility using the Parkinson high–low estimator over approximately the past 20 calendar
+options | parkinson_volatility_30 | Historical volatility using the Parkinson high–low estimator over approximately the past 30 calendar
+options | parkinson_volatility_60 | Historical volatility using the Parkinson high–low estimator over approximately the past 60 calendar
+options | parkinson_volatility_90 | Historical volatility using the Parkinson high–low estimator over approximately the past 90 calendar

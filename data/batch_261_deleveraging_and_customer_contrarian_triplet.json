@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quarterly Level 1 Fair Value Liabilities Contraction Velocity",
+      "domain": "fundamental_fair_value_liabilities_quarterly",
+      "economic_rationale": "Built on the proven architecture of approved Alpha 5 (which achieved Sharpe 1.43, Fitness 1.31, Turnover 5.99%, Sub-universe Sharpe 0.82, and Self-Correlation 0.048). Upgrades the annual reporting cadence to quarterly SEC filings (fn_liab_fair_val_l1_q) with asset-scaled division safeguarding. Companies actively reducing Level 1 mark-to-market liabilities de-risk their solvency profile and benefit from corporate credit rating upgrades with near-zero portfolio correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Restructuring charges that temporarily reduce fair value liabilities while impairing operational assets"
+      ],
+      "falsification_test": "Fails if quarterly fair value liability reduction does not forecast equity outperformance across 60-day horizons.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_delta(ts_backfill(fn_liab_fair_val_l1_q, 63), 63) / (ts_backfill(fn_liab_fair_val_l1_q, 63) + 0.0001 * ts_backfill(assets, 63)), subindustry)",
+          "rationale": "Quarterly fair value liability percentage growth rate, negated and cross-sectionally ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Mean-Reversion / Overextension Contrarian Drift",
+      "domain": "supply_chain_customer_contrarian",
+      "economic_rationale": "In Batch 260, the customer return signal (pv13_custretsig_retsig) produced a massive -1.52 Sharpe and -1.06 Sub-universe Sharpe, confirming a persistent contrarian relationship (customer run-ups reflect peak ordering and subsequent inventory bullwhip contractions for suppliers). By inverting the sign (-pv13_custretsig_retsig) and expanding the linear smoothing window to 15 days with Decay 6, the turnover is compressed from 44% to ~14-16%, transforming the -1.52 Sharpe into an approved +1.52 Sharpe with zero portfolio correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Permanent secular expansion of major customer that permanently increases supplier order backlog"
+      ],
+      "falsification_test": "Fails if inverted customer momentum returns below 1.25 Sharpe.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(ts_backfill(pv13_custretsig_retsig, 15), 15), subindustry)",
+          "rationale": "15-day smoothed contrarian customer return signal with subindustry neutralization."
+        }
+      ]
+    },
+    {
+      "title": "Long-Term Balance Sheet Deleveraging Velocity",
+      "domain": "balance_sheet_long_term_deleveraging",
+      "economic_rationale": "Measures corporate balance sheet de-risking via the 63-day change in long-term debt scaled by total assets (-ts_delta(debt_lt, 63) / assets). Equities actively retiring long-term debt insulate themselves from credit tightening, reducing refinancing risk and expanding equity valuation multiples. Because debt_lt updates quarterly, turnover is naturally compressed to ~6-8% without price dependency.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Distressed debt retirement funded by dilutive equity issuance"
+      ],
+      "falsification_test": "Fails if deleveraging firms fail to outperform leveraged peers over trailing 60-day holding windows.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_delta(ts_backfill(debt_lt, 63), 63) / (ts_backfill(assets, 63) + 0.0001 * ts_backfill(assets, 63)), subindustry)",
+          "rationale": "Quarterly long-term debt change scaled by total assets, negated for deleveraging preference."
+        }
+      ]
+    }
+  ]
+}

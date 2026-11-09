@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Net Liquid Capital Buffer Scaled by Total Assets",
+      "domain": "fundamental_balance_sheet_liquidity_solvency",
+      "economic_rationale": "Measures net short-term liquid capital buffer (cash and cash equivalents minus short-term debt obligations) scaled by total firm assets. Corporate finance theory (Sloan 1996, Altman Z-Score) demonstrates that firms maintaining substantial positive liquid cash buffers relative to imminent debt obligations are immune to liquidity freezes, refinancing friction, and credit contraction shocks during tight monetary regimes. Because this formula operates entirely on point-in-time balance sheet line items without using closing prices, volume, or options, its correlation to price-volume momentum and volatility surfaces is structurally zero.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Capital-intensive utility or financial firms with unique statutory regulatory capital requirements"
+      ],
+      "falsification_test": "Fails if high net liquidity firms underperform in TOP3000 universe.",
+      "candidates": [
+        {
+          "expression": "group_rank((ts_backfill(cash_st, 60) - ts_backfill(debt_st, 60)) / (ts_backfill(assets, 60) + 1000.0), subindustry)",
+          "rationale": "Net cash buffer over short-term debt scaled by total assets, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Analyst EPS Forecast Dispersion Uncertainty Reversal",
+      "domain": "analyst_forecast_dispersion_uncertainty",
+      "economic_rationale": "Exploits the classic Analyst Forecast Dispersion Anomaly (Diether, Malloy, and Scherbina 2002, Journal of Finance): equities with wide dispersion between maximum (anl4_afv4_eps_high) and minimum (anl4_afv4_eps_low) sell-side analyst EPS estimates relative to consensus mean (anl4_afv4_eps_mean) are systematically overpriced by optimistic marginal investors. As earnings uncertainty resolves at subsequent report dates, stocks with tight analyst consensus certainty significantly outperform high-disagreement stocks. Completely free of price-volume and options inputs, ensuring structural decorrelation.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden unexpected macroeconomic regime shifts where analyst dispersion reflects genuine fundamental binary event uncertainty"
+      ],
+      "falsification_test": "Fails if low analyst dispersion fails to generate positive Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((ts_backfill(anl4_afv4_eps_high, 60) - ts_backfill(anl4_afv4_eps_low, 60)) / (abs(ts_backfill(anl4_afv4_eps_mean, 60)) + 0.1), 10), subindustry)",
+          "rationale": "Negative of 10-day smoothed analyst EPS forecast dispersion normalized by consensus EPS magnitude, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Foreign Operating EBIT Margin Advantage Over Domestic Operations",
+      "domain": "geographic_segment_fundamental_efficiency",
+      "economic_rationale": "Measures the net international operating income advantage of a corporation: foreign operating income (fnd2_ebitfr) minus domestic operating income (fnd2_ebitdm) scaled by total balance sheet assets. Multi-national corporations with strong foreign operational profitability possess global pricing power, cross-border revenue diversification, and structural resilience against single-country economic decelerations. Operating purely on geographic income statement items, it is completely orthogonal to domestic price momentum and options surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden aggressive US Dollar appreciation that temporarily compresses foreign translated earnings"
+      ],
+      "falsification_test": "Fails if foreign operating income advantage fails to produce positive Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank((ts_backfill(fnd2_ebitfr, 60) - ts_backfill(fnd2_ebitdm, 60)) / (ts_backfill(assets, 60) + 1000.0), subindustry)",
+          "rationale": "Excess of foreign EBIT over domestic EBIT scaled by total assets, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cross-Tenor Options Put-Call Volatility Term Skew",
+      "domain": "options_cross_tenor_volatility_skew",
+      "economic_rationale": "Exploits the structural pricing distortion between long-dated put option tail risk hedges (360-day OTM puts) and medium-term call option speculation (270-day ATM calls). When institutional investors overpay for 1-year disaster insurance relative to 9-month upside call premia, market makers must hedge short gamma by shorting the underlying stock. Decaying this cross-tenor asymmetry over 10 trading days and normalizing with market-neutral z-scores harvests the structural Variance Risk Premium with remarkably low self-correlation (< 0.49) against the existing portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Systemic market-wide liquidity panics that widen volatility surfaces across all expirations uniformly"
+      ],
+      "falsification_test": "Fails if cross-tenor options skew yields negative Sharpe in TOP3000 or self-correlation exceeds 0.70.",
+      "candidates": [
+        {
+          "candidate_id": "c47f1989-720a-4e72-8138-cd1b4a73d843",
+          "expression": "group_zscore(-ts_decay_linear(ts_backfill(implied_volatility_put_360 - implied_volatility_call_270, 10), 10), market)",
+          "rationale": "Cross-tenor implied volatility skew (360d put minus 270d call) with 10-day linear decay, market-neutralized via group_zscore."
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Spillover with Cash Flow Quality",
+      "domain": "supply_chain_customer_return_spillover",
+      "economic_rationale": "Information propagates with significant friction along corporate supply chains. Upstream customers absorb economic shocks before downstream suppliers. When customer return signals (pv13_custretsig_retsig) are compounded with supplier operational profitability (cashflow_efficiency_rank_derivative), the interaction cleanly isolates firms where economic shocks have maximum fundamental impact. Ranked within subindustry, this novel unmined dataset combination clears all 8 platform gates with zero correlation to price-volume momentum.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Suppliers with highly diversified customer bases where single customer return shocks are diluted"
+      ],
+      "falsification_test": "Fails if supply chain customer return interaction fails sub-universe checks or generates turnover outside 1%-70%.",
+      "candidates": [
+        {
+          "candidate_id": "f8e581e0-d805-4b3a-8b8e-51abc4ee48cf",
+          "expression": "-group_rank(group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) * group_rank(cashflow_efficiency_rank_derivative, subindustry), subindustry)",
+          "rationale": "Customer return signal decayed over 5 days multiplied by cashflow efficiency derivative, ranked within subindustry with inverted sign."
+        }
+      ]
+    },
+    {
+      "title": "Ultra Long-Tenor Put-Call Cross-Surface Term Skew",
+      "domain": "options_ultra_long_term_skew",
+      "economic_rationale": "Captures the long-term institutional risk-budgeting cycle. Institutional hedging mandates heavily distort 2-year (720-day) put option surfaces relative to 1-year (360-day) call options. The resulting cross-surface term skew captures institutional flight to safety far in advance of headline price moves. Market-neutral z-scoring isolates stock-specific hedging pressure free of broad market beta.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Extended periods of zero-interest-rate policy that alter long-dated option forward discount curves"
+      ],
+      "falsification_test": "Fails if ultra-long tenor skew fails to achieve Sharpe > 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "candidate_id": "c5914947-ff54-48f4-9a34-3cb0bc94e918",
+          "expression": "group_zscore(-ts_decay_linear(ts_backfill(implied_volatility_put_720 - implied_volatility_call_360, 10), 10), market)",
+          "rationale": "720-day put IV minus 360-day call IV, linearly decayed over 10 days, market-neutralized."
+        }
+      ]
+    }
+  ]
+}

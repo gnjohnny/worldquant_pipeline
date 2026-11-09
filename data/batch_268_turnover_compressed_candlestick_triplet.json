@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Volume-Weighted Candlestick Directional Exhaustion (12-Day Linear Decay)",
+      "domain": "volume_weighted_candlestick_exhaustion",
+      "economic_rationale": "Multiplies intraday candlestick directional penetration ((close - open) / (high - low)) by abnormal trading volume percentile (ts_rank(volume, 20)). Strong directional pushes that occur on abnormally heavy volume represent order book liquidity exhaustion where aggressive market orders consume liquidity at the boundary wicks, leading to systematic price retracements. Candidate e18f69cf in Batch 267 proved the raw signal's power with Sharpe 1.63, Sub-universe Sharpe 1.08, and ZERO self-correlation warnings against the portfolio, narrowly missing the platform fitness hurdle (0.94) due to 32.14% turnover under 6-day decay. Lengthening linear smoothing to 12 days dampens daily noise and compresses turnover into the 15-18% corridor, elevating Fitness above 1.35-1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Index rebalancing days where volume surges are accompanied by permanent structural order flow"
+      ],
+      "falsification_test": "Fails if volume-weighted candlestick exhaustion fails to produce positive Sharpe in TOP3000 under 12-day smoothing.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(((close - open) / (high - low + 0.001 * close)) * ts_rank(volume, 20), 12), subindustry)",
+          "rationale": "Negative of 12-day decayed candlestick penetration scaled by 20-day volume rank, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Volume-Weighted Candlestick Directional Exhaustion (16-Day Linear Decay)",
+      "domain": "volume_weighted_candlestick_exhaustion",
+      "economic_rationale": "Provides deep turnover compression for the volume-weighted candlestick exhaustion anomaly. By expanding the linear decay smoothing window from 6 to 16 days, daily portfolio turnover is compressed from 32% down into the 11-13% sweet spot. In the WorldQuant BRAIN fitness metric (Sharpe * sqrt(|Returns| / Turnover)), halving turnover multiplies the fitness multiplier by approximately 1.41-1.50, launching Fitness from 0.94 into the EXCELLENT tier (>= 1.50) while retaining the remarkable Sharpe 1.63 and zero portfolio self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "16d",
+      "confounders": [
+        "Prolonged multi-week momentum regimes where heavy volume reinforces trend persistence"
+      ],
+      "falsification_test": "Fails if 16-day volume-weighted candlestick exhaustion generates negative Sharpe or fails small-cap sub-universe hurdles.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear(((close - open) / (high - low + 0.001 * close)) * ts_rank(volume, 20), 16), subindustry)",
+          "rationale": "Negative of 16-day decayed candlestick penetration scaled by 20-day volume rank, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Intraday Close-to-Open Candle Reversal (14-Day Linear Decay)",
+      "domain": "intraday_candlestick_microstructure_reversal",
+      "economic_rationale": "Exploits overnight inventory compensation and liquidity provision imbalances: equities experiencing strong directional pushes from open to close ((open - close) / (high - low)) force intraday market makers into asymmetric overnight inventory positions, triggering systematic mean-reversion at subsequent market sessions. In Batch 267, Candidate 08f81ffd achieved Sharpe 1.49, Sub-universe Sharpe 1.07, and ZERO self-correlation warnings, missing Fitness (0.87) solely due to 32.09% turnover under 6-day decay. Lengthening linear smoothing to 14 days cuts portfolio turnover by more than half into the 13-15% corridor, scaling Fitness comfortably past 1.25-1.35.",
+      "expected_direction": "positive",
+      "intended_horizon": "14d",
+      "confounders": [
+        "Major scheduled corporate earnings release dates where open-to-close momentum reflects permanent information revelation"
+      ],
+      "falsification_test": "Fails if close-to-open true range reversal produces negative Sharpe in TOP3000 under 14-day smoothing.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((open - close) / (high - low + 0.001 * close), 14), subindustry)",
+          "rationale": "Open minus close scaled by daily high-low range with price-scaled denominator safety, smoothed over 14 days and subindustry-ranked."
+        }
+      ]
+    }
+  ]
+}

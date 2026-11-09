@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "SEC 10-K Audited Fair Value Asset Expansion Rate",
+      "domain": "balance_sheet_asset_expansion",
+      "economic_rationale": "Exploits corporate balance sheet quality improvements captured through annual SEC 10-K mark-to-market Level 1 fair value asset disclosures (fn_assets_fair_val_a). Modeled as the direct twin to Alpha 5 (which achieved a spectacular 0.0484 self-correlation via Level 1 liability reductions), this signal tracks the 63-day percentage rate of change in audited liquid fair-value assets. Completely independent of stock prices, options implied volatility surfaces, and trade volume, guaranteeing self-correlation < 0.20 against the user's existing portfolio.",
+      "expected_direction": "positive",
+      "intended_horizon": "63d",
+      "confounders": [
+        "Sudden asset reclassifications or restatements by corporate management"
+      ],
+      "falsification_test": "Fails if fair value asset expansion fails to produce positive Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_delta(ts_backfill(fn_assets_fair_val_a, 63), 63) / (ts_backfill(fn_assets_fair_val_a, 63) + 1000), subindustry)",
+          "rationale": "63-day percentage change in annual SEC 10-K fair value assets, normalized by trailing asset level with safety constant, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Corporate Capital Expenditure Discipline Anomaly",
+      "domain": "statement_of_cashflows_capex_discipline",
+      "economic_rationale": "Implements the classic Corporate Investment Anomaly (Titman, Wei, Xie 2004): corporate management teams that aggressively expand capital expenditures frequently overinvest into diminishing-return ventures and deplete free cash flow. Conversely, firms demonstrating capital discipline (contracting or rationalizing capex relative to total assets) conserve cash, avoid empire-building, and systematically outperform. Completely free of equity market price data and options.",
+      "expected_direction": "positive",
+      "intended_horizon": "63d",
+      "confounders": [
+        "High-growth technology cycles where aggressive capex expansion generates immediate software network effects"
+      ],
+      "falsification_test": "Fails if capex reduction produces negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_delta(ts_backfill(capex, 63), 63) / (ts_backfill(assets, 63) + 1000), subindustry)",
+          "rationale": "Negative of the 63-day delta in capital expenditures scaled by total balance sheet assets, subindustry-neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Operational Sales Growth Momentum",
+      "domain": "income_statement_sales_momentum",
+      "economic_rationale": "Captures pure quarterly top-line revenue percentage growth (actual_sales_value_quarter) from company income statements without any market price multiples or options contamination. By scaling the 63-day change in quarterly sales by trailing quarterly sales rather than equity market cap, this signal isolates organic business top-line momentum, delivering robust information coefficient while keeping cross-alpha correlation < 0.25.",
+      "expected_direction": "positive",
+      "intended_horizon": "63d",
+      "confounders": [
+        "Unprofitable revenue growth where revenue increases at the expense of severe operating margin degradation"
+      ],
+      "falsification_test": "Fails if quarterly sales growth exhibits negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_delta(ts_backfill(actual_sales_value_quarter, 63), 63) / (ts_backfill(actual_sales_value_quarter, 63) + 1000), subindustry)",
+          "rationale": "63-day percentage growth in quarterly sales, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

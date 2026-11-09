@@ -1,0 +1,2220 @@
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+actual_cashflow_per_share
+_value_quarterly
+Cash Flow Per Share - actual value for the
+quarter
+Matrix 47% 100% 26 1
+actual_dividend_value_qua
+rterly
+Dividend - Actual value for the quarter Matrix 61% 100% 11 1
+actual_eps_value_quarterly Earnings Per Share (Income
+Statement/Per Share) (Actual)
+Matrix 100% 100% 90 1
+actual_sales_value_annual Sales - Actual Value Matrix 99% 100% 4 1
+actual_sales_value_quarter
+ly
+Sales - Value in financial services income
+statement (in millions)
+Matrix 100% 100% 19 1
+actuals_reporting_currency Home currency of instrument Vector 99% 100% 15 1
+actuals_value_currency_co
+de
+Pricing Currency where the security
+trades
+Matrix 100% 100% 12 1
+adj_net_income_avg Average adjusted net profit, excluding
+non-recurring items, for the period.
+Matrix 86% 100% 28 0
+adj_net_income_median Median adjusted net profit, excluding
+non-recurring items, for the period.
+Matrix 86% 100% 12 0
+adj_net_income_stddev Standard deviation of adjusted net profit
+estimates, excluding non-recurring items.
+Matrix 56% 100% 2 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:54 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOP… 1/2
+Page size 20 out of 1,324
+1 2 ... 67
+anl4_adjusted_netincome_
+ft
+Adjusted net income - forecast type
+(revision/new/...)
+Matrix 87% — 1369 0
+anl4_ads1detailafv110_bk Broker name (int) Vector 69% — 0 0
+anl4_ads1detailafv110_est
+value
+Estimation value Vector 69% — 0 0
+anl4_ads1detailafv110_per
+son
+Broker Id Vector 69% — 9 0
+anl4_ads1detailafv110_pre
+vval
+The Previous Estimation of Financial 
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_10.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_eaz1laf_estvalue Estimation value Vector 48% — 0 0
+anl4_eaz1laf_person Broker Id Vector 49% — 2 0
+anl4_eaz1laf_prevval The previous estimation of financial item Vector 48% — 0 0
+anl4_eaz1lqfv110_bk Broker name (int) Vector 43% — 0 0
+anl4_eaz1lqfv110_estvalue Estimation value Vector 42% — 3 0
+anl4_eaz1lqfv110_person Broker Id Vector 43% — 0 0
+anl4_eaz1lqfv110_prevval The previous estimation of financial item Vector 41% — 0 0
+anl4_eaz2lafv110_bk Broker name (int) Vector 54% — 1 0
+anl4_eaz2lafv110_estvalue Estimation value Vector 53% — 0 0
+anl4_eaz2lafv110_person Broker Id Vector 54% — 2 0
+anl4_eaz2lafv110_prevval The previous estimation of financial item Vector 52% — 0 0
+anl4_eaz2lltv110_bk Broker name (int) Vector 47% — 0 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:59 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=180&region=USA&universe=T… 1/2
+Page size 20 out of 1,324
+1 ... 7 8 9 10 11 ... 67
+anl4_eaz2lltv110_estvalue Estimation value Vector 46% — 0 0
+anl4_eaz2lltv110_person Broker Id Vector 47% — 6 0
+anl4_eaz2lltv110_prevval The previous estimation of financial item Vector 45% — 3 0
+anl4_eaz2lqfv110_bk Broker name (int) Vector 51% — 1 0
+anl4_eaz2lqfv110_estvalue Estimation value Vector 50% — 0 0
+anl4_eaz2lqfv110_person Broker Id Vector 51% — 1 0
+anl4_eaz2lqfv110_prevval The previous estimation of financial item Vector 49% — 0 0
+anl4_eaz2lrec_bk Broker name (int) Vector 55% — 0 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:59 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://plat
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_2.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_adxqfv110_high The highest estimation Vector 70% — 1 0
+anl4_adxqfv110_low The lowest estimation Vector 70% — 1 0
+anl4_adxqfv110_mean Mean of estimations Vector 70% — 2 0
+anl4_adxqfv110_median Median of estimations Vector 70% — 1 0
+anl4_adxqfv110_numest The number of forecasts counted in
+aggregation
+Vector 70% — 1 0
+anl4_adxqfv110_pu The number of upper estimations Vector 70% — 2 0
+anl4_ady_down Number of lower estimations Vector 72% — 1 0
+anl4_ady_high The highest estimation Vector 72% — 0 0
+anl4_ady_low The lowest estimation Vector 72% — 0 0
+anl4_ady_mean Mean of estimations Vector 72% — 0 0
+anl4_ady_median Median of estimations Vector 72% — 0 0
+anl4_ady_numest The number of forecasts counted in
+aggregation
+Vector 72% — 178 0
+anl4_ady_pu The number of upper estimations Vector 72% — 4 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:55 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=20&region=USA&universe=TO… 1/2
+Page size 20 out of 1,324
+1 2 3 ... 67
+anl4_af_cfps_value Cash Flow Per Share - Actual Value Matrix 62% 100% 4 1
+anl4_af_div_value Dividend - Actual value Matrix 76% 100% 0 1
+anl4_af_eps_value Earnings Per Share - Actual Value Matrix 100% 100% 18 1
+anl4_afv4_actual Announced financial data Vector 92% 100% 0 1
+anl4_afv4_cfps_high Cash Flow Per Share - The highest
+estimation for the annual forecast
+Matrix 68% 100% 2 1
+anl4_afv4_cfps_low Cash Flow Per Share - The lowest
+estimation for the upcoming fiscal year
+Matrix 68% 100% 1 1
+anl4_afv4_cfps_mean Cash Flow Per Share - average of
+estimations for the annual frequen
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_3.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_afv4_cfps_median Cash Flow Per Share - Median value
+among forecasts for the annual
+frequency
+Matrix 68% 100% 3 1
+anl4_afv4_cfps_number Cash Flow Per Share - number of
+estimations for annual frequency
+Matrix 68% 100% 13 1
+anl4_afv4_div_high Dividend per share - The highest
+estimation for the annual forecast.
+Matrix 82% 100% 2 1
+anl4_afv4_div_low Dividend - The lowest estimation for the
+annual forecast
+Matrix 82% 100% 0 1
+anl4_afv4_div_mean Dividend per share - average of
+estimations for annual frequency
+Matrix 82% 100% 2 1
+anl4_afv4_div_median Dividend per share - Median value
+among forecasts
+Matrix 82% 100% 12 1
+anl4_afv4_div_number Number of estimations for Dividend per
+share - annually
+Matrix 82% 100% 0 1
+anl4_afv4_div_std Dividend per share - standard deviation
+of estimations
+Matrix 39% 100% 0 1
+anl4_afv4_dts_spe Earnings per share - standard deviation
+of estimations
+Matrix 69% 100% 28 1
+anl4_afv4_eps_high Earnings per share - The highest
+estimation
+Matrix 100% 100% 13 1
+anl4_afv4_eps_low Earnings per share - The lowest
+estimation for annual frequency
+Matrix 100% 100% 10 1
+anl4_afv4_eps_mean Earnings per share - mean of estimations
+for annual frequency
+Matrix 100% 100% 39 1
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:56 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=40&region=USA&universe=TO… 1/2
+Page size 20 out of 1,324
+1 2 3 4 ... 67
+anl4_afv4_eps_number Earnings per share - number of
+estimations for annual frequency
+Matrix 100% 100% 7 1
+anl4_afv4_maxguidance Max guidance value Vector 70% 100% 178 0
+anl4_afv4_m
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_4.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_bac1conqfv110_item Financial item Vector 73% — 0 0
+anl4_bac1conrecv110_item Financial item Vector 62% — 5 0
+anl4_bac1detailafv110_ite
+m
+Financial item Vector 72% — 1 0
+anl4_bac1detaillt_item Financial item Vector 68% — 4 0
+anl4_bac1detailqfv110_ite
+m
+Financial item Vector 69% — 0 0
+anl4_bac1detailrec_item Financial item Vector 71% — 0 0
+anl4_basicafv4_actual Announced financial data for the annual
+period.
+Vector 92% 100% 9 1
+anl4_basicconafv110_dow
+n
+Number of lower estimations Vector 73% — 9 0
+anl4_basicconafv110_high The highest estimation Vector 73% — 0 0
+anl4_basicconafv110_low The lowest estimation Vector 73% — 0 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:57 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=60&region=USA&universe=TO… 1/2
+Page size 20 out of 1,324
+1 2 3 4 5 ... 67
+anl4_basicconafv110_mea
+n
+Mean of estimations Vector 73% — 0 0
+anl4_basicconafv110_medi
+an
+Median of estimations Vector 73% — 0 0
+anl4_basicconafv110_num
+est
+The number of forecasts counted in
+aggregation
+Vector 73% — 0 0
+anl4_basicconafv110_pu The number of upper estimations Vector 73% — 1 0
+anl4_basicconltv110_down Number of lower estimations Vector 70% — 1 0
+anl4_basicconltv110_high The highest estimation Vector 70% — 4 0
+anl4_basicconltv110_low The lowest estimation Vector 70% — 0 0
+anl4_basicconltv110_mean Mean of estimations Vector 70% — 1 0
+anl4_basicconltv110_medi
+an
+Median of estimations Vector 70% — 0 0
+anl4_basicconltv110_nume
+st
+The number of forecasts counted in
+aggregation
+Vector 70% — 0 0
+Prev Next
+Simulate Alphas Learn D
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_5.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_basicconltv110_pu The number of upper estimations Vector 70% — 0 0
+anl4_basicconqfv110_dow
+n
+Number of lower estimations Vector 73% — 1 0
+anl4_basicconqfv110_high The highest estimation Vector 73% — 0 0
+anl4_basicconqfv110_low The lowest estimation Vector 73% — 1 0
+anl4_basicconqfv110_mea
+n
+Mean of estimations Vector 73% — 0 0
+anl4_basicconqfv110_medi
+an
+Median of estimations Vector 73% — 0 0
+anl4_basicconqfv110_num
+est
+The number of forecasts counted in
+aggregation
+Vector 73% — 1 0
+anl4_basicconqfv110_pu The number of upper estimations Vector 73% — 2 0
+anl4_basicdetaillt_bk Broker name (int) Vector 68% — 1 0
+anl4_basicdetaillt_estvalue Estimation value Vector 68% — 0 0
+anl4_basicdetaillt_person Broker Id Vector 68% — 1 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:57 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=80&region=USA&universe=TO… 1/2
+Page size 20 out of 1,324
+1 2 3 4 5 6 ... 67
+anl4_basicdetaillt_prevval The Previous Estimation of Financial Item Vector 68% — 2 0
+anl4_basicdetailqfv110_bk Broker name (int) Vector 69% — 1 0
+anl4_basicdetailqfv110_est
+value
+Estimation value Vector 69% — 0 0
+anl4_basicdetailqfv110_per
+son
+Broker Id Vector 69% — 0 0
+anl4_basicdetailqfv110_pre
+vval
+The previous estimation of financial item Vector 68% — 0 0
+anl4_basicdetailrec_bk Broker name (int) Vector 71% — 0 0
+anl4_basicdetailrec_person Broker Id Vector 71% — 1 0
+anl4_basicdetailrec_ratingv
+alue
+Score on the given instrument Vector 71% — 0 0
+anl4_basicqfv4_actual Announced financial data Vector 100% 100% 1 1
+Prev Next
+Simulat
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_6.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_basicqfv4_maxguidan
+ce
+Max guidance value Vector 48% 100% 0 1
+anl4_basicqfv4_minguidan
+ce
+Min guidance value Vector 48% 100% 1 0
+anl4_baz1v110_bk Broker name (int) Vector 72% — 3 0
+anl4_baz1v110_estvalue Estimation value Vector 72% — 0 0
+anl4_baz1v110_person Broker Id Vector 72% — 6 0
+anl4_baz1v110_prevval The previous estimation of financial item Vector 71% — 0 0
+anl4_buy The number of recommendations to long
+the instrument
+Vector 62% — 0 0
+anl4_bvps_flag Book value per share - forecast type
+(revision/new/...)
+Matrix 82% — 453 0
+anl4_bvps_high Book value - the highest estimation, per
+share
+Matrix 65% — 3 0
+anl4_bvps_low Book value - the lowest estimation, per
+share
+Matrix 65% — 2 0
+anl4_bvps_mean Book value per share - average of
+estimations
+Matrix 65% — 10 0
+anl4_bvps_median Book value per share - Median value
+among forecasts
+Matrix 65% — 5 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:58 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=100&region=USA&universe=T… 1/2
+Page size 20 out of 1,324
+1 2 3 4 5 6 7 ... 67
+anl4_bvps_number Book value per share - number of
+estimations
+Matrix 65% — 4 0
+anl4_bvps_value Book value per share - announced
+financial value
+Matrix 52% 100% 2 0
+anl4_capex_flag Capital Expenditures - forecast type
+(revision/new/...)
+Matrix 85% — 145 0
+anl4_capex_high Capital Expenditures - The highest
+estimation
+Matrix 62% — 8 0
+anl4_capex_low Capital Expenditures - The lowest
+estimation
+Matrix 62% — 2 0
+anl4_capex_mean Capital Expenditures - mean of
+estimations
+Matrix 62% — 13 0
+anl4_capex_number Capital
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_7.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_capex_value Capital Expenditures - announced
+financial value
+Matrix 66% 100% 1 0
+anl4_cff_flag Cash Flow From Financing Activities -
+forecast type (revision/new/...)
+Matrix 82% — 28 0
+anl4_cff_high Cash Flow From Financing - The highest
+of forecasted values
+Matrix 59% — 1 0
+anl4_cff_low Cash Flow From Financing - The lowest
+estimation
+Matrix 59% — 5 0
+anl4_cff_mean Cash Flow From Financing - mean of
+estimations
+Matrix 59% — 1 0
+anl4_cff_median Cash Flow From Financing Activities -
+Median value among forecasts
+Matrix 59% — 0 0
+anl4_cff_number Cash Flow From Financing - number of
+estimations
+Matrix 59% — 1 0
+anl4_cff_value Cash Flow From Financing - announced
+financial value
+Matrix 48% 100% 2 0
+anl4_cfi_flag Cash Flow From Investing - forecast type
+(revision/new/...)
+Matrix 83% — 25 0
+anl4_cfi_high Cash Flow From Investing - The highest
+estimation
+Matrix 58% — 1 0
+anl4_cfi_low Cash Flow From Investing - The lowest
+estimation
+Matrix 58% — 3 0
+anl4_cfi_mean Cash Flow From Investing - mean of
+estimations
+Matrix 58% — 5 0
+anl4_cfi_median Cash Flow From Investing - median of
+estimations
+Matrix 58% — 3 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:58 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=120&region=USA&universe=T… 1/2
+Page size 20 out of 1,324
+1 ... 4 5 6 7 8 ... 67
+anl4_cfi_number Cash Flow From Investing - number of
+estimations
+Matrix 58% — 12 0
+anl4_cfi_value Cash Flow From Investing - announced
+financial value
+Matrix 49% 100% 1 0
+anl4_cfo_flag Cash Flow From Operations - forecast
+type (revision/new/...)
+Matrix 8
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_8.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_cfo_number Cash Flow From Operations - number of
+estimations
+Matrix 62% — 19 0
+anl4_cfo_value Cash Flow From Operations - announced
+financial value
+Matrix 58% 100% 14 0
+anl4_cuo1actualqfv110_act
+ual
+Announced financial data Vector 63% — 0 0
+anl4_cuo1actualqfv110_ite
+m
+Financial item Vector 65% — 0 0
+anl4_cuo1conafv110_item Financial item Vector 72% — 0 0
+anl4_cuo1conqfv110_item Financial item Vector 70% — 4 0
+anl4_cuo1detailafv110_ite
+m
+Financial item Vector 69% — 0 0
+anl4_cuo1detailqfv110_ite
+m
+Financial item Vector 63% — 0 0
+anl4_cuo1guidaf_item Financial item Vector 30% — 0 0
+anl4_cuo1guidaf_maxguid
+ance
+Max guidance value Vector 29% — 0 0
+anl4_cuo1guidaf_minguida
+nce
+Minimum guidance value Vector 30% — 2 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:58 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=140&region=USA&universe=T… 1/2
+Page size 20 out of 1,324
+1 ... 5 6 7 8 9 ... 67
+anl4_dei2laf_item Financial item Vector 49% — 0 0
+anl4_dei2lqfv110_item Financial item Vector 43% — 0 0
+anl4_dei3lafv110_item Financial item Vector 54% — 0 0
+anl4_dei3lltv110_item Financial item Vector 47% — 0 0
+anl4_dei3lqfv110_item Financial item Vector 51% — 7 0
+anl4_dei3lrec_item Financial item Vector 55% — 5 0
+anl4_detailltv4_est Long term estimation value Vector 100% 100% 0 1
+anl4_detailltv4_preest The previous estimation of financial item Vector 100% 100% 0 1
+anl4_detailltv4v104_est Estimation value Vector 79% — 0 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:58 Analyst Estimate Data for Equity | WorldQuant B
+
+=== FILE: Analyst Estimate Data for Equity _ WorldQuant BRAIN_9.pdf (2 pages) ===
+Data > Datasets > Analyst Estimate Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+anl4_detailltv4v104_preest The previous estimation of financial item Vector 79% — 0 0
+anl4_detailrecv4_est Estimation value for recommendation
+detail
+Vector 100% 100% 2 1
+anl4_detailrecv4v104_est Estimation value Vector 79% — 0 0
+anl4_dez1afv4_est Estimation value Vector 97% 100% 0 0
+anl4_dez1afv4_preest The previous estimation of finanicial item Vector 97% 100% 1 0
+anl4_dez1basicafv4_est Estimation value Vector 100% 100% 1 0
+anl4_dez1basicafv4_preest The previous estimation of finanicial item Vector 100% 100% 0 1
+anl4_dez1basicafv4v104_e
+st
+Estimation value Vector 81% — 0 0
+anl4_dez1basicafv4v104_p
+reest
+The previous estimation of financial item Vector 81% — 0 0
+anl4_dez1basicqfv4_est Estimation value Vector 100% 100% 0 0
+anl4_dez1basicqfv4_preest The previous estimation of finanicial item Vector 100% 100% 1 1
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:59 Analyst Estimate Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/analyst4?delay=1&instrumentType=EQUITY&limit=20&offset=160&region=USA&universe=T… 1/2
+Page size 20 out of 1,324
+1 ... 6 7 8 9 10 ... 67
+anl4_dez1basicqfv4v104_e
+st
+Estimation value Vector 79% — 1 0
+anl4_dez1basicqfv4v104_p
+reest
+The previous estimation of financial item Vector 79% — 0 0
+anl4_dez1qfv4_est Estimation value Vector 96% 100% 1 0
+anl4_dez1qfv4_preest The previous estimation of finanicial item Vector 96% 100% 2 0
+anl4_dez1safv4_est Estimation value Vector 43% 100% 0 0
+anl4_dez1safv4_preest The previous estimation of finanicial item Vector 41% 100% 0 0
+anl4_dts_ptp Pretax income - std of estimations Matrix 51% — 10 0
+anl4_dts_rspe Reported Earnings per share - standar
+
+=== FILE: Fundamental Scores _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Fundamental Scores
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+analyst_revision_rank_deri
+vative
+Daily-indicator variant of momentum
+capturing recent price moves and analyst
+estimate revisions
+Matrix 100% 100% 15 1
+cashflow_efficiency_rank_d
+erivative
+Ranks stocks by their ability to generate
+cash flows and operational profitability
+Matrix 100% 100% 3 1
+composite_factor_score_d
+erivative
+Momentum score based on analyst
+revisions; intraday variant
+Matrix 100% 100% 8 1
+earnings_certainty_rank_d
+erivative
+Measures the sustainability and certainty
+of earnings quality
+Matrix 100% 100% 5 1
+fscore_bfl_growth Growth composite estimating expected
+medium-term growth potential (e.g.,
+revenues, earnings); higher is better (0–
+100)
+Matrix 38% 100% 2 1
+fscore_bfl_momentum Composite momentum measure
+reflecting recent price dynamics and
+analyst estimate revisions to identify
+improving or deteriorating names
+Matrix 38% 100% 2 1
+fscore_bfl_profitability Profitability composite ranking firms by
+ability to generate cash flows and
+operational efficiency; higher is better (0–
+100)
+Matrix 38% 100% 2 1
+fscore_bfl_quality Composite measuring earnings quality,
+stability, and balance-sheet resilience
+Matrix 38% 100% 2 1
+fscore_bfl_surface Static composite “style surface” score
+aggregating the five primary style scores;
+larger surface implies higher rank
+Matrix 37% 100% 61 1
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:00 Fundamental Scores | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/model16?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOP… 1/2
+Page size 20 out of 24
+1 2
+fscore_bfl_surface_accel Acceleration (derivative) of the pentagon
+surface score relative to the previous
+month
+Matri
+
+=== FILE: Fundamental Scores _ WorldQuant BRAIN_2.pdf (1 pages) ===
+Data > Datasets > Fundamental Scores
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+Page size 20 out of 24
+1 2
+growth_potential_rank_der
+ivative
+Composite growth score qualifying the
+stock’s expected medium ‑ term growth
+potential
+Matrix 100% 100% 4 1
+multi_factor_acceleration_
+score_derivative
+Change in the acceleration of multi-factor
+score compared to previous period.
+Matrix 100% 100% 7 1
+multi_factor_static_score_d
+erivative
+Change in static multi-factor score
+compared to previous period.
+Matrix 100% 100% 3 1
+relative_valuation_rank_de
+rivative
+Assesses whether the stock is under or
+overpriced based on standard valuation
+multiples indicator variant
+Matrix 100% 100% 4 1
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:00 Fundamental Scores | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/model16?delay=1&instrumentType=EQUITY&limit=20&offset=20&region=USA&universe=TO… 1/1
+
+
+=== FILE: Options Analytics _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Options Analytics
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+call_breakeven_10 Price at which a stock's call options with
+expiration 10 days in the future break
+even based on its recent bid/ask mean,
+weighted by open interest or volume
+Matrix 98% 100% 23 0
+call_breakeven_1080 Price at which a stock's call options with
+expiration 1080 days in the future break
+even based on its recent bid/ask mean.
+Matrix 98% 100% 22 0
+call_breakeven_120 Price at which a stock's call options with
+expiration 120 days in the future break
+even based on its recent bid/ask mean,
+weighted by open interest or volume
+Matrix 98% 100% 29 0
+call_breakeven_150 Price at which a stock's call options with
+expiration 150 days in the future break
+even based on its recent bid/ask mean,
+weighted by open interest or volume
+Matrix 98% 100% 4 0
+call_breakeven_180 Open-interest-weighted mean breakeven
+price at which buyers of call options
+break even for options expiring in 180
+days
+Matrix 98% 100% 17 0
+call_breakeven_20 Open-interest-weighted average
+breakeven price of call options expiring
+in 20 days, representing the price at
+which call buyers break even
+Matrix 98% 100% 14 0
+call_breakeven_270 Price at which a stock's call options with
+expiration 270 days in the future break
+even based on its recent bid/ask mean
+Matrix 98% 100% 7 0
+call_breakeven_30 Open-interest-weighted average
+breakeven price of call options expiring
+in 30 days, representing the price at
+which call buyers break even
+Matrix 98% 100% 25 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:52 Options Analytics | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option9?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOPS… 1/2
+Page size 20 out of 7
+
+=== FILE: Options Analytics _ WorldQuant BRAIN_2.pdf (2 pages) ===
+Data > Datasets > Options Analytics
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+forward_price_360 Synthetic forward price at 360 days
+derived from put-call parity using ATM
+call and put prices, reflecting the market-
+consensus forward expectation of the…
+Matrix 98% 100% 7 0
+forward_price_60 Synthetic forward price at 60 days
+derived from at-the-money call and put
+options reflecting the market's forward
+expectation of the underlying security
+Matrix 98% 100% 8 0
+forward_price_720 Synthetic forward price at 720 days
+derived from at-the-money call and put
+options reflecting the market's forward
+expectation of the underlying security
+Matrix 98% 100% 16 0
+forward_price_90 Synthetic forward price at 90 days
+derived from put-call parity using ATM
+call and put prices, reflecting the market-
+consensus forward expectation of the…
+Matrix 98% 100% 5 0
+option_breakeven_10 Open-interest-weighted mean breakeven
+price at which buyers of calls and puts
+combined break even for options
+expiring in 10 days
+Matrix 98% 100% 12 0
+option_breakeven_1080 Open-interest-weighted mean breakeven
+price at which buyers of calls and puts
+combined break even for options
+expiring in 1080 days
+Matrix 98% 100% 33 0
+option_breakeven_120 Weighted mean breakeven price for
+combined call and put options with
+expiration 120 days in the future, based
+on recent bid/ask mid-prices and…
+Matrix 98% 100% 31 0
+option_breakeven_150 Price at which a stock's options with
+expiration 150 days in the future break
+even based on its recent bid/ask mean
+Matrix 98% 100% 19 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:53 Options Analytics | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option9?delay=1&instrumentType=EQUITY&limit=20&offset=20&region=USA&universe=
+
+=== FILE: Options Analytics _ WorldQuant BRAIN_3.pdf (2 pages) ===
+Data > Datasets > Options Analytics
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pcr_oi_180 Ratio of total put option open interest to
+call option open interest for options
+expiring in 180 days, representing longer-
+term positioning
+Matrix 98% 100% 76 0
+pcr_oi_20 Ratio of put open interest to call open
+interest on a stock's options with
+expiration 20 days in the future
+Matrix 98% 100% 11 0
+pcr_oi_270 Ratio of put open interest to call open
+interest for options expiring in 270 days,
+indicating longer-term position skew
+Matrix 98% 100% 160 0
+pcr_oi_30 Ratio of put open interest to call open
+interest for options expiring in 30 days,
+reflecting medium-term option
+positioning
+Matrix 98% 100% 39 0
+pcr_oi_360 Ratio of total put option open interest to
+call option open interest for options
+expiring in 360 days
+Matrix 98% 100% 19 0
+pcr_oi_60 Ratio of put open interest to call open
+interest for options expiring in 60 days,
+reflecting medium-to-long term option
+positioning
+Matrix 98% 100% 25 0
+pcr_oi_720 Ratio of put open interest to call open
+interest for options expiring in 720 days,
+indicating very long-term option
+sentiment
+Matrix 98% 100% 10 0
+pcr_oi_90 Ratio of put open interest to call open
+interest for options expiring in 90 days,
+reflecting longer-term positioning
+Matrix 98% 100% 152 0
+pcr_oi_all Ratio of total put option open interest to
+call option open interest aggregated
+across all option maturities for the stock
+Matrix 98% 100% 15 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:53 Options Analytics | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option9?delay=1&instrumentType=EQUITY&limit=20&offset=40&region=USA&universe=TOP… 1/2
+Page size 20 out of 74
+1 2 3 4
+pcr_vol_10 Ratio of total put option volum
+
+=== FILE: Options Analytics _ WorldQuant BRAIN_4.pdf (2 pages) ===
+Data > Datasets > Options Analytics
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pcr_vol_90 Ratio of put options volume to call
+options volume for stock options expiring
+in 90 days, indicating short-term options
+flow sentiment
+Matrix 98% 100% 4 0
+pcr_vol_all Ratio of total put option volume to call
+option volume aggregated across all
+maturities, measuring short-term options
+flow sentiment
+Matrix 98% 100% 82 0
+put_breakeven_10 Open interest-weighted mean breakeven
+price for put options expiring in 10 days,
+average price at which put buyers break
+even
+Matrix 98% 100% 17 0
+put_breakeven_1080 Price at which a stock's put options with
+expiration 1080 days in the future break
+even based on its recent bid/ask mean
+Matrix 98% 100% 6 0
+put_breakeven_120 Price at which a stock's put options with
+expiration 120 days in the future break
+even based on its recent bid/ask mean
+Matrix 98% 100% 44 0
+put_breakeven_150 Open-interest-weighted mean breakeven
+price at which buyers of put options
+break even for options expiring in 150
+days
+Matrix 98% 100% 9 0
+put_breakeven_180 Weighted mean breakeven price of put
+options expiring in 180 days derived from
+open interest or volume, indicating the
+price at which put buyers break even
+Matrix 98% 100% 11 0
+put_breakeven_20 Price at which a stock's put options with
+expiration 20 days in the future break
+even based on its recent bid/ask mean,
+weighted by open interest or volume
+Matrix 98% 100% 18 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:53 Options Analytics | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option9?delay=1&instrumentType=EQUITY&limit=20&offset=60&region=USA&universe=TOP… 1/2
+Page size 20 out of 74
+1 2 3 4
+put_breakeven_270 Weighted mean breakeven price of put
+optio
+
+=== FILE: Price Volume Data for Equity _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Price Volume Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+adjfactor Adjustment factor applied to historical
+prices and dividends to account for splits
+and other corporate actions
+Matrix 100% 100% 8 04
+adv20 Average daily volume in past 20 days Matrix 100% 100% 1645 0
+cap Daily market capitalization (in millions) Matrix 100% 100% 4135 0
+close Daily close price Matrix 100% 100% 6208 0
+country Country grouping Group 100% 100% 345 0
+currency Currency Group 100% 100% 172 0
+cusip CUSIP Value Symbol 100% 100% 3 1
+dividend Dividend Matrix 100% 100% 425 0
+exchange Exchange grouping Group 100% 100% 263 0
+high Daily high price Matrix 100% 100% 1151 0
+industry Industry grouping Group 100% 100% 5082 0
+isin ISIN Value Symbol 100% 100% 0 1
+low Daily low price Matrix 100% 100% 1469 0
+market Market grouping Group 100% 100% 2519 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:05 Price Volume Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv1?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOPSP500 1/2
+Page size 20 out of 24
+1 2
+open Daily open price Matrix 100% 100% 4035 0
+returns Daily returns Matrix 100% 100% 6723 0
+sector Sector grouping Group 100% 100% 4032 0
+sedol Sedol Symbol 100% 100% 6 0
+sharesout Daily outstanding shares (in millions) Matrix 100% 100% 1214 0
+split Stock split ratio Matrix 100% 100% 754 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:05 Price Volume Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv1?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOPSP500 2/2
+
+
+=== FILE: Price Volume Data for Equity _ WorldQuant BRAIN_2.pdf (1 pages) ===
+Data > Datasets > Price Volume Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+Page size 20 out of 24
+1 2
+subindustry Subindustry grouping Group 100% 100% 4903 0
+ticker Ticker Symbol 100% 100% 4 0
+volume Daily volume Matrix 100% 100% 3831 0
+vwap Daily volume weighted average price Matrix 100% 100% 1569 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:06 Price Volume Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv1?delay=1&instrumentType=EQUITY&limit=20&offset=20&region=USA&universe=TOPSP… 1/1
+
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+primary_sector_focused_c
+ompany_count
+Number of companies primarily focused
+in a given sector.
+Matrix 35% 100% 1 1
+pv13_1l_scibr grouping fields Group 94% — 196 0
+pv13_2l_scibr grouping fields Group 94% — 5 0
+pv13_3l_scibr grouping fields Group 94% — 23 0
+pv13_4l_scibr grouping fields Group 94% — 23 0
+pv13_5l_scibr grouping fields Group 94% — 3 0
+pv13_6l_scibr grouping fields Group 94% — 1 0
+pv13_com_page_rank the PageRank of competitors Matrix 91% — 25 0
+pv13_com_rk_au the HITS authority score of competitors Matrix 91% — 34 0
+pv13_custretsig_retsig Sign of customer return Matrix 93% 100% 26 0
+pv13_di_5l grouping fields Group 100% 100% 1 0
+pv13_di_6l grouping fields Group 100% 100% 0 0
+pv13_h2_min2_1k_sector Grouping fields for top 1000 Group 37% — 55 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:06 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOPSP… 1/2
+Page size 20 out of 165
+1 2 ... 9
+pv13_h2_sector grouping fields Group 100% — 22 0
+pv13_h_f1_sector grouping fields Group 100% — 7 0
+pv13_h_f3_sector grouping fields Group 100% — 6 0
+pv13_h_min10_all_sector grouping fields Group 100% — 9 0
+pv13_h_min10_top3000_se
+ctor
+grouping fields Group 100% — 11 0
+pv13_h_min20_top3000_se
+ctor
+grouping fields Group 100% — 8 0
+pv13_h_min22_1000_secto
+r
+Grouping fields for top 1000 Group 37% — 53 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:06 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=0&region
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_2.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_h_min24_500_sector Grouping fields for top 500 Group 19% — 83 0
+pv13_h_min2_3000_sector grouping fields Group 100% — 113 0
+pv13_h_min2_focused_pur
+eplay_3000_sector
+grouping fields Group 100% — 84 0
+pv13_h_min2_focused_sect
+or
+Grouping fields for top 200 Group 18% — 186 0
+pv13_h_min30_3000_mapp
+ed_sector
+grouping fields Group 100% — 2 0
+pv13_h_min51_f3_sector grouping fields Group 100% — 7 0
+pv13_h_min52_1k_sector Grouping fields for top 1000 Group 37% — 25 0
+pv13_h_min52_3000_secto
+r
+grouping fields Group 100% — 3 0
+pv13_h_min5_3000_sector grouping fields Group 100% — 6 0
+pv13_h_min5_500_sector Grouping fields Group 18% — 4 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:07 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=20&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 2 3 ... 9
+pv13_hierarchy23_513_sec
+tor
+grouping fields Group 99% — 2 0
+pv13_hierarchy23_sector grouping fields Group 100% — 17 0
+pv13_hierarchy2_513_sect
+or
+grouping fields Group 99% — 1 0
+pv13_hierarchy2_min2_1k_
+513_sector
+grouping fields Group 35% — 0 0
+pv13_hierarchy_f1_513_sec
+tor
+grouping fields Group 99% — 0 0
+pv13_hierarchy_f2_513_sec
+tor
+grouping fields Group 99% — 0 0
+pv13_hierarchy_f2_sector grouping fields Group 100% — 0 0
+pv13_hierarchy_f3_513_sec
+tor
+grouping fields Group 99% — 0 0
+pv13_hierarchy_f4_513_sec
+tor
+grouping fields Group 99% — 0 0
+pv13_hierarchy_f4_sector grouping fields Group 100% — 3 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:07 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldqua
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_3.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_hierarchy_min100_2
+000_513_sector
+grouping fields Group 69% — 0 0
+pv13_hierarchy_min100_co
+rr21_513_sector
+grouping fields Group 63% — 0 0
+pv13_hierarchy_min100_co
+rr21_sector
+grouping fields Group 48% — 1 0
+pv13_hierarchy_min10_10
+00_513_sector
+grouping fields Group 35% — 1 0
+pv13_hierarchy_min10_2k_
+513_sector
+grouping fields Group 69% — 3 0
+pv13_hierarchy_min10_2k_
+sector
+grouping fields Group 72% — 0 0
+pv13_hierarchy_min10_3k_
+all_sector
+grouping fields Group 100% — 1 0
+pv13_hierarchy_min10_51
+3_sector
+grouping fields Group 69% — 1 0
+pv13_hierarchy_min10_ind
+ustry_3000_513_sector
+grouping fields Group 99% — 1 0
+pv13_hierarchy_min10_ind
+ustry_3000_sector
+grouping fields Group 100% — 0 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:07 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=40&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 2 3 4 ... 9
+pv13_hierarchy_min10_sec
+tor
+grouping fields Group 70% — 0 0
+pv13_hierarchy_min10_sec
+tor_3000_513_sector
+grouping fields Group 99% — 1 0
+pv13_hierarchy_min10_sec
+tor_3000_sector
+grouping fields Group 100% — 0 0
+pv13_hierarchy_min10_top
+3000_513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min20_3k_
+513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min20_3k_
+sector
+grouping fields Group 100% — 1 0
+pv13_hierarchy_min20_51
+3_sector
+grouping fields Group 69% — 1 0
+pv13_hierarchy_min20_f3_
+513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min20_sec
+tor
+grouping fields Group 70% — 0 0
+pv13_hierarchy_min20_top
+3000_513_sector
+grouping fields Group 99% — 0 0
+Prev 
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_4.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_hierarchy_min22_10
+00_513_sector
+grouping fields Group 35% — 0 0
+pv13_hierarchy_min22_51
+3_sector
+grouping fields Group 69% — 0 0
+pv13_hierarchy_min22_sec
+tor
+grouping fields Group 72% — 1 0
+pv13_hierarchy_min25_51
+3_sector
+grouping fields Group 69% — 3 0
+pv13_hierarchy_min25_sec
+tor
+grouping fields Group 72% — 1 0
+pv13_hierarchy_min2_100
+0_513_sector
+grouping fields Group 35% — 0 0
+pv13_hierarchy_min2_300
+0_513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min2_513_
+sector
+grouping fields Group 69% — 0 0
+pv13_hierarchy_min2_focu
+sed_only_513_sector
+grouping fields Group 69% — 0 0
+pv13_hierarchy_min2_focu
+sed_only_sector
+grouping fields Group 70% — 19 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:07 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=60&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 2 3 4 5 ... 9
+pv13_hierarchy_min2_focu
+sed_pureplay_3000_513_se
+ctor
+grouping fields Group 99% — 1 0
+pv13_hierarchy_min2_focu
+sed_pureplay_513_sector
+grouping fields Group 69% — 0 0
+pv13_hierarchy_min2_focu
+sed_pureplay_sector
+grouping fields Group 72% — 1 0
+pv13_hierarchy_min2_pure
+play_only_513_sector
+grouping fields Group 69% — 1 0
+pv13_hierarchy_min2_pure
+play_only_sector
+grouping fields Group 70% — 26 0
+pv13_hierarchy_min2_sect
+or
+grouping fields Group 72% — 1 0
+pv13_hierarchy_min30_30
+00_513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min30_30
+00_mapped_513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min30_51
+3_sector
+grouping fields Group 69% — 1 0
+pv13_hierarchy_min30_sec
+tor
+grouping fields Gr
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_5.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_hierarchy_min40_30
+00_513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min50_f3_
+513_sector
+grouping fields Group 99% — 3 0
+pv13_hierarchy_min51_f1_
+513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min51_f1_
+sector
+grouping fields Group 100% — 5 0
+pv13_hierarchy_min51_f2_
+513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min51_f2_
+sector
+grouping fields Group 100% — 2 0
+pv13_hierarchy_min51_f3_
+513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min51_f4_
+513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min51_f4_
+sector
+grouping fields Group 100% — 1 0
+pv13_hierarchy_min52_1k_
+513_sector
+grouping fields Group 35% — 1 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:08 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=80&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 2 3 4 5 6 ... 9
+pv13_hierarchy_min52_2k_
+513_sector
+grouping fields Group 69% — 1 0
+pv13_hierarchy_min52_2k_
+sector
+grouping fields Group 72% — 2 0
+pv13_hierarchy_min52_51
+3_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min52_sec
+tor
+grouping fields Group 100% — 3 0
+pv13_hierarchy_min54_30
+00_sector
+grouping fields Group 100% — 1 0
+pv13_hierarchy_min5_100
+0_513_sector
+grouping fields Group 35% — 0 0
+pv13_hierarchy_min5_300
+0_513_sector
+grouping fields Group 99% — 0 0
+pv13_hierarchy_min5_513_
+sector
+grouping fields Group 69% — 1 0
+pv13_hierarchy_min5_corr
+21_1000_513_sector
+grouping fields Group 35% — 0 0
+pv13_hierarchy_min5_f3g2
+_sector
+grouping fields Group 100% — 1 0
+Prev Next
+Simulate Alphas Learn Data Competitio
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_6.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_hierarchy_min5_sect
+or
+grouping fields Group 72% — 2 0
+pv13_hierarchy_sector grouping fields Group 100% — 2 0
+pv13_hierarchys32_513_se
+ctor
+grouping fields Group 99% — 0 0
+pv13_hierarchys32_sector grouping fields Group 100% — 1 0
+pv13_new_1l_scibr grouping fields Group 99% — 17 0
+pv13_new_2l_scibr grouping fields Group 99% — 1 0
+pv13_new_3l_scibr grouping fields Group 99% — 2 0
+pv13_new_4l_scibr grouping fields Group 99% — 5 0
+pv13_new_5l_scibr grouping fields Group 99% — 2 0
+pv13_new_6l_scibr grouping fields Group 99% — 0 0
+pv13_ompetitorgraphrank
+_hub_rank
+the HITS hub score of competitors Matrix 91% — 37 0
+pv13_r2_liquid_min10_sect
+or
+grouping fields Group 18% — 25 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:08 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=100&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 2 3 4 5 6 7 8 9
+pv13_r2_liquid_min2_secto
+r
+grouping fields Group 18% — 3 0
+pv13_r2_liquid_min5_secto
+r
+grouping fields Group 18% — 4 0
+pv13_r2_min10_1000_sect
+or
+grouping fields Group 37% — 4 0
+pv13_r2_min10_3000_sect
+or
+grouping fields Group 100% — 3 0
+pv13_r2_min20_1000_sect
+or
+grouping fields Group 37% — 0 0
+pv13_r2_min20_3000_sect
+or
+grouping fields Group 100% — 84 0
+pv13_r2_min2_1000_sector grouping fields Group 37% — 8 0
+pv13_r2_min2_3000_sector grouping fields Group 100% — 94 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:08 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=100&reg
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_7.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_r2_min5_1000_sector grouping fields Group 37% — 0 0
+pv13_r2_min5_3000_sector grouping fields Group 100% — 0 0
+pv13_rcsed_6l grouping fields Group 100% 100% 0 0
+pv13_revere_city City code Matrix 94% — 13 0
+pv13_revere_company_tot
+al
+Total number of companies in the sector Matrix 35% 100% 4 0
+pv13_revere_comproduct_
+company
+Company product Matrix 41% — 0 0
+pv13_revere_country Country code Matrix 96% — 6 0
+pv13_revere_index_cap Company market capitalization Matrix 85% — 3 0
+pv13_revere_index_value Value of specified index for the date Matrix 86% — 2 0
+pv13_revere_key_sector_to
+tal
+Number of key focus sectors for the
+company
+Matrix 93% — 144 0
+pv13_revere_level Level of the sector within the hierarchy Matrix 62% 100% 4 0
+pv13_revere_parent Code of parent sector Matrix 62% 100% 5 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:08 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=120&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 ... 4 5 6 7 8 9
+pv13_revere_term Indicates when a sector is the terminal
+sector (i.e., no sub-sectors)
+Matrix 41% — 1 0
+pv13_revere_term_sector_t
+otal
+Number of terminal sectors for the
+company
+Matrix 93% — 14 0
+pv13_revere_zipcode Zip code Matrix 93% — 6 0
+pv13_reveremap Mapping data Matrix 99% 100% 26 0
+pv13_rha2_min10_1000_51
+3_sector
+grouping fields Group 35% — 0 0
+pv13_rha2_min10_3000_51
+3_sector
+grouping fields Group 99% — 1 0
+pv13_rha2_min10_513_sec
+tor
+grouping fields Group 70% — 1 0
+pv13_rha2_min10_sector grouping fields Group 72% — 4 0
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_8.pdf (2 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+pv13_rha2_min20_3000_51
+3_sector
+grouping fields Group 99% — 2 0
+pv13_rha2_min20_513_sec
+tor
+grouping fields Group 70% — 1 0
+pv13_rha2_min20_sector grouping fields Group 72% — 4 0
+pv13_rha2_min2_1000_513
+_sector
+grouping fields Group 35% — 1 0
+pv13_rha2_min2_3000_513
+_sector
+grouping fields Group 99% — 0 0
+pv13_rha2_min2_513_sect
+or
+grouping fields Group 70% — 2 0
+pv13_rha2_min2_sector grouping fields Group 72% — 44 0
+pv13_rha2_min30_3000_51
+3_sector
+grouping fields Group 99% — 1 0
+pv13_rha2_min40_3000_51
+3_sector
+grouping fields Group 99% — 1 0
+pv13_rha2_min5_1000_513
+_sector
+grouping fields Group 35% — 3 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:09 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=140&region=USA&universe=TOPS… 1/2
+Page size 20 out of 165
+1 ... 5 6 7 8 9
+pv13_rha2_min5_3000_513
+_sector
+grouping fields Group 99% — 1 0
+pv13_rha2_min5_513_sect
+or
+grouping fields Group 70% — 1 0
+pv13_rha2_min5_sector grouping fields Group 72% — 39 0
+pv13_ustomergraphrank_a
+uth_rank
+the HITS authority score of customers Matrix 79% — 4 0
+pv13_ustomergraphrank_h
+ub_rank
+the HITS hub score of customers Matrix 79% — 16 0
+pv13_ustomergraphrank_p
+age_rank
+the PageRank of customers Matrix 79% — 7 0
+rel_num_all number of the companies whose product
+overlapped with the instrument
+Matrix 99% — 67 0
+rel_num_comp number of the instrument's competitors Matrix 89% — 9 0
+rel_num_cust number of the instrument's customers Matrix 51% — 5 0
+rel_num_part number of the instrument's partners Matrix 78% — 297 0
+Prev Next
+Simulate Alphas Learn Data Competition
+
+=== FILE: Relationship Data for Equity _ WorldQuant BRAIN_9.pdf (1 pages) ===
+Data > Datasets > Relationship Data for Equity
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+Page size 20 out of 165
+1 ... 6 7 8 9
+rel_ret_all Averaged one-day return of the
+companies whose product overlapped
+with the instrument
+Matrix 96% — 18 0
+rel_ret_comp Averaged one-day return of the
+competing companies
+Matrix 82% — 28 0
+rel_ret_cust averaged one-day-return of the
+instrument's customers
+Matrix 49% — 9 0
+rel_ret_part Averaged one-day return of the
+instrument's partners
+Matrix 71% — 4 0
+single_sector_pureplay_co
+mpany_count
+Number of companies exclusively
+operating in a single sector.
+Matrix 35% 100% 0 1
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:09 Relationship Data for Equity | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/pv13?delay=1&instrumentType=EQUITY&limit=20&offset=160&region=USA&universe=TOPS… 1/1
+
+
+=== FILE: Systematic Risk Metrics _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Systematic Risk Metrics
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+beta_last_30_days_spy The rolling beta value of the security
+relative to SPY, calculated via regression
+over the last 30 calendar days,
+representing market sensitivity
+Matrix 98% 100% 15 0
+beta_last_360_days_spy The rolling beta value of the security
+relative to SPY, calculated via regression
+over the last 360 calendar days,
+representing market sensitivity
+Matrix 95% 100% 22 0
+beta_last_60_days_spy The rolling beta value of the security
+relative to SPY, calculated via regression
+over the last 60 calendar days,
+representing market sensitivity
+Matrix 98% 100% 19 0
+beta_last_90_days_spy The rolling beta value of the security
+relative to SPY, calculated via regression
+over the last 90 calendar days,
+representing market sensitivity
+Matrix 97% 100% 25 0
+correlation_last_30_days_s
+py
+The Pearson correlation coefficient of
+daily log returns between the security
+and SPY, calculated over the most recent
+30 calendar days
+Matrix 98% 100% 16 0
+correlation_last_360_days_
+spy
+The Pearson correlation coefficient of
+daily log returns between the security
+and SPY, calculated over the most recent
+360 calendar days
+Matrix 95% 100% 26 0
+correlation_last_60_days_s
+py
+The Pearson correlation coefficient of
+daily log returns between the security
+and SPY, calculated over the most recent
+60 calendar days
+Matrix 98% 100% 19 0
+correlation_last_90_days_s
+py
+The Pearson correlation coefficient of
+daily log returns between the security
+and SPY, calculated over the most recent
+90 calendar days
+Matrix 97% 100% 16 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:00 Systematic Risk Metrics | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/model51?delay=1&in
+
+=== FILE: Universe Dataset _ WorldQuant BRAIN.pdf (1 pages) ===
+Data > Datasets > Universe Dataset
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+Page size 20 out of 6
+1
+top1000 No field description Universe 100% 100% 0 0
+top200 No field description Universe 100% 100% 0 0
+top2000 No field description Universe 100% 100% 0 0
+top3000 No field description Universe 100% 100% 0 0
+top500 No field description Universe 100% 100% 0 0
+topsp500 No field description Universe 100% 100% 0 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 20:10 Universe Dataset | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/univ1?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOPSP… 1/1
+
+
+=== FILE: Volatility Data _ WorldQuant BRAIN.pdf (2 pages) ===
+Data > Datasets > Volatility Data
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+historical_volatility_10 Historical close-to-close volatility for
+approximately 10 calendar days
+Matrix 98% 100% 38 0
+historical_volatility_120 Historical close-to-close volatility for
+approximately 120 calendar days
+Matrix 98% 100% 134 0
+historical_volatility_150 Historical close-to-close volatility for
+approximately 150 calendar days
+Matrix 98% 100% 66 0
+historical_volatility_180 Historical close-to-close volatility for
+approximately 180 calendar days
+Matrix 98% 100% 62 0
+historical_volatility_20 Historical close-to-close volatility for
+approximately 20 calendar days
+Matrix 98% 100% 32 0
+historical_volatility_30 Historical close-to-close volatility for
+approximately 30 calendar days
+Matrix 98% 100% 25 0
+historical_volatility_60 Historical close-to-close volatility for
+approximately 60 calendar days
+Matrix 98% 100% 36 0
+historical_volatility_90 Historical close-to-close volatility for
+approximately 90 calendar days
+Matrix 98% 100% 36 0
+implied_volatility_call_10 Implied volatility of the at-the-money call
+for the stock with an expiration 10
+calendar days from the measurement
+date
+Matrix 97% 100% 41 0
+implied_volatility_call_1080 Implied volatility of the at-the-money call
+for the stock with an expiration 1080
+calendar days from the measurement
+date
+Matrix 97% 100% 69 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:50 Volatility Data | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option8?delay=1&instrumentType=EQUITY&limit=20&offset=0&region=USA&universe=TOPS… 1/2
+Page size 20 out of 64
+1 2 3 4
+implied_volatility_call_120 Implied volatility of the at-the-money call
+for the stock with an expiration 120
+calendar days from the me
+
+=== FILE: Volatility Data _ WorldQuant BRAIN_2.pdf (2 pages) ===
+Data > Datasets > Volatility Data
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+implied_volatility_mean_10 The average of IvCall10 and IvPut10 Matrix 97% 100% 51 0
+implied_volatility_mean_10
+80
+The average of IvCall1080 and IvPut1080 Matrix 97% 100% 51 0
+implied_volatility_mean_12
+0
+The average of IvCall120 and IvPut120 Matrix 97% 100% 74 0
+implied_volatility_mean_15
+0
+The average of IvCall150 and IvPut150 Matrix 97% 100% 67 0
+implied_volatility_mean_18
+0
+The average of IvCall180 and IvPut180 Matrix 97% 100% 54 0
+implied_volatility_mean_20 The average of IvCall20 and IvPut20 Matrix 97% 100% 60 0
+implied_volatility_mean_27
+0
+The average of IvCall270 and IvPut270 Matrix 97% 100% 53 0
+implied_volatility_mean_30 The average of IvCall30 and IvPut30 Matrix 97% 100% 63 0
+implied_volatility_mean_36
+0
+The average of IvCall360 and IvPut360 Matrix 97% 100% 22 0
+implied_volatility_mean_60 The average of IvCall60 and IvPut60 Matrix 97% 100% 28 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:51 Volatility Data | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option8?delay=1&instrumentType=EQUITY&limit=20&offset=20&region=USA&universe=TOP… 1/2
+Page size 20 out of 64
+1 2 3 4
+implied_volatility_mean_72
+0
+The average of IvCall720 and IvPut720 Matrix 97% 100% 30 0
+implied_volatility_mean_90 The average of IvCall90 and IvPut90 Matrix 97% 100% 54 0
+implied_volatility_mean_sk
+ew_10
+Skew steepness for the implied volatility
+duration of 10 calendar days by
+subtracting the mean implied volatility of
+the call and put options with strikes at…
+Matrix 95% 100% 22 0
+implied_volatility_mean_sk
+ew_1080
+Skew steepness for the implied volatility
+duration of 1080 calendar days by
+subtracting the mean implied volatility of
+the call and put op
+
+=== FILE: Volatility Data _ WorldQuant BRAIN_3.pdf (2 pages) ===
+Data > Datasets > Volatility Data
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+implied_volatility_mean_sk
+ew_360
+Skew steepness for the implied volatility
+duration of 360 calendar days by
+subtracting the mean implied volatility of
+the call and put options with strikes at…
+Matrix 95% 100% 38 0
+implied_volatility_mean_sk
+ew_60
+Skew steepness for the implied volatility
+duration of 60 calendar days by
+subtracting the mean implied volatility of
+the call and put options with strikes at…
+Matrix 95% 100% 23 0
+implied_volatility_mean_sk
+ew_720
+Skew steepness for the implied volatility
+duration of 720 calendar days by
+subtracting the mean implied volatility of
+the call and put options with strikes at…
+Matrix 95% 100% 21 0
+implied_volatility_mean_sk
+ew_90
+Skew steepness for the implied volatility
+duration of 90 calendar days by
+subtracting the mean implied volatility of
+the call and put options with strikes at…
+Matrix 95% 100% 36 0
+implied_volatility_put_10 At-the-money implied volatility of put
+options with 10 calendar days to
+expiration, annualized decimal
+Matrix 97% 100% 84 0
+implied_volatility_put_1080 At-the-money implied volatility of put
+options with 1080 calendar days to
+expiration, annualized decimal
+Matrix 97% 100% 39 0
+implied_volatility_put_120 At-the-money implied volatility of put
+options with 120 calendar days to
+expiration, annualized decimal
+Matrix 97% 100% 141 0
+implied_volatility_put_150 At-the-money implied volatility of put
+options with 150 calendar days to
+expiration, annualized decimal
+Matrix 97% 100% 188 0
+implied_volatility_put_180 At-the-money implied volatility of put
+options with 180 calendar days to
+expiration, annualized decimal
+Matrix 97% 100% 107 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:51 Volatility
+
+=== FILE: Volatility Data _ WorldQuant BRAIN_4.pdf (1 pages) ===
+Data > Datasets > Volatility Data
+Region Delay Universe
+Search Instrument Coverage, %
+to
+Date coverage, %
+to
+Type
+Alphas
+to
+Date added
+Clear
+USA  1  TOPSP500 
+Fields Description
+Name, descriptio
+ 0
+ 100
+ 0
+ 100
+ All 
+0
+ Select dates
+Page size 20 out of 64
+1 2 3 4
+parkinson_volatility_20 Historical volatility using the Parkinson
+high–low estimator over approximately
+the past 20 calendar days
+Matrix 98% 100% 54 0
+parkinson_volatility_30 Historical volatility using the Parkinson
+high–low estimator over approximately
+the past 30 calendar days
+Matrix 98% 100% 35 0
+parkinson_volatility_60 Historical volatility using the Parkinson
+high–low estimator over approximately
+the past 60 calendar days
+Matrix 98% 100% 86 0
+parkinson_volatility_90 Historical volatility using the Parkinson
+high–low estimator over approximately
+the past 90 calendar days
+Matrix 98% 100% 147 0
+Field  Description Type  InstrumentCoverage  DateCoverage  Alphas 
+Prev Next
+Simulate Alphas Learn Data Competitions (1)
+25/10/2026, 19:52 Volatility Data | WorldQuant BRAIN
+https://platform.worldquantbrain.com/data/data-sets/option8?delay=1&instrumentType=EQUITY&limit=20&offset=60&region=USA&universe=TOP… 1/1
+
+

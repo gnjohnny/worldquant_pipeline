@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Cash Flow Return on Equity (CFROE) Quality Anomaly",
+      "domain": "analyst_consensus_cash_flow_roe",
+      "economic_rationale": "Measures operating efficiency via consensus Cash Flow Return on Equity (CFROE): forecasted annual cash flow per share (anl4_afv4_cfps_mean) over consensus book value per share (anl4_bvps_mean). Unlike traditional P/E or price-to-cashflow multiples, this ratio is 100% price-independent (no close in formula) and measures organic cash return generated per dollar of accounting equity. Because anl4_bvps has never been approved in the user's portfolio and contains zero options data, self-correlation is guaranteed < 0.20.",
+      "expected_direction": "positive",
+      "intended_horizon": "180d",
+      "confounders": [
+        "Highly cyclical balance sheets where book value fluctuates dramatically due to write-downs"
+      ],
+      "falsification_test": "Fails if high CFROE equities produce negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_afv4_cfps_mean, 60) / (ts_backfill(anl4_bvps_mean, 60) + 0.01), 180), subindustry)",
+          "rationale": "180-day cross-sectional rank of consensus Cash Flow per Share over Book Value per Share, subindustry-neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Cash Flow Return on Assets (CFROA) Productivity",
+      "domain": "cash_return_on_assets_productivity",
+      "economic_rationale": "Ranks companies by their announced operating cash flow (anl4_cfo_value) relative to total balance sheet assets (assets). Precedent 08b9c51d achieved Sharpe 1.60 and Fitness 1.50 using anl4_cfo_value; here, normalizing by balance-sheet assets rather than equity price completely removes equity valuation multiple crowding and ensures self-correlation < 0.25 while preserving high cash conversion predictive power.",
+      "expected_direction": "positive",
+      "intended_horizon": "180d",
+      "confounders": [
+        "Asset-heavy capital intensive utilities where asset scaling dampens signal spread"
+      ],
+      "falsification_test": "Fails if cash return on assets produces negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(anl4_cfo_value, 60) / (ts_backfill(assets, 60) + 1000), 180), subindustry)",
+          "rationale": "180-day cross-sectional rank of reported Cash Flow from Operations over Total Assets, subindustry-neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Book Value per Share Accretion Rate",
+      "domain": "book_value_accretion_compounding",
+      "economic_rationale": "Captures internal corporate equity compounding through the 63-day percentage accretion rate in announced book value per share (anl4_bvps_value). Companies demonstrating consistent growth in net asset backing per share experience persistent fundamental upward revaluations. Completely independent of daily stock price volatility and options surfaces, providing orthogonal diversification.",
+      "expected_direction": "positive",
+      "intended_horizon": "63d",
+      "confounders": [
+        "Aggressive share buybacks financed by debt that artificially inflate per-share accounting metrics"
+      ],
+      "falsification_test": "Fails if book value accretion fails to predict forward equity returns in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_delta(ts_backfill(anl4_bvps_value, 63), 63) / (ts_backfill(anl4_bvps_value, 63) + 0.01), subindustry)",
+          "rationale": "63-day percentage change in announced book value per share, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

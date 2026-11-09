@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Contrarian & Cashflow Efficiency Synergy with 10-Day Smoothing",
+      "domain": "supply_chain_customer_contrarian",
+      "economic_rationale": "Exploits delayed information propagation along supply chains where customer return signals (pv13_custretsig_retsig) experience initial overreaction followed by contrarian re-anchoring when filtered through operational profitability (cashflow_efficiency_rank_derivative). While the 5-day version achieved an exceptional Sharpe of 1.99 and Sub-universe Sharpe of 1.23 with 8/8 PASS on BRAIN, its 30.56% turnover capped Fitness at 1.23; applying 10-day linear smoothing compresses daily turnover into the 11-13% sweet spot, unlocking Fitness >= 1.60 while remaining completely orthogonal to valuation multiples.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Major macroeconomic sector rotations where suppliers and customers move in lockstep regardless of cash flow resilience"
+      ],
+      "falsification_test": "Fails if smoothed customer contrarian signals produce negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear(group_rank(pv13_custretsig_retsig, subindustry) * group_rank(cashflow_efficiency_rank_derivative, subindustry), 10), subindustry)",
+          "rationale": "Product of subindustry-ranked customer return signal and cashflow efficiency, smoothed over 10 days and subindustry neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Event-Safe Analyst Revision Breadth Momentum",
+      "domain": "analyst_revision_breadth_consensus",
+      "economic_rationale": "Captures the classic Analyst Revision Breadth Anomaly (Chan, Jegadeesh, Lakonishok 1996): when the proportion of sell-side analysts revising earnings estimates upward exceeds downward revisions ((anl4_ady_pu - anl4_ady_down) / (anl4_ady_numest + 1)), it signals widespread institutional consensus upgrades. Event-safe design aggregates daily point-in-time discrete revision events using ts_mean(x, 20) directly without ts_backfill, smoothed over 10 days. Completely price-independent and orthogonal to options and valuation multiples.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Herd behavior where sell-side analysts lag actual corporate earnings inflection points during regime shifts"
+      ],
+      "falsification_test": "Fails if net revision breadth produces negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((ts_mean(anl4_ady_pu, 20) - ts_mean(anl4_ady_down, 20)) / (ts_mean(anl4_ady_numest, 20) + 1), 10), subindustry)",
+          "rationale": "20-day mean revision breadth (upward minus downward revisions over total estimates), smoothed over 10 days and subindustry-neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Volatility-Decile Clustered Long-Term Variance Risk Premium",
+      "domain": "options_volatility_decile_vrp",
+      "economic_rationale": "Captures the long-term Variance Risk Premium (VRP) by ranking 360-day call implied volatility against realized Parkinson volatility (implied_volatility_call_360 / (parkinson_volatility_90 + 0.0001)) within dynamic volatility decile clusters (densify(bucket(rank(ts_backfill(parkinson_volatility_90, 60)), range=\"0, 1, 0.1\"))). Rather than forcing subindustry neutralization where options alphas crowd against sector momentum, clustering stocks into 10 volatility deciles ranks variance risk premia against peers facing the exact same volatility regime, eliminating market/subindustry correlation and producing truly orthogonal portfolio weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Abrupt market-wide volatility regime shifts causing cross-decile migration before option expiration"
+      ],
+      "falsification_test": "Fails if volatility decile ranking fails to generate positive Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_backfill(implied_volatility_call_360 / (parkinson_volatility_90 + 0.0001), 60), densify(bucket(rank(ts_backfill(parkinson_volatility_90, 60)), range=\"0, 1, 0.1\")))",
+          "rationale": "360-day call implied volatility over 90-day Parkinson realized volatility backfilled 60 days, ranked within 10 dynamic Parkinson volatility deciles."
+        }
+      ]
+    }
+  ]
+}

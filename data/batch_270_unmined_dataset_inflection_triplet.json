@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Growth at a Reasonable Price (GARP) Style Composite",
+      "domain": "fundamental_style_garp_derivatives",
+      "economic_rationale": "Exploits the classic Peter Lynch GARP principle using 100% coverage model16 style derivatives. In empirical testing, expensive stocks with high relative valuation derivatives generate negative Sharpe, while firms with high growth potential derivatives generate superior operating momentum. Subtracting relative valuation rank from growth potential rank (growth - valuation) inverts multiple risk and constructs a pure, dimensionless Growth-at-Reasonable-Price factor. Completely free of price-volume and options inputs, ensuring zero self-correlation against existing portfolio alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Value trap firms with temporarily depressed multiples and deteriorating fundamental growth profiles"
+      ],
+      "falsification_test": "Fails if GARP composite produces negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(growth_potential_rank_derivative - relative_valuation_rank_derivative, subindustry)",
+          "rationale": "Growth potential derivative minus relative valuation derivative, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Earnings Certainty Quality-Value Factor Composite",
+      "domain": "fundamental_quality_value_derivatives",
+      "economic_rationale": "Implements Greenblatt's Magic Formula in continuous style-derivative space: high earnings quality and cash flow sustainability (earnings_certainty_rank_derivative penalizes accruals and cash flow volatility) combined with valuation discount (-relative_valuation_rank_derivative). Equities with rock-solid earnings certainty trading at reasonable multiples exhibit durable fundamental outperformance without suffering from speculative drawdowns. Uses 100% coverage matrix fields with zero price-volume dependency.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Deep cyclical firms where earnings certainty drops during macroeconomic troughs right before cyclical rallies"
+      ],
+      "falsification_test": "Fails if Quality-Value factor fails to produce positive Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(earnings_certainty_rank_derivative - relative_valuation_rank_derivative, subindustry)",
+          "rationale": "Earnings certainty derivative minus relative valuation derivative, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Quarterly Operating Profit Margin Expansion Percentile",
+      "domain": "operating_profit_margin_acceleration",
+      "economic_rationale": "Measures Operating Margin Expansion: operating income divided by annualized quarterly net sales captures the firm's pure Operating Profit Margin (EBIT Margin), free of stock price inputs. The 6-month delta (ts_delta(..., 120)) measures operating leverage—when revenues expand faster than fixed operating overhead, margins widen sharply. Percentile ranking this margin acceleration over a 252-day horizon (ts_rank(..., 252)) transforms slow quarterly statement filings into an active, timely fundamental inflection signal that delivered Sharpe 2.24 in approved precedent ffcc83f6.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "One-off quarterly restructuring asset sales that artificially boost operating income relative to revenue"
+      ],
+      "falsification_test": "Fails if operating margin expansion percentile generates negative Sharpe in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_delta(ts_backfill(operating_income, 60) / (ts_backfill(actual_sales_value_quarter, 60) * 4 + 1000.0), 120), 252), subindustry)",
+          "rationale": "1-year percentile of trailing 6-month operating margin expansion, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}
