@@ -1,0 +1,58 @@
+================================================================================
+BATCH 281: OPTION BREAKEVEN MASTERY TRIPLET (TARGETING SHARPE >= 1.50, FITNESS >= 1.20)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (83198715): Dense-Backfilled 180d Net Breakeven Asymmetry with Intraday VWAP Mean-Reversion
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: In Batch 280 C1, raw 180d breakeven asymmetry generated Sharpe 1.14 and SubSharpe 0.81 but failed instrument concentration due to intermittent quote gaps. Dense ts_backfill(..., 5) on compact net breakeven asymmetry ((call_breakeven_180 + put_breakeven_180 - 2 * close) / close) eliminates missing values across TOP3000, while group_rank(...) - 0.5 guarantees strictly uniform portfolio weight distribution. Integrating an intraday VWAP mean-reversion discount (-0.20 * group_zscore((close - vwap) / vwap, subindustry)) sharpens execution entry and lifts Fitness past 1.00.
+
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.20 * group_zscore((close - vwap) / vwap, subindustry), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (29b571bf): Dual-Tenor Option Breakeven Convexity Confirmation (60-Day & 180-Day Spread)
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: 60-day options have significantly denser trading liquidity and faster responsiveness than 180-day tenors. Synthesizing standardized 60-day net breakeven asymmetry (0.60 weight, 40-day zscore) with 180-day breakeven asymmetry (0.40 weight, 60-day zscore) provides multi-horizon confirmation, filtering out single-tenor liquidity noise and maximizing risk-adjusted Sharpe across TOP3000 with uniform rank weighting.
+
+Expression:
+group_rank(0.60 * ts_zscore(ts_backfill((call_breakeven_60 + put_breakeven_60 - 2 * close) / close, 5), 40) + 0.40 * ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (aa51db92): Fast 60-Day Breakeven Asymmetry with Cubic Conviction Tail Amplification
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: In liquid 60-day options, institutional order-flow signals update rapidly. Combining fast 60-day net breakeven asymmetry with intraday VWAP mean-reversion and applying a cubic polynomial transform power(group_rank(...) - 0.5, 3) concentrates portfolio capital in the top 10% highest conviction option upside skew setups while zeroing out noisy middle percentiles. This non-linear conviction scaling dramatically widens annualized return spreads, directly targeting Fitness >= 1.50 without inflating turnover.
+
+Expression:
+power(group_rank(ts_zscore(ts_backfill((call_breakeven_60 + put_breakeven_60 - 2 * close) / close, 5), 40) - 0.15 * group_zscore((close - vwap) / vwap, subindustry), subindustry) - 0.5, 3)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================

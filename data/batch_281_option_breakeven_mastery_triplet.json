@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Dense-Backfilled 180-Day Option Net Breakeven Asymmetry with Intraday VWAP Mean-Reversion",
+      "domain": "options_breakeven_vwap_synergy",
+      "economic_rationale": "In Batch 280 Candidate 1 (990ece74), raw 180-day option breakeven asymmetry demonstrated strong predictive power (Sharpe 1.14, SubSharpe 0.81, Turnover 24.15%) but failed instrument concentration due to intermittent option quote gaps in small caps. Applying ts_backfill(..., 5) on the compact net breakeven asymmetry term ((call_breakeven_180 + put_breakeven_180 - 2 * close) / close) repairs data density across the full TOP3000 universe while group_rank(...) - 0.5 eliminates outlier weight spikes. Integrating a subindustry-standardized intraday VWAP mean-reversion overlay (-0.20 * group_zscore((close - vwap) / vwap, subindustry)) sharpens trade entry, boosts turnover responsiveness, and propels Sharpe past 1.50 and Fitness >= 1.00.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden single-day market gap-downs where intraday VWAP discounts expand before mean-reverting"
+      ],
+      "falsification_test": "Fails if backfilled 180-day breakeven asymmetry fails to eliminate weight concentration failures or achieves Sharpe < 1.30.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.20 * group_zscore((close - vwap) / vwap, subindustry), subindustry) - 0.5",
+          "rationale": "Dense-backfilled 180-day compact net breakeven asymmetry with group_rank uniform weighting and intraday VWAP mean-reversion discount."
+        }
+      ]
+    },
+    {
+      "title": "Dual-Tenor Option Breakeven Convexity Confirmation (60-Day & 180-Day Spread)",
+      "domain": "options_dual_tenor_breakeven_synergy",
+      "economic_rationale": "While 180-day options reflect long-term structural institutional hedging, 60-day options possess significantly higher open-interest liquidity and faster responsiveness to emerging corporate catalysts. Synthesizing standardized 60-day breakeven asymmetry (0.60 weight, 40-day zscore) with 180-day breakeven asymmetry (0.40 weight, 60-day zscore) creates a multi-horizon confirmation signal that filters out single-tenor liquidity noise and maximizes risk-adjusted Sharpe across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Term structure inversions during quarterly earnings cycles where 60-day IV decouples from 180-day IV"
+      ],
+      "falsification_test": "Fails if dual-tenor breakeven confirmation fails to achieve Sharpe >= 1.30 or Fitness >= 1.00.",
+      "candidates": [
+        {
+          "expression": "group_rank(0.60 * ts_zscore(ts_backfill((call_breakeven_60 + put_breakeven_60 - 2 * close) / close, 5), 40) + 0.40 * ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.5",
+          "rationale": "Dual-tenor 60d and 180d net breakeven asymmetry synthesis, subindustry-neutralized and uniformly ranked."
+        }
+      ]
+    },
+    {
+      "title": "Fast 60-Day Breakeven Asymmetry with Cubic Conviction Tail Amplification",
+      "domain": "options_fast_breakeven_cubic_conviction",
+      "economic_rationale": "In the liquid 60-day option tenor, institutional order-flow signals update rapidly. Combining fast 60-day net breakeven asymmetry with intraday VWAP mean-reversion and applying a cubic polynomial transform power(group_rank(...) - 0.5, 3) concentrates portfolio capital in the top 10% highest conviction option upside skew setups while zeroing out noisy middle percentiles. This non-linear conviction scaling dramatically widens annualized return spreads, directly targeting Fitness >= 1.50 without inflating turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "8d",
+      "confounders": [
+        "Persistent multi-week downward trends where out-of-the-money call buying represents retail speculation rather than institutional hedging"
+      ],
+      "falsification_test": "Fails if cubic conviction scaling causes weight concentration or reduces Sharpe below 1.40.",
+      "candidates": [
+        {
+          "expression": "power(group_rank(ts_zscore(ts_backfill((call_breakeven_60 + put_breakeven_60 - 2 * close) / close, 5), 40) - 0.15 * group_zscore((close - vwap) / vwap, subindustry), subindustry) - 0.5, 3)",
+          "rationale": "Fast 60-day option net breakeven asymmetry with intraday VWAP discount and cubic polynomial conviction scaling."
+        }
+      ]
+    }
+  ]
+}
