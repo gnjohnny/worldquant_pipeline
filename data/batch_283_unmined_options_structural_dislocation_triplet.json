@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Pure Long-Horizon Option Net Breakeven Asymmetry (Zero Price Overlays)",
+      "domain": "options_pure_breakeven_geometry",
+      "economic_rationale": "In the options market (option9), institutional investors express long-term directional bias and tail-risk hedging through open-interest weighted breakeven pricing. The compact net breakeven asymmetry term ((call_breakeven_180 + put_breakeven_180 - 2 * close) / close) measures the net upside vs downside breakeven price distance. Using pure option geometry without any equity price or VWAP overlays and standardizing via rolling 60-day z-scores produces an unpolluted institutional positioning signal with balanced turnover and high risk-adjusted Sharpe across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unscheduled corporate acquisitions where deep in-the-money options distort open-interest breakeven distributions"
+      ],
+      "falsification_test": "Fails if pure 180-day breakeven asymmetry achieves Sharpe < 1.30 or Fitness < 1.00 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.5",
+          "rationale": "Pure 180-day net breakeven asymmetry standardized over 60 days, subindustry-neutralized and uniformly ranked without price overlays."
+        }
+      ]
+    },
+    {
+      "title": "Options Put-Call Open Interest Term Dislocation Sentiment Reversal",
+      "domain": "options_pcr_term_dislocation",
+      "economic_rationale": "Put-to-call open interest ratios (option9) reflect aggregate market hedging demand. Comparing the 90-day baseline put-call ratio (pcr_oi_90) against the near-term 30-day ratio (pcr_oi_30) captures short-term sentiment dislocations. When pcr_oi_90 exceeds pcr_oi_30, near-term hedging panic has dissipated while long-term institutional call positioning remains intact, creating a bullish sentiment unwinding drift across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Index option market-wide hedging flows that distort single-stock equity option open interest ratios"
+      ],
+      "falsification_test": "Fails if put-call OI term dislocation fails to achieve Sharpe >= 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_backfill(pcr_oi_90 - pcr_oi_30, 5), 60), subindustry) - 0.5",
+          "rationale": "Subindustry-standardized 60-day z-score of 90d versus 30d put-call open interest ratio spread."
+        }
+      ]
+    },
+    {
+      "title": "Synthetic Forward Price Implied Basis Momentum",
+      "domain": "options_forward_price_implied_basis",
+      "economic_rationale": "Synthetic forward prices (forward_price_60) derived from at-the-money options via put-call parity encode the market maker's implied cost-of-carry and share borrowing costs. When the synthetic forward trades at an expanding premium over cash equity ((forward_price_60 - close) / close), options market makers are demanding a premium to borrow shares, reflecting acute institutional demand to establish long forward exposure.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unscheduled ex-dividend dates or special cash dividends that mechanically depress synthetic forward pricing"
+      ],
+      "falsification_test": "Fails if synthetic forward basis momentum yields Sharpe < 1.25 or fails sub-universe consistency in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_backfill((forward_price_60 - close) / close, 5), 60), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 60-day z-score of synthetic 60-day forward price premium over cash equity."
+        }
+      ]
+    }
+  ]
+}

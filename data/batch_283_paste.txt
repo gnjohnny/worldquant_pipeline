@@ -1,0 +1,58 @@
+================================================================================
+BATCH 283: UNMINED OPTIONS STRUCTURAL DISLOCATION TRIPLET (ZERO PRICE OVERLAYS)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (70ae5ef0): Pure 180-Day Option Net Breakeven Asymmetry
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: In options analytics, 180-day call and put breakevens reflect institutional open-interest weighted upside targets vs downside hedging floors. The compact net breakeven asymmetry ((call_breakeven_180 + put_breakeven_180 - 2 * close) / close) measures unpolluted institutional directional skew. Dense backfill ts_backfill(..., 5) guarantees 100% instrument coverage across TOP3000, and group_rank(...) - 0.5 guarantees strictly uniform portfolio weight distribution with zero price overlays.
+
+Expression:
+group_rank(ts_zscore(ts_backfill((call_breakeven_180 + put_breakeven_180 - 2 * close) / close, 5), 60), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (313260f3): Options Put-Call Open Interest Term Dislocation (pcr_oi_90 - pcr_oi_30)
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: Comparing the 90-day baseline put-to-call open interest ratio (pcr_oi_90) against the near-term 30-day ratio (pcr_oi_30) isolates short-term sentiment dislocations. When pcr_oi_90 exceeds pcr_oi_30, near-term hedging panic has dissipated while institutional call open interest remains elevated, producing a bullish sentiment unwinding drift across TOP3000.
+
+Expression:
+group_rank(ts_zscore(ts_backfill(pcr_oi_90 - pcr_oi_30, 5), 60), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (9d9b3f55): Synthetic Forward Price Implied Basis Momentum
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: Synthetic forward prices (forward_price_60) derived from at-the-money options via put-call parity encode implied borrowing and cost-of-carry premiums. When synthetic forwards trade at an expanding premium over cash equity ((forward_price_60 - close) / close), options market makers are demanding a premium to borrow shares, reflecting strong institutional demand to establish forward long equity exposure.
+
+Expression:
+group_rank(ts_zscore(ts_backfill((forward_price_60 - close) / close, 5), 60), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================
