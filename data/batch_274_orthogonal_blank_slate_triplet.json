@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Estimate Net Revision Breadth Asymmetry",
+      "domain": "analyst_estimate_net_revision_breadth",
+      "economic_rationale": "Sell-side consensus revisions are subject to herding behavior, but the net breadth of revisions—the proportion of covering analysts revising earnings forecasts upward versus downward relative to total covering analysts—provides an un-anchored signal of private information flow. When the net revision fraction (anl4_ady_pu - anl4_ady_down) / (anl4_ady_numest + 1.0) is persistently positive over a 30-day window, institutional underreaction creates systematic Post-Revision Drift. Smoothing with a 30-day rolling mean and cross-sectionally ranking within subindustry yields a low-turnover, orthogonal fundamental alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Small-cap equities with fewer than 2 covering analysts where single broker updates cause artificial ratio spikes"
+      ],
+      "falsification_test": "Fails if high net revision breadth equities fail to achieve Sharpe > 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_mean((ts_backfill(anl4_ady_pu, 30) - ts_backfill(anl4_ady_down, 30)) / (ts_backfill(anl4_ady_numest, 30) + 1.0), 30), subindustry)",
+          "rationale": "Trailing 30-day mean of net analyst revision breadth (upgrades minus downgrades divided by total forecasts plus 1), ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Synthetic Forward Curve Slope and Cost-of-Carry Dislocation",
+      "domain": "options_synthetic_forward_curve_slope",
+      "economic_rationale": "Under put-call parity, synthetic forward prices reflect market borrowing costs, dividend discounting, and structural short-selling demand. When the 120-day synthetic forward price relative to spot deviates from the 30-day forward price relative to spot, it captures term-structure dislocation in institutional cost-of-carry. Min-max scaling this forward curve slope (forward_price_120 / close - forward_price_30 / close) over 90 trading days and neutralizing within subindustry isolates structural borrowing fee anomalies with zero correlation to equity price deltas.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Illiquid option chains where bid-ask bounce distorts synthetic forward prices during earnings season"
+      ],
+      "falsification_test": "Fails if forward curve term structure slope fails to achieve Sharpe > 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_scale(forward_price_120 / close - forward_price_30 / close, 90), subindustry)",
+          "rationale": "90-day time-series min-max scale of the synthetic forward slope difference (120d forward to spot minus 30d forward to spot), ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Style Surface GARP Multi-Factor Decoupling",
+      "domain": "fundamental_growth_at_reasonable_price_decoupling",
+      "economic_rationale": "Growth and Value are traditionally treated as opposing single-factor styles, but multi-factor style surface composites evaluate them orthogonally: fscore_growth (medium-term business expansion) and fscore_value (valuation discount relative to peer multiples). Companies scoring simultaneously high in growth potential while remaining attractively valued represent prime Growth at a Reasonable Price (GARP) mispricings that single-style portfolios systematically miss. Applying a 120-day rolling z-score to backfilled fscore_growth * fscore_value captures GARP inflection without price-delta correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Firms in deep secular decline that appear artificially cheap (value traps) while reporting temporary sales spikes"
+      ],
+      "falsification_test": "Fails if rolling z-score of growth-value interaction fails to achieve positive Sharpe across subindustries.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)",
+          "rationale": "120-day rolling z-score of backfilled growth composite multiplied by value composite (GARP interaction), ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

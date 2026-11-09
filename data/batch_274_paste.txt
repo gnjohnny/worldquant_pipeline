@@ -1,0 +1,49 @@
+================================================================================
+BATCH 274: ORTHOGONAL BLANK-SLATE TRIPLET (RULE 9 COMPLIANT)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (071199b5): Analyst Estimate Net Revision Breadth Asymmetry
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_mean((ts_backfill(anl4_ady_pu, 30) - ts_backfill(anl4_ady_down, 30)) / (ts_backfill(anl4_ady_numest, 30) + 1.0), 30), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.01 (or 0.08)
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (2ec45a78): Synthetic Forward Curve Slope and Cost-of-Carry Dislocation
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_scale(forward_price_120 / close - forward_price_30 / close, 90), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.01 (or 0.08)
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (838446fe): Fundamental Style Surface GARP Multi-Factor Decoupling
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.01 (or 0.08)
+Unit Handling: Verify
+================================================================================
