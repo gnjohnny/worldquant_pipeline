@@ -1,0 +1,64 @@
+================================================================================
+BATCH 276: STYLE SURFACE GARP FITNESS MASTERY TRIPLET (RULE 9 COMPLIANT)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (5e32b6ed): Style Surface GARP Percentile Rank Optimization
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_rank(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (ae571a0d): Dual-Factor Independent Percentile Rank GARP Product
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_rank(ts_backfill(fscore_growth, 60), 120) * ts_rank(ts_backfill(fscore_value, 60), 120), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (f51f418e): Style Surface GARP Min-Max Scale Normalization
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_scale(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+BONUS BENCHMARK (838446fe): Batch 274 Proven Formula with Decay=2 & Truncation=0.08
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================

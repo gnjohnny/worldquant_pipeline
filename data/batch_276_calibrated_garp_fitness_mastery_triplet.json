@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Style Surface GARP Percentile Rank Optimization",
+      "domain": "fundamental_garp_percentile_rank",
+      "economic_rationale": "In Batch 274, the non-linear interaction of fscore_growth and fscore_value achieved Sharpe 1.35 and Sub-universe Sharpe 0.99 with well-distributed weights and zero self-correlation. Replacing rolling z-scores with a 120-day time-series percentile rank (ts_rank) creates a strictly uniform time-series distribution, eliminating outlier compression. Pairing with decay=2 and truncation=0.08 allows top-conviction GARP names to drive higher annualized returns, targeting Fitness >= 1.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Firms with temporarily inflated valuation scores due to transient non-recurring write-downs"
+      ],
+      "falsification_test": "Fails if percentile-ranked GARP interaction fails to achieve Fitness > 1.20 or Sharpe > 1.25.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)",
+          "rationale": "120-day time-series percentile rank of backfilled growth composite multiplied by value composite, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Dual-Factor Independent Percentile Rank GARP Product",
+      "domain": "fundamental_dual_rank_garp_product",
+      "economic_rationale": "Evaluating growth momentum and value discounts through independent time-series percentile ranks (ts_rank) before taking their product ensures that a firm must simultaneously trade at multi-month highs in BOTH growth trajectory and valuation attractiveness. This dual-hurdle filter sharply separates high-conviction GARP compounders from value traps, generating wider return spreads while maintaining low portfolio turnover (< 15%).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Cap-weighted mega-cap tech stocks dominating both growth and value metrics simultaneously"
+      ],
+      "falsification_test": "Fails if dual-rank GARP product fails to achieve Sharpe > 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_rank(ts_backfill(fscore_growth, 60), 120) * ts_rank(ts_backfill(fscore_value, 60), 120), subindustry)",
+          "rationale": "Product of independent 120-day time-series ranks of backfilled growth and value composites, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP Min-Max Scale Normalization",
+      "domain": "fundamental_garp_min_max_scale",
+      "economic_rationale": "Time-series min-max scaling (ts_scale) bounds the fundamental GARP score strictly between 0 and 1 based on its trailing 120-day trading range without compressing values into discrete ranks or dividing by volatile rolling standard deviations. Ranking this scaled metric across subindustry peers captures companies trading near their peak relative GARP efficiency with smooth factor gradient.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Companies with stagnant fundamental metrics over the 120-day window where min equals max"
+      ],
+      "falsification_test": "Fails if min-max scaled GARP interaction fails to achieve Sharpe > 1.25.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_scale(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry)",
+          "rationale": "120-day time-series min-max scale of backfilled growth composite multiplied by value composite, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}
