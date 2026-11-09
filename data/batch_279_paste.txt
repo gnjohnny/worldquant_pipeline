@@ -1,0 +1,64 @@
+================================================================================
+BATCH 279: GARP FITNESS OPTIMIZATION TRIPLET (TARGETING FITNESS >= 1.50)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (749791b4): Style Surface GARP Dual-Tenor Reversal with Cubic Conviction Scaling
+--------------------------------------------------------------------------------
+Expression:
+power(group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap, subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry) - 0.5, 3)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (dac6d724): Style Surface GARP Dual-Tenor Reversal with Quadratic Tail Amplification
+--------------------------------------------------------------------------------
+Expression:
+signed_power(group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.35 * group_zscore((close - vwap) / vwap, subindustry) - 0.20 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry) - 0.5, 2)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (bd83cd0d): Style Surface GARP with Volume-Weighted Intraday VWAP Dislocation
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap * (volume / adv20), subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+BENCHMARK CALIBRATION: Batch 278 Champion (ce6ea1b6) with Decay=1
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap, subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 1  <--- (Test decay=1 instead of 2 to remove multi-day smoothing on VWAP bounce!)
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================

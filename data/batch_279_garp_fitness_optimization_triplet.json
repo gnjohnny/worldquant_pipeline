@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Style Surface GARP Dual-Tenor Reversal with Cubic Conviction Scaling",
+      "domain": "fundamental_garp_cubic_conviction",
+      "economic_rationale": "In Batch 278 Candidate 2, the dual-tenor GARP alpha cleared all 8 platform quality gates (Sharpe 1.92, Fitness 1.06, Turnover 18.51%, Self-correlation 0.4198). Applying a cubic polynomial transform power(group_rank(...) - 0.5, 3) naturally preserves zero-mean antisymmetry while aggressively flattening noisy middle percentiles and concentrating capital in the top 10% highest conviction compounders. This concentration expands the annualized return spread by 2x to 3x, directly targeting Fitness >= 1.50 - 1.80 without inflating turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Cap-weighted concentration in a few extreme outlier names during market-wide earnings shocks"
+      ],
+      "falsification_test": "Fails if cubic scaling causes weight concentration failures or reduces Sharpe below 1.50.",
+      "candidates": [
+        {
+          "expression": "power(group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap, subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry) - 0.5, 3)",
+          "rationale": "Cubic polynomial conviction weighting applied to the Batch 278 champion alpha, subindustry neutralized."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP Dual-Tenor Reversal with Quadratic Tail Amplification",
+      "domain": "fundamental_garp_quadratic_amplification",
+      "economic_rationale": "Amplifying overlay weights (-0.35 on intraday VWAP dislocation, -0.20 on 3-day return delta) and applying quadratic power scaling signed_power(group_rank(...) - 0.5, 2) selectively emphasizes stocks where multi-month fundamental excellence aligns with deep multi-horizon liquidity overselling. This accelerates trade execution profits and widens return spread to push Fitness >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Persistent single-direction trend regimes where 3-day return reversals fail to bounce"
+      ],
+      "falsification_test": "Fails if quadratic amplification increases turnover beyond 30% or drops Sharpe below 1.50.",
+      "candidates": [
+        {
+          "expression": "signed_power(group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.35 * group_zscore((close - vwap) / vwap, subindustry) - 0.20 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry) - 0.5, 2)",
+          "rationale": "Quadratic signed power transform applied to elevated overlay weights on the GARP foundation."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP with Volume-Weighted Intraday VWAP Dislocation",
+      "domain": "fundamental_garp_volume_weighted_vwap",
+      "economic_rationale": "Multiplying the intraday price-to-VWAP dislocation by relative trading volume (volume / adv20) conditions the mean-reversion signal on institutional order-flow intensity. When a high-conviction GARP stock deviates from VWAP on heavy abnormal volume, market-maker inventory imbalances are most acute, generating significantly stronger next-day mean-reversion returns that boost Fitness.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unscheduled after-hours earnings releases or FDA decisions that justify high-volume price divergence"
+      ],
+      "falsification_test": "Fails if volume-weighted VWAP overlay fails to achieve Sharpe > 1.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap * (volume / adv20), subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry)",
+          "rationale": "GARP foundation with volume-weighted intraday VWAP dislocation and 3-day return reversal, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}
