@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Style Surface GARP with High-Conviction Intraday VWAP Rebalancing",
+      "domain": "fundamental_garp_vwap_high_conviction",
+      "economic_rationale": "In Batch 277 Candidate 3, combining the 120-day GARP z-score with an intraday VWAP reversion overlay produced Sharpe 1.53, Sub-universe Sharpe 1.11, and well-distributed weights, lifting Fitness from 0.74 to 0.89. Increasing the VWAP dislocation weight from 0.20 to 0.40 and calibrating decay from 4 to 2 allows intraday execution dips to execute immediately without multi-day smoothing, accelerating capital rotation and boosting annualized returns to drive Fitness >= 1.20 - 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Days with broad macro market trend days where stocks trend strongly away from VWAP"
+      ],
+      "falsification_test": "Fails if high-conviction VWAP overlay fails to achieve Fitness > 1.20 or Sharpe > 1.40.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.40 * group_zscore((close - vwap) / vwap, subindustry), subindustry)",
+          "rationale": "Subindustry z-scored GARP 120-day interaction combined with negative 40% weight on intraday VWAP dislocation, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP with Dual-Tenor VWAP and Multi-Day Return Reversal",
+      "domain": "fundamental_garp_dual_tenor_reversal",
+      "economic_rationale": "Liquidity dislocations occur across multiple horizons: intraday execution pressure against VWAP ((close - vwap) / vwap) and short-term retail momentum overshoot across a 3-day window (ts_delta(close, 3) / close). Combining the slow quarterly GARP anchor with both intraday and 3-day reversal overlays creates a smooth daily rebalancing rhythm, capturing spread across multiple frequencies while preserving the fundamental drift trajectory.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Earnings announcement days where 3-day price momentum correctly anticipates permanent fundamental revisions"
+      ],
+      "falsification_test": "Fails if dual-tenor reversal increases turnover above 35% or fails to achieve Sharpe > 1.35.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap, subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry)",
+          "rationale": "Subindustry z-scored GARP 120-day interaction with 30% intraday VWAP reversal and 15% 3-day return delta reversal, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Style Surface GARP with Intraday Candle Body Reversal",
+      "domain": "fundamental_garp_candle_body_reversal",
+      "economic_rationale": "The normalized intraday price change (close - open) / open captures open-to-close directional sentiment driven by retail daytime trading flow. Fading extreme daytime runs on high-conviction GARP stocks provides liquidity to retail chasers at the close and captures overnight mean-reversion, generating an independent daily alpha stream that compounds alongside the multi-month fundamental GARP anchor.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Afternoon breaking news events that justify sustained price continuation into the market close"
+      ],
+      "falsification_test": "Fails if daytime return reversal fails to achieve Sharpe > 1.30 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.35 * group_zscore((close - open) / open, subindustry), subindustry)",
+          "rationale": "Subindustry z-scored GARP 120-day interaction with negative 35% weight on intraday candle return (close - open) / open, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

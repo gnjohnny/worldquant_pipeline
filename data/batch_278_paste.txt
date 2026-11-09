@@ -1,0 +1,49 @@
+================================================================================
+BATCH 278: GARP FITNESS MASTERY & REBALANCING TRIPLET (RULE 9 COMPLIANT)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (44cabfca): Style Surface GARP with High-Conviction Intraday VWAP Rebalancing
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.40 * group_zscore((close - vwap) / vwap, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (ce6ea1b6): Style Surface GARP with Dual-Tenor VWAP and Multi-Day Return Reversal
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.30 * group_zscore((close - vwap) / vwap, subindustry) - 0.15 * group_zscore(ts_delta(close, 3) / close, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (f983d1af): Style Surface GARP with Intraday Candle Body Reversal
+--------------------------------------------------------------------------------
+Expression:
+group_rank(group_zscore(ts_zscore(ts_backfill(fscore_growth * fscore_value, 60), 120), subindustry) - 0.35 * group_zscore((close - open) / open, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 2
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================
