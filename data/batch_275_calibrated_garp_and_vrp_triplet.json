@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Operating Margin Inflection Velocity",
+      "domain": "fundamental_operating_margin_velocity",
+      "economic_rationale": "Operating profitability per dollar of revenue measures a firm's operational leverage and cost discipline. While static operating margins are largely incorporated into consensus analyst targets, the 60-day rate-of-change of operating margin (operating_income / annualized sales) normalized by its 120-day rolling z-score captures fundamental inflection points before they are fully recognized by equity markets. Cross-sectionally ranking within subindustry isolates pure operational acceleration with zero correlation to price-volume momentum.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Highly cyclical manufacturing companies with volatile seasonal inventory adjustments"
+      ],
+      "falsification_test": "Fails if operating margin velocity fails to achieve Sharpe > 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_delta(ts_backfill(operating_income / (actual_sales_value_quarter * 4 + 1000.0), 60), 60), 120), subindustry)",
+          "rationale": "120-day rolling z-score of 60-day change in quarterly operating margin, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Parkinson Realized Volatility Variance Risk Premium Ratio",
+      "domain": "options_parkinson_variance_risk_premium",
+      "economic_rationale": "The Parkinson high-low estimator incorporates intraday price paths, providing substantially higher statistical efficiency than close-to-close volatility metrics. When 20-day implied volatility (implied_volatility_mean_20) drastically exceeds 20-day Parkinson realized volatility, options sellers collect an elevated variance risk premium. Option market makers hedging short positions maintain structural long delta inventory. Min-max scaling this volatility ratio over 40 days and ranking within subindustry harvests this structural premium with low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden corporate takeovers or earnings announcements where implied volatility correctly prices jump risk"
+      ],
+      "falsification_test": "Fails if Parkinson VRP ratio fails to achieve Sharpe > 1.25 across liquid US equities.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_scale(implied_volatility_mean_20 / (parkinson_volatility_20 + 0.001), 40), subindustry)",
+          "rationale": "40-day min-max scale of 20-day implied volatility divided by 20-day Parkinson realized volatility, ranked within subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Calibrated Style Surface GARP Multi-Factor Decoupling",
+      "domain": "fundamental_growth_at_reasonable_price_decoupling",
+      "economic_rationale": "In Batch 274, the non-linear interaction of fscore_growth and fscore_value demonstrated robust predictive power (Sharpe 1.35, Sub-universe Sharpe 0.99) but suffered from sluggish return velocity (Fitness 0.74 due to 120-day lookback). Calibrating the lookback window to 40 days and adding an agile 20-day acceleration component (ts_scale of ts_delta) preserves the core GARP mispricing edge while significantly accelerating capital rotation and annualized returns, driving Fitness to target levels (>= 1.50).",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Firms in secular decline that appear temporarily cheap during transient quarterly revenue bounces"
+      ],
+      "falsification_test": "Fails if calibrated GARP formulation fails to achieve Fitness > 1.40 or Sharpe > 1.30.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_zscore(ts_backfill(fscore_growth * fscore_value, 40), 40) + ts_scale(ts_delta(ts_backfill(fscore_growth * fscore_value, 40), 20), 40), subindustry)",
+          "rationale": "40-day rolling z-score of backfilled GARP interaction combined with 40-day min-max scaled 20-day GARP delta, ranked within subindustry."
+        }
+      ]
+    }
+  ]
+}

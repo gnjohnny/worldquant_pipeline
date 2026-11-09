@@ -1,0 +1,49 @@
+================================================================================
+BATCH 275: CALIBRATED GARP & PARKINSON VRP TRIPLET (RULE 9 COMPLIANT)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (cc9f07aa): Operating Margin Inflection Velocity
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_zscore(ts_delta(ts_backfill(operating_income / (actual_sales_value_quarter * 4 + 1000.0), 60), 60), 120), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.01 (or 0.08)
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (0aaa6e1d): Parkinson Realized Volatility Variance Risk Premium Ratio
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_scale(implied_volatility_mean_20 / (parkinson_volatility_20 + 0.001), 40), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.01 (or 0.08)
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (e4dd0dfe): Calibrated Style Surface GARP Multi-Factor Decoupling
+--------------------------------------------------------------------------------
+Expression:
+group_rank(ts_zscore(ts_backfill(fscore_growth * fscore_value, 40), 40) + ts_scale(ts_delta(ts_backfill(fscore_growth * fscore_value, 40), 20), 40), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.01 (or 0.08)
+Unit Handling: Verify
+================================================================================
