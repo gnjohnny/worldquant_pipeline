@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Daytime Institutional Accumulation vs Overnight Noise Spread",
+      "domain": "microstructure_daytime_overnight_spread",
+      "economic_rationale": "Empirical microstructure research (Lou, Polk, and Skouras 2019) documents that informed institutional order flow executes primarily during regular market hours, driving persistent daytime price trends ((close - open) / open). In contrast, overnight price gaps ((open - ts_delay(close, 1)) / ts_delay(close, 1)) are dominated by retail liquidity noise and sentiment overreaction that rapidly mean-reverts. Subtracting the overnight gap from the daytime return isolates genuine institutional accumulation with 100% instrument coverage across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unscheduled earnings announcements released after market close where overnight gaps represent true fundamental information"
+      ],
+      "falsification_test": "Fails if daytime-overnight return spread yields Sharpe < 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((close - open) / open - (open - ts_delay(close, 1)) / ts_delay(close, 1), 10), subindustry) - 0.5",
+          "rationale": "Subindustry-standardized 10-day decayed spread between daytime return and overnight gap return."
+        }
+      ]
+    },
+    {
+      "title": "High/Low Structural Time-Decay Momentum using Extreme Offsets",
+      "domain": "microstructure_structural_extreme_offsets",
+      "economic_rationale": "Tracking the temporal recency of 20-day price extremes reveals structural order-book momentum. ts_argmax(high, 20) measures the trading days elapsed since the 20-day high (0 if today), while ts_argmin(low, 20) measures days since the 20-day low. The difference ts_argmin(low, 20) - ts_argmax(high, 20) peaks at +19 when an equity is making fresh breakout highs with distant lows, capturing pure price momentum without any price-ratio distortion or scale sensitivity.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Range-bound consolidation regimes where new 20-day highs immediately encounter overhead resistance"
+      ],
+      "falsification_test": "Fails if structural extreme offsets fail to achieve Sharpe >= 1.25 or Fitness >= 1.00.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_argmin(low, 20) - ts_argmax(high, 20), subindustry) - 0.5",
+          "rationale": "Uniform subindustry rank of the difference between elapsed days to 20-day low and elapsed days to 20-day high."
+        }
+      ]
+    },
+    {
+      "title": "Tail-Risk Kurtosis Discount and Return Distribution Predictability",
+      "domain": "statistical_kurtosis_tail_risk_discount",
+      "economic_rationale": "Fat-tailed return distributions (high kurtosis) reflect heightened crash vulnerability and retail lottery-ticket speculation. Using the virgin operator ts_kurtosis over a rolling 60-day window, penalizing high kurtosis (-ts_kurtosis(returns, 60)) isolates equities with Gaussian-like stability, predictable compounding, and negligible headline tail risk, generating robust risk-adjusted returns when neutralized across subindustries.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden macroeconomic volatility shocks that cause broad-market return kurtosis to spike across all sectors"
+      ],
+      "falsification_test": "Fails if low kurtosis discount yields Sharpe < 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_kurtosis(returns, 60), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized uniform ranking of negative 60-day rolling return kurtosis."
+        }
+      ]
+    }
+  ]
+}
