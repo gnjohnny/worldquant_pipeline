@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Product-Overlap Peer Return Momentum Spillover",
+      "domain": "relationship_product_overlap_spillover",
+      "economic_rationale": "In corporate product networks (pv13), rel_ret_all represents the averaged one-day return of peer companies whose commercial products overlap with the instrument (96% matrix coverage). Because end-market consumer demand shocks affect all firms with shared product offerings, multi-day peer product momentum (ts_decay_linear(rel_ret_all, 5)) leads individual stock price adjustment, providing an unpriced fundamental demand signal before headline disclosures.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Single-firm product recalls or patent disputes that cause idiosyncratic divergence from peer product clusters"
+      ],
+      "falsification_test": "Fails if peer product return momentum fails to achieve Sharpe >= 1.25 or generates turnover > 70% in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(rel_ret_all, 5), subindustry) - 0.5",
+          "rationale": "5-day decayed product-overlap peer return momentum, subindustry-neutralized and uniformly ranked across TOP3000."
+        }
+      ]
+    },
+    {
+      "title": "Direct Competitor Lead-Lag Catch-Up Performance Spread",
+      "domain": "relationship_competitor_lead_lag_spread",
+      "economic_rationale": "Direct competitors (pv13 / rel_ret_comp, 82% matrix coverage) share common input costs, customer bases, and macro industry cycles. Due to fragmented order flow, stock prices adjust sequentially rather than instantaneously. When direct competitors outperform the firm over a 5-day horizon (rel_ret_comp - returns > 0), the firm experiences strong catch-up revaluation as equity analysts adjust relative valuation benchmarks.",
+      "expected_direction": "positive",
+      "intended_horizon": "8d",
+      "confounders": [
+        "Permanent market-share losses from competitors that justify structural underperformance"
+      ],
+      "falsification_test": "Fails if competitor lead-lag spread yields Sharpe < 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(rel_ret_comp - returns, 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day decayed spread between direct competitor returns and firm returns."
+        }
+      ]
+    },
+    {
+      "title": "Competitor Network Authority Weighted Product Demand Momentum",
+      "domain": "relationship_competitor_authority_product_synergy",
+      "economic_rationale": "pv13_com_rk_au represents the HITS network authority score of a firm's competitors (91% matrix coverage). Firms facing high-authority competitors operate in dominant economic industry centers. Weighting product-overlap return momentum by competitor network authority (rel_ret_all * pv13_com_rk_au) concentrates capital in high-impact industrial nodes where peer product spillover effects are strongest.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Anti-trust scrutiny or regulatory investigations targeted specifically at high-authority market leaders"
+      ],
+      "falsification_test": "Fails if network authority weighted product momentum yields Sharpe < 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(rel_ret_all * pv13_com_rk_au, 5), subindustry) - 0.5",
+          "rationale": "Subindustry-standardized 5-day decay of product peer return momentum weighted by competitor network authority."
+        }
+      ]
+    }
+  ]
+}

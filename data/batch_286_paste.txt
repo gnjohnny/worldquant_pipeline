@@ -1,0 +1,58 @@
+================================================================================
+BATCH 286: UNMINED PEER NETWORK SPILLOVER & COMPETITOR LEAD-LAG TRIPLET
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (7d709def): Product-Overlap Peer Return Momentum Spillover
+--------------------------------------------------------------------------------
+Dataset: pv13 (rel_ret_all, 96% matrix coverage across USA TOP3000)
+Economic Rationale: In corporate product networks (pv13), rel_ret_all represents the averaged one-day return of peer companies whose commercial products overlap with the instrument (96% matrix coverage). Because end-market consumer demand shocks affect all firms with shared product offerings, multi-day peer product momentum (ts_decay_linear(rel_ret_all, 5)) leads individual stock price adjustment, providing an unpriced fundamental demand signal before headline disclosures.
+
+Expression:
+group_rank(ts_decay_linear(rel_ret_all, 5), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (1c1a2206): Direct Competitor Lead-Lag Catch-Up Performance Spread
+--------------------------------------------------------------------------------
+Dataset: pv13 (rel_ret_comp, 82% matrix coverage) & pv1 (returns, 100% matrix coverage)
+Economic Rationale: Direct competitors share common input costs, customer bases, and macro industry cycles. Due to fragmented order flow, stock prices adjust sequentially rather than instantaneously. When direct competitors outperform the firm over a 5-day horizon (rel_ret_comp - returns > 0), the firm experiences strong catch-up revaluation as equity analysts adjust relative valuation benchmarks.
+
+Expression:
+group_rank(ts_decay_linear(rel_ret_comp - returns, 5), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (c736d736): Competitor Network Authority Weighted Product Demand Momentum
+--------------------------------------------------------------------------------
+Dataset: pv13 (rel_ret_all 96% matrix coverage, pv13_com_rk_au 91% matrix coverage)
+Economic Rationale: pv13_com_rk_au represents the HITS network authority score of a firm's competitors (91% matrix coverage). Firms facing high-authority competitors operate in dominant economic industry centers. Weighting product-overlap return momentum by competitor network authority (rel_ret_all * pv13_com_rk_au) concentrates capital in high-impact industrial nodes where peer product spillover effects are strongest.
+
+Expression:
+group_rank(ts_decay_linear(rel_ret_all * pv13_com_rk_au, 5), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================

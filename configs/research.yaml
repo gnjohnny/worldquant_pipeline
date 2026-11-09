@@ -80,10 +80,7 @@ operators:
       arity: 3
       param_types: ["expression", "integer", "number"]
       description: "Rolling quantile over d days"
-    - name: "ts_kurtosis"
-      arity: 2
-      param_types: ["expression", "integer"]
-      description: "Rolling kurtosis over d days"
+    # ts_kurtosis is inaccessible on BRAIN simulator
     - name: "ts_zscore"
       arity: 2
       param_types: ["expression", "integer"]

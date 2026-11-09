@@ -1878,6 +1878,20 @@ fields:
   unit: ratio
   region: USA
   permitted_use: true
+- field_key: rel_ret_all
+  category: relationship
+  description: Averaged one-day return of the companies whose product overlapped with the instrument
+  timing_delay: 1
+  unit: ratio
+  region: USA
+  permitted_use: true
+- field_key: rel_ret_comp
+  category: relationship
+  description: Averaged one-day return of the competing companies
+  timing_delay: 1
+  unit: ratio
+  region: USA
+  permitted_use: true
 - field_key: pv13_com_page_rank
   category: relationship
   description: the PageRank of competitors
