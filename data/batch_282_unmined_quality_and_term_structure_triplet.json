@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cashflow Conversion Efficiency and Earnings Predictability Quality Synergy",
+      "domain": "fundamental_quality_cashflow_efficiency",
+      "economic_rationale": "In model16, cashflow_efficiency_rank_derivative captures the rate of change in operational cash generation efficiency per dollar of deployed capital, insulating firms from external credit constraints. When synergized with earnings_certainty_rank_derivative (penalizing accounting accruals and earnings volatility), this composite isolates financially resilient, high-quality compounding equities with structural multi-quarter outperformance across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Speculative liquidity bubbles where unhedged low-quality junk rallies indiscriminately"
+      ],
+      "falsification_test": "Fails if cashflow efficiency and earnings certainty synergy fails to achieve Sharpe >= 1.25 or Fitness >= 1.00.",
+      "candidates": [
+        {
+          "expression": "group_rank(0.60 * group_zscore(ts_decay_linear(cashflow_efficiency_rank_derivative, 5), subindustry) + 0.40 * group_zscore(ts_decay_linear(earnings_certainty_rank_derivative, 5), subindustry), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized synthesis of 5-day decayed cashflow efficiency and earnings certainty, ranked uniformly across TOP3000."
+        }
+      ]
+    },
+    {
+      "title": "Growth Potential Trajectory with Institutional Consensus Revision Momentum",
+      "domain": "fundamental_growth_analyst_revision_momentum",
+      "economic_rationale": "Accelerations in fundamental growth potential (growth_potential_rank_derivative) generate persistent equity drift when ratified by institutional consensus upgrades (analyst_revision_rank_derivative). Due to analyst anchoring bias, sell-side upgrades occur in multi-month cascades, producing a steady post-revision drift that can be systematically captured with 100% instrument coverage.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Broad macroeconomic guidance cuts during cyclical downturns that override firm-specific upgrades"
+      ],
+      "falsification_test": "Fails if growth trajectory and revision momentum synergy yields Sharpe < 1.25 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(0.50 * group_zscore(ts_decay_linear(growth_potential_rank_derivative, 5), subindustry) + 0.50 * group_zscore(ts_decay_linear(analyst_revision_rank_derivative, 5), subindustry), subindustry) - 0.5",
+          "rationale": "Subindustry-standardized combination of 5-day decayed growth potential and analyst revision momentum."
+        }
+      ]
+    },
+    {
+      "title": "Implied Volatility Term Structure Contango Slope and Event-Risk Discount",
+      "domain": "options_volatility_term_structure_contango",
+      "economic_rationale": "The slope of the implied volatility term structure ((implied_volatility_mean_90 - implied_volatility_mean_30) / implied_volatility_mean_30) reflects structural institutional risk sentiment. In normal market regimes, the curve sits in steep contango (long-term IV > short-term IV), reflecting calm accumulation and low near-term shock probability. Stocks exhibiting top-tier contango slope within each subindustry suffer minimal event drag and deliver superior risk-adjusted returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unscheduled market-wide macroeconomic shocks that instantaneously flip term structures into backwardation"
+      ],
+      "falsification_test": "Fails if IV term structure contango slope generates Sharpe < 1.25 or fails sub-universe consistency in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(group_zscore(ts_decay_linear((implied_volatility_mean_90 - implied_volatility_mean_30) / implied_volatility_mean_30, 5), subindustry), subindustry) - 0.5",
+          "rationale": "5-day decayed implied volatility term structure slope, subindustry-neutralized and uniformly ranked."
+        }
+      ]
+    }
+  ]
+}
