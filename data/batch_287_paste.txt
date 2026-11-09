@@ -1,0 +1,58 @@
+================================================================================
+BATCH 287: COMPETITOR LEAD-LAG SPREAD (FITNESS & TURNOVER OPTIMIZATION)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (6b2a0b94): 10-Day Linear Smoothed Competitor Lead-Lag Spread
+--------------------------------------------------------------------------------
+Dataset: pv13 (rel_ret_comp, 82% matrix coverage) & pv1 (close, 100% matrix coverage)
+Economic Rationale: Direct competitors share common input costs, customer bases, and macro industry cycles. In Batch 286, raw 5-day spread achieved Sharpe 1.53 but suffered 45% turnover and unit friction. Replacing raw returns with dimensionless return (close - ts_delay(close, 1)) / ts_delay(close, 1) eliminates unit warnings, and smoothing across a 10-day decay window filters high-frequency noise, slashing turnover towards 20-25% to propel Fitness > 1.20.
+
+Expression:
+group_rank(ts_decay_linear(rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1), 10), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (0b7be888): 15-Day Deep Trend Competitor Lead-Lag Spread
+--------------------------------------------------------------------------------
+Dataset: pv13 (rel_ret_comp, 82% matrix coverage) & pv1 (close, 100% matrix coverage)
+Economic Rationale: Extending the decay horizon to 15 trading days captures sustained institutional benchmark rebalancing across competing firms. A 15-day linear decay further compresses portfolio turnover into the 15-18% range, providing maximum mathematical leverage to the Fitness multiplier sqrt(Return / Turnover) to achieve Fitness >= 1.40-1.50+ while preserving high Sharpe stability.
+
+Expression:
+group_rank(ts_decay_linear(rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1), 15), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (db91086e): 10-Day Cumulative Competitor Return Divergence Spread
+--------------------------------------------------------------------------------
+Dataset: pv13 (rel_ret_comp, 82% matrix coverage) & pv1 (close, 100% matrix coverage)
+Economic Rationale: Rather than decaying daily return differences, directly comparing the 10-day cumulative competitor return (ts_sum(rel_ret_comp, 10)) with the firm's 10-day cumulative return ((close - ts_delay(close, 10)) / ts_delay(close, 10)) quantifies structural performance divergence. Smoothing this cumulative divergence with ts_decay_linear(..., 5) isolates genuine analyst benchmark catch-up while maintaining zero unit friction and low turnover.
+
+Expression:
+group_rank(ts_decay_linear(ts_sum(rel_ret_comp, 10) - (close - ts_delay(close, 10)) / ts_delay(close, 10), 5), subindustry) - 0.5
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================
