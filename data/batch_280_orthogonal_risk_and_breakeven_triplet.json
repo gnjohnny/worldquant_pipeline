@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Long-Horizon Option Breakeven Asymmetry and Upside Expansion",
+      "domain": "options_breakeven_asymmetry",
+      "economic_rationale": "In the options market (option9), institutional investors express directional skew and tail-risk expectations through out-of-the-money positioning. The 180-day call breakeven (call_breakeven_180) reflects open-interest weighted institutional upside price targets, while put_breakeven_180 reflects structural downside hedging floors. When a stock's rolling 60-day standardized upside distance expands relative to its downside distance within its subindustry, it signals aggressive institutional upside call accumulation and expanding forward return expectations.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unhedged earnings release volatility where deep OTM lottery calls artificially elevate call breakeven"
+      ],
+      "falsification_test": "Fails if rolling 60-day breakeven asymmetry generates Sharpe < 1.25 or fails sub-universe consistency in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_zscore((call_breakeven_180 - close) / close, 60) - ts_zscore((close - put_breakeven_180) / close, 60), subindustry)",
+          "rationale": "Subindustry-standardized spread of 60-day rolling z-scores of upside call breakeven distance versus downside put breakeven distance."
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Variance Compression with Low-Beta and Market Coupling Synergy",
+      "domain": "risk_model_idiosyncratic_compression",
+      "economic_rationale": "Empirical asset pricing confirms the low-beta and low-volatility anomaly: equities with high idiosyncratic uncertainty deliver inferior risk-adjusted performance due to lottery preferences and flighty retail capital. In the systematic risk model (model51), penalizing short-term idiosyncratic risk (-unsystematic_risk_last_30_days) and market sensitivity (-beta_last_60_days_spy) while rewarding persistent market correlation (correlation_last_30_days_spy) isolates structurally stable, high-conviction institutional compounding equities with low drawdown profiles.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden macro factor rotation regimes where high-beta speculative equities rally aggressively during market recoveries"
+      ],
+      "falsification_test": "Fails if low-beta and idiosyncratic compression synergy fails to achieve Sharpe >= 1.25 or Fitness >= 1.00.",
+      "candidates": [
+        {
+          "expression": "group_zscore(group_zscore(-unsystematic_risk_last_30_days, subindustry) + group_zscore(-beta_last_60_days_spy, subindustry) + group_zscore(correlation_last_30_days_spy, subindustry), subindustry)",
+          "rationale": "Subindustry-standardized synthesis of low idiosyncratic risk, low market beta, and market correlation coupling."
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Return Spillover Lead-Lag Arbitrage",
+      "domain": "alternative_supply_chain_customer_spillover",
+      "economic_rationale": "In corporate supply chain networks (pv13), customer cash flow and stock price shocks propagate downstream to supplier equities with a latency of several trading days due to delayed retail and institutional order-flow assimilation. Linearly decaying customer return signals (ts_decay_linear(pv13_custretsig_retsig, 10)) capture incoming supplier revenue momentum. Subtracting the supplier's own short-term price return (ts_delta(close, 5) / close) creates an unpriced lead-lag catch-up arbitrage signal.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Supplier customer loss announcements or product obsolescence that breaks historical supply chain revenue transmission"
+      ],
+      "falsification_test": "Fails if customer return spillover fails to achieve Sharpe >= 1.25 or if turnover exceeds 70% in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) - group_zscore(ts_delta(close, 5) / close, subindustry)",
+          "rationale": "Subindustry-neutralized spread between 10-day decayed customer return momentum and supplier 5-day price reaction."
+        }
+      ]
+    }
+  ]
+}

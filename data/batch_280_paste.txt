@@ -1,0 +1,58 @@
+================================================================================
+BATCH 280: ORTHOGONAL BLANK-SLATE ALPHA TRIPLET (ZERO-CORRELATION TO PORTFOLIO)
+================================================================================
+
+--------------------------------------------------------------------------------
+CANDIDATE 1 (990ece74): Long-Horizon Option Breakeven Asymmetry & Upside Expansion
+--------------------------------------------------------------------------------
+Dataset: option9
+Economic Rationale: In options analytics, 180-day call breakeven (call_breakeven_180) reflects open-interest weighted institutional upside targets, while put_breakeven_180 reflects structural downside hedging floors. Standardizing the 60-day rolling z-score of upside distance versus downside distance isolates expanding institutional upside conviction.
+
+Expression:
+group_zscore(ts_zscore((call_breakeven_180 - close) / close, 60) - ts_zscore((close - put_breakeven_180) / close, 60), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 2 (1f6da910): Idiosyncratic Risk Compression with Low-Beta & Market Coupling
+--------------------------------------------------------------------------------
+Dataset: model51
+Economic Rationale: Empirical low-beta anomaly: equities with high idiosyncratic uncertainty deliver inferior risk-adjusted performance due to lottery preferences. Penalizing short-term idiosyncratic risk (-unsystematic_risk_last_30_days) and market sensitivity (-beta_last_60_days_spy) while rewarding persistent market correlation (correlation_last_30_days_spy) isolates structurally stable, high-conviction compounding equities.
+
+Expression:
+group_zscore(group_zscore(-unsystematic_risk_last_30_days, subindustry) + group_zscore(-beta_last_60_days_spy, subindustry) + group_zscore(correlation_last_30_days_spy, subindustry), subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+
+--------------------------------------------------------------------------------
+CANDIDATE 3 (a8702fe8): Supply Chain Customer Return Spillover Lead-Lag Arbitrage
+--------------------------------------------------------------------------------
+Dataset: pv13
+Economic Rationale: In supply chain networks, customer stock and cash-flow shocks propagate downstream to suppliers with a latency of several trading days. Decaying 10-day customer return signals (pv13_custretsig_retsig) capture incoming supplier revenue momentum. Subtracting the supplier's own 5-day price return creates an unpriced lead-lag catch-up arbitrage signal.
+
+Expression:
+group_zscore(ts_decay_linear(pv13_custretsig_retsig, 10), subindustry) - group_zscore(ts_delta(close, 5) / close, subindustry)
+
+Settings:
+Region: USA
+Universe: TOP3000
+Delay: 1
+Decay: 4
+Neutralization: Subindustry
+Truncation: 0.08
+Unit Handling: Verify
+================================================================================
