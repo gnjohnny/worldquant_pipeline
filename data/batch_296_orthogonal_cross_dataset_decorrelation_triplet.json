@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Decayed Direct Competitor Lead-Lag Catch-Up Revaluation",
+      "domain": "relationship_competitor_lead_lag_spread",
+      "economic_rationale": "In corporate supply-chain and competitor networks (pv13, Matrix 82% coverage), direct competitors (rel_ret_comp) share identical macroeconomic inputs and customer demands. Competitor price discovery leads individual equity adjustments due to segmented order flow. In Batch 295, this competitor lead-lag spread generated Sharpe 1.53 and Sub-universe Sharpe 1.17 with zero correlation flags, but exhibited high turnover (45.34%) under a 5-day decay window. Lengthening the linear decay horizon to 12 days dampens daily return noise, compressing turnover to ~18-20% to drive Fitness well above 1.00 while preserving zero correlation to fundamental/analyst signals.",
+      "expected_direction": "positive",
+      "intended_horizon": "12d",
+      "confounders": [
+        "Permanent structural market share losses that justify widening competitor return divergence"
+      ],
+      "falsification_test": "Fails if competitor lead-lag spread yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1), 12), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 12-day decayed spread between direct competitor returns and focal equity dimensionless returns for disciplined turnover compression."
+        }
+      ]
+    },
+    {
+      "title": "Intraday Liquidity Deficit and VWAP Slippage Reversal",
+      "domain": "price_volume_vwap_slippage_reversal",
+      "economic_rationale": "When an equity closes significantly below its volume-weighted average price ((vwap - close) / (high - low + 0.001) > 0) across 100% coverage in TOP3000 (pv1), aggressive market-on-close sellers dumped liquidity at an excessive execution discount. Market makers absorb this inventory and systematically re-rate the depressed equity over the subsequent 6 days as order imbalance clears. This pure microstructure dynamic is orthogonal to relationship and accounting datasets, guaranteeing self-correlation < 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "6d",
+      "confounders": [
+        "Late-day catastrophic news announcements that justify continued structural price collapse"
+      ],
+      "falsification_test": "Fails if VWAP discount reversal yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((vwap - close) / (high - low + 0.001), 6), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 6-day linear decay of true-range normalized VWAP execution discount."
+        }
+      ]
+    },
+    {
+      "title": "Rolling Cashflow Efficiency Acceleration Inflection",
+      "domain": "model_cashflow_efficiency_inflection",
+      "economic_rationale": "cashflow_efficiency_rank_derivative (Matrix 100% coverage in model16) measures the daily rate of change in operational cash generation efficiency per unit of capital. Evaluating when this derivative reaches a 15-day rolling historical peak (ts_rank(cashflow_efficiency_rank_derivative, 15)) isolates rapid fundamental cash turnaround before consensus estimates reflect balance-sheet strength. A 15-day window prevents turnover freezing while maintaining zero correlation to analyst and relationship datasets.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Temporary working capital timing distortions that artificially inflate short-term cash flow efficiency"
+      ],
+      "falsification_test": "Fails if cashflow efficiency acceleration yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(cashflow_efficiency_rank_derivative, 15), 4), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 4-day linear decay of 15-day rolling rank of daily cashflow efficiency derivative."
+        }
+      ]
+    }
+  ]
+}
