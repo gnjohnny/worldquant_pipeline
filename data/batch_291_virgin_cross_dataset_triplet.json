@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Return Spillover Momentum",
+      "domain": "alternative_supply_chain",
+      "economic_rationale": "Information diffuses gradually across complex inter-firm production networks. pv13_custretsig_retsig measures the directional return signal propagated from major commercial customers to suppliers (Matrix, 93% coverage in US equities). When customers experience positive operating and stock market shocks, supplier earnings and equity prices reflect these benefits with a multi-day delay due to institutional inattention. Applying a 5-day linear decay captures this customer-driven momentum while dampening noise.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Supplier customer-concentration risk where a single customer termination disrupts organic network spillover"
+      ],
+      "falsification_test": "Fails if customer spillover signal yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of customer return spillover signal."
+        }
+      ]
+    },
+    {
+      "title": "Options Implied Volatility Term Structure Contango Slope",
+      "domain": "options_volatility_term_structure",
+      "economic_rationale": "In normal equity market equilibrium, the options volatility term structure trades in contango (implied_volatility_mean_90 > implied_volatility_mean_30, 98% coverage in TOP3000). When near-term uncertainty or idiosyncratic liquidity stress hits an individual stock, short-term implied volatility spikes, flattening or inverting the term structure into backwardation. Selecting equities with the steepest upward-sloping volatility term structure concentrates capital in calm, unhedged names with resilient risk premia and zero near-term catalyst distress.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Macro-wide market flash crashes that invert volatility term structures across all single stocks simultaneously"
+      ],
+      "falsification_test": "Fails if volatility term slope yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(implied_volatility_mean_90 - implied_volatility_mean_30, 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day decay of implied volatility term structure spread (90-day IV minus 30-day IV)."
+        }
+      ]
+    },
+    {
+      "title": "Downside Put Breakeven Support Floor Distance",
+      "domain": "options_market_maker_positioning",
+      "economic_rationale": "put_breakeven_30 measures the open-interest weighted price at which 30-day put option buyers break even at maturity (Matrix, 98% coverage in TOP3000). Equities trading comfortably above their aggregate put breakeven levels ((close - put_breakeven_30) / close > 0) sit within a structural positive gamma zone for options market makers. In this regime, dealer hedging dampens downside volatility and provides institutional support, creating persistent forward positive returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Severe gap-down earnings reports that instantly breach put breakeven strikes and flip market makers into short gamma"
+      ],
+      "falsification_test": "Fails if put breakeven distance yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((close - put_breakeven_30) / close, 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day decay of spot distance above the 30-day put breakeven price."
+        }
+      ]
+    }
+  ]
+}
