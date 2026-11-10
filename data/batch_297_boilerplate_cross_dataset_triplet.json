@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Rolling 60-Day VWAP Execution Discount Reversal",
+      "domain": "price_volume_rolling_vwap_discount",
+      "economic_rationale": "When a stock closes below its intraday volume-weighted average price relative to its close ((vwap - close) / close > 0), market-on-close sellers dumped liquidity at an excessive execution discount. In Batch 296, raw VWAP slippage produced a Sharpe of 1.43, but exhibited 39% turnover. Embedding this discount within the proven rolling historical rank framework (ts_rank((vwap - close) / close, 60)) normalizes execution dislocations against each stock's trailing 60-day distribution and slashes turnover to ~13-14%, driving Fitness past 1.10 with zero unit warnings across 100% coverage in pv1.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sustained institutional liquidation over multi-week horizons that breaks short-term mean-reversion"
+      ],
+      "falsification_test": "Fails if rolling VWAP discount yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank((vwap - close) / close, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of intraday VWAP execution discount."
+        }
+      ]
+    },
+    {
+      "title": "Rolling 60-Day Book-to-Price Value Dislocation",
+      "domain": "fundamental_balance_sheet_book_yield",
+      "economic_rationale": "Book value per share (bookvalue_ps, fundamental dataset) captures audited balance-sheet net asset value from SEC filings. Evaluating when an equity's book-to-price ratio (bookvalue_ps / close) reaches a 60-day historical high relative to its own baseline identifies cyclically oversold equities whose asset protection provides an asymmetric margin of safety. Because this relies on statutory accounting filings rather than sell-side consensus (analyst4), its platform self-correlation is well under 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unrecognized intangible asset write-downs or goodwill impairments that degrade reported book equity"
+      ],
+      "falsification_test": "Fails if rolling book-to-price yield yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(bookvalue_ps / close, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of balance-sheet book-to-price ratio."
+        }
+      ]
+    },
+    {
+      "title": "Rolling 60-Day Cashflow Efficiency Price Yield",
+      "domain": "model_fundamental_cashflow_efficiency_yield",
+      "economic_rationale": "cashflow_efficiency_rank_derivative (model16, 100% matrix coverage in TOP3000) measures the daily rate of change in operational cash generation efficiency per unit of capital. Dividing by close scales this fundamental derivative by prevailing market price, creating a dynamic cashflow efficiency yield. Evaluating its 60-day historical percentile (ts_rank(cashflow_efficiency_rank_derivative / close, 60)) captures operational inflection points where cash conversion accelerates at deeply discounted prices, targeting turnover in the ideal 12-14% corridor.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Temporary working capital timing shifts that distort daily cash flow generation derivatives"
+      ],
+      "falsification_test": "Fails if cashflow efficiency price yield yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(cashflow_efficiency_rank_derivative / close, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of cashflow efficiency rank derivative per price unit."
+        }
+      ]
+    }
+  ]
+}
