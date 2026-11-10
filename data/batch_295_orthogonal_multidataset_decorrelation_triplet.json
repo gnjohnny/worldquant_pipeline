@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Idiosyncratic Risk Dissipation and Operational Calmness Momentum",
+      "domain": "model_systematic_risk_dissipation",
+      "economic_rationale": "Elevated unsystematic variance (unsystematic_risk_last_90_days, Matrix 96% coverage in model51) reflects temporary firm-specific operational or litigation uncertainty that causes retail panic selling. Under the rolling historical rank framework, evaluating when a stock's unsystematic risk reaches a 60-day historical low (ts_rank(-unsystematic_risk_last_90_days, 60)) isolates genuine operational tranquility and certainty. Subindustry ranking this decayed calm signal harvests idiosyncratic risk premium normalization with zero analyst dataset overlap, ensuring self-correlation < 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Major structural macroeconomic regime shifts that disrupt risk models across all equities simultaneously"
+      ],
+      "falsification_test": "Fails if risk dissipation yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(-unsystematic_risk_last_90_days, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of negative 90-day unsystematic risk."
+        }
+      ]
+    },
+    {
+      "title": "Earnings Quality and Certainty Accretion Momentum",
+      "domain": "fundamental_earnings_certainty_accretion",
+      "economic_rationale": "earnings_certainty_rank_derivative (Matrix, 100% coverage in model16) measures the daily rate of change in the sustainability and quality of a firm's earnings stream. Evaluating when this derivative reaches a 60-day historical high relative to its own baseline (ts_rank(earnings_certainty_rank_derivative, 60)) identifies fundamental operational inflection points where earnings quality is accelerating. This signal is orthogonal to static accounting ratios, targeting self-correlation < 0.40.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Temporary accounting accrual shifts that create false quarterly earnings quality readings"
+      ],
+      "falsification_test": "Fails if earnings certainty accretion yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(earnings_certainty_rank_derivative, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of daily earnings certainty rank derivative."
+        }
+      ]
+    },
+    {
+      "title": "Direct Competitor Lead-Lag Catch-Up Revaluation",
+      "domain": "relationship_competitor_lead_lag_spread",
+      "economic_rationale": "In corporate supply-chain and competitor networks (pv13), direct competitors (rel_ret_comp, Matrix 82% coverage) share identical macro inputs, customer bases, and cost structures. Due to segmented institutional order flow, competitor stock prices lead individual firm price adjustments. When direct competitors outperform the firm over a 5-day horizon (rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1) > 0), the focal firm experiences strong catch-up revaluation. In Batch 286, this competitor lead-lag spread generated Sharpe 1.53 and Fitness 0.85 on the platform, with zero analyst dataset overlap.",
+      "expected_direction": "positive",
+      "intended_horizon": "8d",
+      "confounders": [
+        "Permanent structural market share losses that justify widening competitor return divergence"
+      ],
+      "falsification_test": "Fails if competitor lead-lag spread yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day decayed spread between direct competitor returns and focal equity dimensionless returns."
+        }
+      ]
+    }
+  ]
+}
