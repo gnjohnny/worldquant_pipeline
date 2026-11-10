@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Consensus Dividend Yield Percentile Dislocation",
+      "domain": "analyst_dividend_yield",
+      "economic_rationale": "Consensus Dividend Per Share (anl4_afv4_div_mean, Matrix 82% coverage) measures anticipated cash distributions to shareholders. Dividing by spot price (anl4_afv4_div_mean / close) provides a forward-looking dividend yield. By comparing this yield against its own trailing 60-day historical range via ts_rank, we isolate temporary dividend yield spikes caused by transient price pullbacks in stable, cash-generative firms. Ranking within subindustries insulates against structural yield differences across defensive versus growth sectors.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Distressed companies where impending dividend cuts have not yet been reflected in sell-side consensus estimates"
+      ],
+      "falsification_test": "Fails if dividend yield percentile yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(anl4_afv4_div_mean / close, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of consensus dividend yield."
+        }
+      ]
+    },
+    {
+      "title": "Actual Annual Earnings Yield Accretion Dislocation",
+      "domain": "fundamental_earnings_yield",
+      "economic_rationale": "Annual Reported Diluted EPS (anl4_af_eps_value, Matrix 100% coverage across US Equities) reflects audited bottom-line profitability. Scaling by spot stock price (anl4_af_eps_value / close) yields the classical earnings-to-price ratio. Normalizing this earnings yield against its 60-day trailing historical percentile distribution via ts_rank identifies equities experiencing temporary intra-industry price drops while underlying accounting earnings remain rock solid.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Highly cyclical commodity firms whose historical peak earnings are about to collapse due to commodity price downturns"
+      ],
+      "falsification_test": "Fails if earnings yield percentile yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(anl4_af_eps_value / close, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of actual earnings yield."
+        }
+      ]
+    },
+    {
+      "title": "Enterprise Sales Yield Cyclical Valuation Dislocation",
+      "domain": "fundamental_sales_yield",
+      "economic_rationale": "Actual Net Sales (actual_sales_value_annual, Matrix 99% coverage) sits at the top of the income statement, completely immune to discretionary accounting accruals, working capital adjustments, or tax items. Dividing net sales by market capitalization (actual_sales_value_annual / cap) creates a robust sales-to-price ratio. Comparing this sales yield to its 60-day rolling distribution via ts_rank captures firms whose market valuation has dropped excessively relative to their aggregate commercial revenue engine.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Low-margin high-volume retail businesses with structural margin compression where revenue does not translate into cash flow"
+      ],
+      "falsification_test": "Fails if sales yield percentile yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(actual_sales_value_annual / cap, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of annual sales-to-capitalization ratio."
+        }
+      ]
+    }
+  ]
+}
