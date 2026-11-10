@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Actual Operating Cash Flow Yield Accretion with Turnover Calibration",
+      "domain": "fundamental_cash_flow_yield",
+      "economic_rationale": "Actual Cash Flow Per Share (anl4_af_cfps_value, Matrix 100% permitted) measures organic liquidity generation per share devoid of non-cash accounting accruals. Scaling cash flow per share by the equity price provides a pristine cash yield metric. In Batch 292, Candidate 2 achieved a positive Sharpe of 0.56, Fitness of 0.35, and perfect weight distribution with an ultra-low turnover of 1.92%. Calibrating the decay window from 10 days to 5 days accelerates portfolio rebalancing into recent price dislocations, aiming to lift turnover toward the optimal 4%-6% liquidity corridor and push Fitness past the 0.50 threshold.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Cyclical capital goods industries where working capital swings temporarily inflate annual cash flow per share"
+      ],
+      "falsification_test": "Fails if cash flow per share yield yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(anl4_af_cfps_value / close, 5), subindustry) - 0.5",
+          "rationale": "Attempt 2 of 3: Subindustry-neutralized 5-day linear decay of actual cash flow per share scaled by closing stock price."
+        }
+      ]
+    },
+    {
+      "title": "Cyclical Cash Flow Yield Percentile Dislocation",
+      "domain": "fundamental_cash_flow_yield",
+      "economic_rationale": "Cross-sectional valuation ratios often suffer from structural firm-specific level differences. By evaluating a firm's current cash flow yield (anl4_af_cfps_value / close) relative to its own 60-day historical percentile distribution via ts_rank, we isolate temporary valuation discounts where current cash generation is historically high relative to recent stock price. Subindustry ranking this normalized signal focuses capital on intra-industry cyclical bargain opportunities.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Companies undergoing secular operational contraction where trailing cash flows fail to predict forward insolvency"
+      ],
+      "falsification_test": "Fails if cash flow yield percentile yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(anl4_af_cfps_value / close, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day decay of 60-day rolling time-series rank of actual cash flow yield."
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Multi-Factor Acceleration Momentum Inflection",
+      "domain": "fundamental_factor_acceleration",
+      "economic_rationale": "multi_factor_acceleration_score_derivative (Matrix, 100% coverage in TOP3000) measures the second derivative of the comprehensive multi-factor fundamental score. While fundamental levels adjust slowly, acceleration reflects early operational inflection points where revenue, margin expansion, and balance sheet quality are improving at an increasing rate. Ranking 5-day decayed multi-factor acceleration within subindustries captures positive fundamental momentum inflections before sell-side consensus revisions catch up.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "One-off asset sales or tax windfalls creating false acceleration spikes in composite scores"
+      ],
+      "falsification_test": "Fails if multi-factor acceleration yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(multi_factor_acceleration_score_derivative, 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of multi-factor fundamental acceleration score derivative."
+        }
+      ]
+    }
+  ]
+}
