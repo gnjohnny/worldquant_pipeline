@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Range Location Momentum (Institutional End-of-Day Execution Imbalance)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The ratio (close - low) / (high - low + 0.001 * close) measures an equity's closing location relative to its daily high-low extreme (Matrix, 100% instrument coverage across TOP3000). Large institutional investors rebalance portfolios via market-on-close (MOC) algorithmic execution in the final 15 minutes of trading. When equities persistently close near their daily highs over consecutive days, institutional accumulation overwhelms dealer inventory, predicting continued positive price drift over the forward horizon. Neutralizing by subindustry eliminates sector-level noise and isolates pure idiosyncratic order-flow demand.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden after-hours earnings releases or binary macro rate surprises that overturn intraday price discovery"
+      ],
+      "falsification_test": "Fails if intraday close location yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((close - low) / (high - low + 0.001 * close), 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day linear decay of intraday close location within the daily high-low range."
+        }
+      ]
+    },
+    {
+      "title": "Accelerating Multi-Factor Fundamental Style Derivative",
+      "domain": "fundamental_style_inflection",
+      "economic_rationale": "multi_factor_static_score_derivative measures the day-to-day rate of change in composite fundamental health across Value, Growth, Profitability, and Quality surfaces (Matrix, 100% instrument coverage and 100% date coverage in TOP3000). Corporate financial inflection points are captured first in fundamental composite accelerations before headline analyst consensus upgrades occur. Equities exhibiting top-tier multi-factor static score derivatives reflect accelerating business fundamentals that the market has not yet fully discounted due to investor inattention.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Persistent macro inflation headwinds or rate shocks that compress valuation multiples across entire cyclical subindustries"
+      ],
+      "falsification_test": "Fails if multi-factor static score derivative yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(multi_factor_static_score_derivative, 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day linear decay of the daily derivative of the static multi-factor fundamental score."
+        }
+      ]
+    },
+    {
+      "title": "Return-Volume Directional Covariance / Informed Trade Flow Accumulation",
+      "domain": "volume_price_interaction",
+      "economic_rationale": "The 20-day time-series correlation between daily fractional price return ((close - ts_delay(close, 1)) / ts_delay(close, 1)) and normalized volume turnover (volume / adv20) isolates informed institutional trade flow (Matrix, 100% instrument coverage in TOP3000). When positive price changes systematically coincide with abnormal volume, large institutional participants are accumulating inventory, whereas price drops on low volume indicate retail exhaustion. Equities with persistent positive return-volume correlation outperform over 10-day holding periods.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Index rebalancing or expiration-day volume spikes that distort organic volume-return relationships without directional information"
+      ],
+      "falsification_test": "Fails if return-volume correlation yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_corr((close - ts_delay(close, 1)) / ts_delay(close, 1), volume / adv20, 20), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day decay of 20-day rolling correlation between fractional daily return and volume relative to adv20."
+        }
+      ]
+    }
+  ]
+}
