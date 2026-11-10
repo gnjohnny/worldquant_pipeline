@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Turnover-Compressed Rolling VWAP Execution Discount Reversal",
+      "domain": "price_volume_rolling_vwap_discount",
+      "economic_rationale": "When a stock closes below its intraday volume-weighted average price relative to its close ((vwap - close) / close > 0), market-on-close sellers dumped liquidity at an excessive execution discount. In Batch 297, this rolling VWAP discount delivered an exceptional Sharpe of 1.62 and Sub-universe Sharpe of 0.93 with zero correlation flags, but turnover was 43.85% under a 5-day decay window. Lengthening the linear decay horizon to 15 days dampens high-frequency rebalancing noise, compressing turnover to ~16-18% to propel Fitness from 0.69 to well over 1.15 with 100% matrix coverage in pv1.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sustained institutional liquidation over multi-week horizons that breaks short-term mean-reversion"
+      ],
+      "falsification_test": "Fails if turnover-compressed VWAP discount yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank((vwap - close) / close, 60), 15), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 15-day linear decay of 60-day rolling rank of intraday VWAP execution discount."
+        }
+      ]
+    },
+    {
+      "title": "Rolling 60-Day Operating Earnings Yield Inflection",
+      "domain": "fundamental_operating_income_yield",
+      "economic_rationale": "operating_income (fundamental dataset, statutory SEC corporate filings) captures audited core business operating profitability before non-operating distortions. Dividing by cap yields the classic Operating Profitability Yield (Novy-Marx, 2013). In Batch 297, fundamental balance-sheet yield demonstrated ideal turnover of 14.37% and Fitness > 0.50. Replacing static book equity with dynamic operating earnings eliminates value traps and targets Sharpe > 1.30 while maintaining the 14% turnover corridor and zero analyst4 correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "One-off restructuring charges or non-recurring operating cost accruals that distort quarterly operating earnings"
+      ],
+      "falsification_test": "Fails if operating income yield yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(operating_income / cap, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of operating income to market capitalization."
+        }
+      ]
+    },
+    {
+      "title": "Rolling 60-Day Low-Beta Defensive Quality Flight",
+      "domain": "model_systematic_risk_low_beta",
+      "economic_rationale": "Empirical asset pricing confirms that low-beta equities systematically generate higher risk-adjusted returns than lottery-like high-beta stocks due to institutional leverage constraints (Black, 1972; Frazzini & Pedersen, 2014). Using beta_last_60_days_spy (model51, 98% coverage in TOP3000) inside the proven rolling rank framework isolates equities whose market sensitivity is at a 60-day historical low relative to their subindustry peers, capturing institutional flight to quality.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden violent macroeconomic market rallies where high-beta speculative equities temporarily lead"
+      ],
+      "falsification_test": "Fails if rolling low-beta yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(-beta_last_60_days_spy, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of inverted 60-day SPY market beta."
+        }
+      ]
+    }
+  ]
+}
