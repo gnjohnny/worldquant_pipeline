@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Range Close Exhaustion Mean-Reversion (10-Day Baseline)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Empirical testing in Batch 289 demonstrated that equities closing persistently near their daily highs ((close - low) / (high - low)) experience severe subsequent negative return drift (Sharpe -1.56, Turnover 29.10%). In liquid US equities (TOP3000), persistent near-high closes reflect late-day retail buying exuberance and liquidity exhaustion rather than sustainable institutional momentum. Reversing the signal direction to systematically short overextended names and buy oversold equities closing near daily lows harvests the institutional liquidity provision premium.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unanticipated major corporate takeover announcements or breakthrough positive earnings results that cause multi-week sustained upward momentum"
+      ],
+      "falsification_test": "Fails if inverted close location yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - low) / (high - low + 0.001 * close), 10), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 10-day linear decay of inverted close location within the daily high-low range."
+        }
+      ]
+    },
+    {
+      "title": "Intraday Range Close Exhaustion (15-Day Turnover Compression)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Extending the linear decay horizon from 10 to 15 days filters out single-day microstructure noise and compresses daily portfolio rebalancing turnover from ~29% down toward ~18-20%. Because platform Fitness scales inversely with turnover for a given Sharpe ratio, this horizon extension preserves the robust Sharpe while significantly boosting the Fitness metric well above the 0.50 hurdle.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Regime changes from range-bound mean-reverting equity markets into strong one-way trending macro markets"
+      ],
+      "falsification_test": "Fails if 15-day close exhaustion yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - low) / (high - low + 0.001 * close), 15), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 15-day linear decay of inverted close location for enhanced fitness and reduced turnover."
+        }
+      ]
+    },
+    {
+      "title": "Intraday Range Close Exhaustion (20-Day Low-Turnover Optimization)",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "A 20-day linear decay window captures medium-term institutional positioning exhaustion across the 3000 most liquid US equities. By smoothing over a full 1-month trading period, turnover is compressed down toward ~12-15%, maximizing holding stability, transaction cost efficiency, and sub-universe robustness across large-cap and mid-cap segments.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Persistent structural shifts in company fundamentals that prevent medium-term mean reversion"
+      ],
+      "falsification_test": "Fails if 20-day close exhaustion yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(-ts_decay_linear((close - low) / (high - low + 0.001 * close), 20), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 20-day linear decay of inverted close location for maximum turnover compression."
+        }
+      ]
+    }
+  ]
+}
