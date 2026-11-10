@@ -2551,7 +2551,7 @@ fields:
   unit: USD
   region: USA
   permitted_use: true
-- field_key: 67anl4_af_cfps_value
+- field_key: anl4_af_cfps_value
   category: analyst
   description: Cash Flow Per Share - Actual Value
   timing_delay: 1
@@ -2601,7 +2601,7 @@ fields:
   unit: USD
   region: USA
   permitted_use: true
-- field_key: 67anl4_afv4_eps_number
+- field_key: anl4_afv4_eps_number
   category: analyst
   description: Earnings per share - number of estimations for annual frequency
   timing_delay: 1
