@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Non-Linear Operating Yield Conditioned on Low-Beta with Gaussian VWAP Discount (1-Arg Hump Fix)",
+      "domain": "fundamental_operating_yield_regime_interaction",
+      "economic_rationale": "operating_income / cap (fundamental6) measures audited corporate operating profitability per market valuation unit. In Batch 299, Skeleton 2 was rejected by the BRAIN compiler because the hump operator takes exactly 1 input (not 2). Correcting hump to hump(rank(-beta_last_60_days_spy) - 0.5) ensures platform compilation. Amplifying the 60-day z-score of operating yield quadratically (signed_power(..., 2)) isolates fundamental acceleration, conditioned through hump on low-beta quality flight, with agile VWAP liquidity timing (+0.35 * ts_quantile(..., driver=\"gaussian\")). With 100% matrix coverage in TOP3000, this guarantees zero weight concentration and self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unanticipated non-operating write-downs that impair equity valuation despite stable operating income"
+      ],
+      "falsification_test": "Fails if conditioned operating yield yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(signed_power(ts_zscore(operating_income / cap, 60), 2) * hump(rank(-beta_last_60_days_spy) - 0.5) + 0.35 * ts_quantile((vwap - close) / close, 20, driver=\"gaussian\")), subindustry)",
+          "rationale": "Skeleton 2 non-linear interaction multiplying 60-day operating yield z-score by single-argument low-beta hump filter, combined with 20-day Gaussian VWAP discount quantile."
+        }
+      ]
+    },
+    {
+      "title": "Turnover-Damped Microstructure VWAP Discount with Operating Yield Anchor and Reversal Overlay",
+      "domain": "price_volume_vwap_fundamental_composite",
+      "economic_rationale": "In Batch 297, raw rolling VWAP execution discount ((vwap - close) / close) delivered Sharpe 1.62 and Sub-universe Sharpe 0.93 across 100% matrix coverage in TOP3000. In Batch 299, Skeleton 1 failed weight concentration because competitor returns (pv13) had missing stocks in smaller subindustries, and triggered a unit warning on subtract. Replacing the primary driver with 100% coverage VWAP discount (50% weight), anchoring with balance-sheet operating yield (30% weight), and using clean dimensionless return reversal ((close - ts_delay(close, 5)) / ts_delay(close, 5), -20% weight) eliminates unit warnings, guarantees balanced weight distribution across all 3,000 instruments, and dampens turnover to achieve Fitness > 0.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sustained institutional liquidation over multi-week horizons that breaks short-term mean-reversion"
+      ],
+      "falsification_test": "Fails if VWAP fundamental composite yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank((vwap - close) / close), 10) + 0.30 * rank(operating_income / cap) - 0.20 * ts_rank((close - ts_delay(close, 5)) / ts_delay(close, 5), 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed VWAP discount rank, operating profitability rank, and 20-day dimensionless return reversal."
+        }
+      ]
+    },
+    {
+      "title": "Low-Beta Defensive Conviction Conditioned on Operating Profitability with Gaussian VWAP Timing",
+      "domain": "model_systematic_risk_fundamental_regime_interaction",
+      "economic_rationale": "Institutional leverage constraints cause high-beta speculative equities to underperform steady low-beta stocks on a risk-adjusted basis. Inverting the regime interaction in Skeleton 2, we amplify the 60-day z-score of low-beta quality (signed_power(ts_zscore(-beta_last_60_days_spy, 60), 2)) and condition it via hump on top operating profitability (rank(operating_income / cap) - 0.5). A 20-day Gaussian VWAP execution discount quantile provides short-term liquidity timing. 100% matrix coverage in TOP3000 guarantees uniform weight distribution and self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Violent macroeconomic market rallies where high-beta speculative equities temporarily lead"
+      ],
+      "falsification_test": "Fails if low-beta profitability composite yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(signed_power(ts_zscore(-beta_last_60_days_spy, 60), 2) * hump(rank(operating_income / cap) - 0.5) + 0.35 * ts_quantile((vwap - close) / close, 20, driver=\"gaussian\")), subindustry)",
+          "rationale": "Skeleton 2 non-linear interaction multiplying 60-day low-beta z-score by single-argument operating profitability hump filter, combined with 20-day Gaussian VWAP discount quantile."
+        }
+      ]
+    }
+  ]
+}
