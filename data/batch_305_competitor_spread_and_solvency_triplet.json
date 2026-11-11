@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Direct Competitor Lead-Lag Return Spread 60-Day Percentile Acceleration",
+      "domain": "relationship_competitor_lead_lag_spread_percentile",
+      "economic_rationale": "In corporate competitor networks (pv13), peer equities share common industry input costs, customer pipelines, and macroeconomic shocks. Due to fragmented order flow, competitor stock returns lead individual firm price adjustments. When direct competitors outperform the focal equity (rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1) > 0), the focal equity experiences catch-up revaluation. Evaluating this return spread against its trailing 60-day distribution (ts_rank(..., 60)) and smoothing over 5 days captures persistent revaluation momentum without weight concentration. In Batch 295, this competitor spread delivered Sharpe 1.53, Fitness 0.84, Turnover 45.34%, and zero correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Permanent market share losses where competitor outperformance is fundamentally justified"
+      ],
+      "falsification_test": "Fails if competitor lead-lag spread percentile yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(rel_ret_comp - (close - ts_delay(close, 1)) / ts_delay(close, 1), 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of direct competitor return spread over equity returns."
+        }
+      ]
+    },
+    {
+      "title": "Cashflow Efficiency Derivative Scaled by Balance-Sheet Book-to-Asset Backing",
+      "domain": "fundamental_model_cashflow_efficiency_book_backing",
+      "economic_rationale": "cashflow_efficiency_rank_derivative (model16, 100% matrix coverage in TOP3000) measures daily acceleration in operational cash generation ability per unit of capital. Multiplying by balance-sheet book value per unit of total assets (bookvalue_ps / (assets + 1000) in fundamental, 100% coverage) scales operational turnaround momentum by tangible balance-sheet asset backing. Taking a 60-day rolling rank identifies inflection points where cashflow efficiency accelerates with rock-solid balance-sheet protection. 100% coverage guarantees zero weight concentration on 1/25/2022, and zero analyst or vwap data guarantees self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unrecognized asset impairments that degrade balance sheet net book value"
+      ],
+      "falsification_test": "Fails if cashflow efficiency book backing yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(cashflow_efficiency_rank_derivative * (bookvalue_ps / (assets + 1000)), 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of cashflow efficiency derivative multiplied by balance sheet book-to-asset backing."
+        }
+      ]
+    },
+    {
+      "title": "Balance-Sheet Cash Liquidity Cushion Relative to Long-Term Debt Burden",
+      "domain": "fundamental_balance_sheet_solvency_turnaround",
+      "economic_rationale": "cash_st / (debt_lt + 1000) evaluates cash and short-term liquid investments relative to long-term debt liabilities from SEC quarterly balance-sheet filings (100% coverage in fundamental). Taking its 60-day rolling time-series percentile rank (ts_rank(..., 60)) and smoothing over 5 days identifies corporate balance sheets undergoing rapid balance-sheet de-leveraging and liquidity expansion. 100% coverage across TOP3000 eliminates 1/25/2022 concentration risk, zero price or analyst data ensures self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Debt refinancing schedules that temporarily park proceeds in short-term cash prior to redemption"
+      ],
+      "falsification_test": "Fails if balance-sheet liquidity solvency turnaround yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(cash_st / (debt_lt + 1000), 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling rank of balance-sheet cash reserves relative to long-term debt."
+        }
+      ]
+    }
+  ]
+}
