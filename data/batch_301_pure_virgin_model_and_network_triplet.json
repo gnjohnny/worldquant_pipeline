@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Composite Style Momentum with Low-Beta and Idiosyncratic Risk Hedge",
+      "domain": "model_multi_factor_style_risk_decoupling",
+      "economic_rationale": "composite_factor_score_derivative (model16, 100% matrix coverage in TOP3000) measures daily multi-factor momentum and style revision velocity without touching price or accounting ratios. Anchoring 50% weight to its 10-day decayed cross-sectional rank captures persistent factor acceleration. Blending with low-beta defensive quality (-beta_last_60_days_spy in model51, 30% weight) and shorting stocks whose idiosyncratic variance reaches a 20-day high (-0.20 * ts_rank(unsystematic_risk_last_60_days, 20)) shields the portfolio from sudden stock-specific litigation or earnings shocks. Pure risk-model and style data with zero close, vwap, or operating income, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Violent macroeconomic factor rotations where defensive low-beta equities temporarily lag broad market rallies"
+      ],
+      "falsification_test": "Fails if composite style momentum yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(composite_factor_score_derivative), 10) + 0.30 * rank(-beta_last_60_days_spy) - 0.20 * ts_rank(unsystematic_risk_last_60_days, 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed style momentum, low-beta quality rank, and 20-day idiosyncratic risk hedge."
+        }
+      ]
+    },
+    {
+      "title": "Multi-Factor Style Acceleration Conditioned on Market Decoupling with Customer Spillover",
+      "domain": "model_factor_acceleration_regime_interaction",
+      "economic_rationale": "multi_factor_acceleration_score_derivative (model16, 100% coverage) tracks the second derivative of multi-factor style strength. Standardizing this into a 40-day z-score with quadratic conviction (signed_power(ts_zscore(..., 40), 2)) isolates inflection points where fundamental quality is actively accelerating. Multiplying by the 1-argument hump of market decoupling rank (hump(rank(-correlation_last_60_days_spy) - 0.5)) ensures exposure is deployed only when the equity is uncorrelated with broad market swings. Adding a 20-day Gaussian quantile of customer return spillover (+0.35 * ts_quantile(pv13_custretsig_retsig, 20, driver=\"gaussian\")) captures supply-chain demand propagation. Zero price or balance-sheet data, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Macro regime shifts that suddenly force all equities into high correlation with benchmark SPY"
+      ],
+      "falsification_test": "Fails if factor acceleration regime interaction yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(signed_power(ts_zscore(multi_factor_acceleration_score_derivative, 40), 2) * hump(rank(-correlation_last_60_days_spy) - 0.5) + 0.35 * ts_quantile(pv13_custretsig_retsig, 20, driver=\"gaussian\")), subindustry)",
+          "rationale": "Skeleton 2 non-linear interaction multiplying 40-day factor acceleration z-score by single-argument market-decoupling hump filter, combined with 20-day Gaussian customer spillover quantile."
+        }
+      ]
+    },
+    {
+      "title": "Customer Return Momentum Spillover with Growth Potential and Systematic Beta Penalty",
+      "domain": "relationship_customer_spillover_growth_blend",
+      "economic_rationale": "Supply chain customer return shocks propagate to supplier equities over multi-day horizons (pv13_custretsig_retsig, 93% coverage in pv13). Decaying customer return signs over 10 days provides a persistent demand spillover signal (50% weight). Pairing with medium-term growth trajectory (growth_potential_rank_derivative in model16, 30% weight) ensures exposure to expanding suppliers, while subtracting a 20-day rank of systematic market sensitivity (-0.20 * ts_rank(systematic_risk_last_60_days, 20)) hedges against broader market drawdown risk. 100% free of price or accounting ratios, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Customer-supplier relationship contract terminations that disrupt supply-chain information propagation"
+      ],
+      "falsification_test": "Fails if customer spillover growth blend yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(pv13_custretsig_retsig), 10) + 0.30 * rank(growth_potential_rank_derivative) - 0.20 * ts_rank(systematic_risk_last_60_days, 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed customer return spillover, growth potential derivative, and 20-day systematic risk hedge."
+        }
+      ]
+    }
+  ]
+}
