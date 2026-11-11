@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Customer Return Spillover with Analyst Revision Momentum and Options Put-Call OI Hedge",
+      "domain": "supply_chain_network_and_options_flow_synergy",
+      "economic_rationale": "Information diffuses gradually along corporate supply networks. pv13_custretsig_retsig (pv13, 93% coverage) measures return signals from principal customers that systematically lead supplier price discovery by several trading sessions. Anchoring 50% weight to its 10-day decayed rank captures customer revenue momentum. Blending with analyst_revision_rank_derivative (model16, 100% coverage, 30% weight) provides sell-side consensus confirmation, while penalizing rising 20-day put-call open interest (-0.20 * ts_rank(pcr_oi_30, 20) from option9, 98% coverage) hedges against institutional downside tail protection demand. Zero close, zero vwap, zero operating income, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Supplier customer contract renegotiations that cause short-term margin compression despite customer volume growth"
+      ],
+      "falsification_test": "Fails if supply chain spillover revision blend yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(pv13_custretsig_retsig), 10) + 0.30 * rank(analyst_revision_rank_derivative) - 0.20 * ts_rank(pcr_oi_30, 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed customer return rank, 100% coverage analyst revision derivative, and 20-day put-call open interest sentiment hedge."
+        }
+      ]
+    },
+    {
+      "title": "Options Variance Risk Premium with Skew Exhaustion Hump Filter and Cashflow Quantile Confirmation",
+      "domain": "options_volatility_surface_and_fundamental_quantile_interaction",
+      "economic_rationale": "historical_volatility_30 - implied_volatility_mean_30 (option8, 98% coverage) measures the 30-day Variance Risk Premium (VRP), capturing structural overpricing or underpricing of volatility by market makers. Taking its 60-day rolling z-score and applying signed_power(..., 2) isolates sharp volatility dislocations with high conviction. Multiplying by hump(rank(-implied_volatility_mean_skew_60) - 0.5) dampens noisy mid-range signals and concentrates capital when put-skew demand is completely exhausted. Adding a 20-day Gaussian quantile of cashflow_efficiency_rank_derivative (model16, 100% coverage, 35% weight) ensures high operational cash conversion confirms the trade. 98%-100% coverage in TOP3000, zero close, zero vwap, zero operating income, targeting self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden market-wide volatility regime shifts where short-dated IV surges across all equity options simultaneously"
+      ],
+      "falsification_test": "Fails if variance risk premium skew interaction yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(signed_power(ts_zscore(historical_volatility_30 - implied_volatility_mean_30, 60), 2) * hump(rank(-implied_volatility_mean_skew_60) - 0.5) + 0.35 * ts_quantile(cashflow_efficiency_rank_derivative, 20, driver=\"gaussian\")), subindustry)",
+          "rationale": "Skeleton 2 non-linear interaction multiplying 60-day VRP z-score by inverted skew hump filter, paired with 20-day Gaussian cashflow efficiency quantile."
+        }
+      ]
+    },
+    {
+      "title": "Options Put-Call Sentiment Flow with Customer Return Confirmation and Skew Tail Drag Hedge",
+      "domain": "options_flow_and_supply_chain_sentiment_blend",
+      "economic_rationale": "-pcr_oi_30 (option9, 98% coverage) reflects inverted put-call open interest ratio; diminishing put open interest signals expanding institutional risk tolerance and call bias. Decaying its cross-sectional rank over 10 days captures steady options positioning shifts (50% weight). Pairing with pv13_custretsig_retsig (pv13, 93% coverage, 30% weight) ensures corporate supply chain demand backs the institutional options flow, while subtracting 20-day options skew (-0.20 * ts_rank(implied_volatility_mean_skew_60, 20) from option8, 98% coverage) hedges against looming crash protection demand. 93%-98% coverage across TOP3000, zero price/volume boilerplate, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Complex multi-leg options spreads (collars/straddles) that distort raw put-call open interest ratios"
+      ],
+      "falsification_test": "Fails if options sentiment flow blend yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(-pcr_oi_30), 10) + 0.30 * rank(pv13_custretsig_retsig) - 0.20 * ts_rank(implied_volatility_mean_skew_60, 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed put-call open interest sentiment rank, customer return spillover, and 20-day options skew hedge."
+        }
+      ]
+    }
+  ]
+}

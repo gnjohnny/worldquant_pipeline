@@ -247,6 +247,6 @@ operators:
       param_types: ["expression", "number", "number"]
       description: "Clamp x between min_val and max_val"
     - name: "hump"
-      arity: 2
-      param_types: ["expression", "number"]
+      arity: [1, 2]
+      param_types: ["expression"]
       description: "Hump function: dampens small variations around threshold"
