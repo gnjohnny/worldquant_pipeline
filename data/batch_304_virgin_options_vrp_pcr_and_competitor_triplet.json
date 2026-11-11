@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options 30-Day Variance Risk Premium Rolling Percentile Harvest",
+      "domain": "options_volatility_variance_risk_premium",
+      "economic_rationale": "implied_volatility_mean_30 - historical_volatility_30 (option8, 98% coverage) measures the 30-day Variance Risk Premium (VRP). Institutional investors structurally overpay for short-dated put option protection, keeping implied volatility higher than realized historical volatility. Evaluating when this volatility spread reaches a 60-day historical high for each individual equity (ts_rank(..., 60)) and smoothing over 5 days captures persistent options mispricing without lookahead bias. Bounded subindustry ranking prevents instrument weight concentration and ensures zero correlation with price/volume or analyst models, targeting Fitness > 0.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Unanticipated corporate earnings surprises that cause realized volatility to spike violently above pre-announcement implied volatility"
+      ],
+      "falsification_test": "Fails if variance risk premium rolling percentile yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(implied_volatility_mean_30 - historical_volatility_30, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of 30-day Variance Risk Premium."
+        }
+      ]
+    },
+    {
+      "title": "Options Put-Call Open Interest Sentiment De-escalation Momentum",
+      "domain": "options_sentiment_put_call_ratio",
+      "economic_rationale": "-pcr_oi_30 (option9, 98% coverage) captures inverted put-call open interest ratio. When put open interest drops relative to call open interest, institutional hedging demand abates and risk tolerance expands. Taking a 60-day rolling time-series rank (ts_rank(-pcr_oi_30, 60)) benchmarks each firm against its own historical options distribution, isolating genuine positioning sentiment breakouts. A 5-day linear decay and subindustry neutralization eliminates noise while guaranteeing weight is perfectly distributed across TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Broad market index hedging using equity option collars that temporarily skews single-stock put-call ratios"
+      ],
+      "falsification_test": "Fails if put-call open interest sentiment momentum yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(-pcr_oi_30, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of inverted 30-day put-call open interest ratio."
+        }
+      ]
+    },
+    {
+      "title": "Pure Supply-Chain Competitor Return Lead-Lag Momentum",
+      "domain": "relationship_pure_competitor_lead_lag",
+      "economic_rationale": "In corporate supply-chain and competitor networks (pv13), direct competitors (rel_ret_comp, 82% coverage) share macroeconomic factor exposure, supplier bases, and end-market demand. Due to fragmented order flow, competitor stock returns systematically lead focal equities. Evaluating direct competitor returns relative to their 60-day rolling distribution (ts_rank(rel_ret_comp, 60)) captures pure industry revaluation waves without using close or vwap. A 5-day decay and subindustry ranking ensures bounded weights and zero self-correlation.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Firms undergoing structural distress whose competitors gain market share at the focal firm's direct expense"
+      ],
+      "falsification_test": "Fails if pure competitor lead-lag yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(ts_rank(rel_ret_comp, 60), 5), subindustry) - 0.5",
+          "rationale": "Subindustry-neutralized 5-day linear decay of 60-day rolling time-series rank of direct competitor return."
+        }
+      ]
+    }
+  ]
+}
