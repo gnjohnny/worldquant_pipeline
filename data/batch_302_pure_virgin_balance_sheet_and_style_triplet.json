@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Cashflow Efficiency Derivative with Balance-Sheet Liquidity Cushion and Debt Drag Hedge",
+      "domain": "fundamental_balance_sheet_solvency_blend",
+      "economic_rationale": "cashflow_efficiency_rank_derivative (model16, 100% coverage) measures operational profitability and cash generation velocity per unit of capital. Anchoring 50% weight to its 10-day decayed cross-sectional rank captures fundamental turnaround momentum. Blending with balance-sheet cash reserves (cash_st / (assets + 1000) in fundamental6, 30% weight) rewards liquid solvency, while penalizing expanding long-term leverage (-0.20 * ts_rank(debt_lt / (assets + 1000), 20)) hedges out corporate distress risk. 100% coverage across TOP3000, zero close, zero vwap, zero operating income, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden corporate acquisitions that temporarily deplete cash reserves while expanding long-term debt"
+      ],
+      "falsification_test": "Fails if cashflow efficiency solvency blend yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(cashflow_efficiency_rank_derivative), 10) + 0.30 * rank(cash_st / (assets + 1000)) - 0.20 * ts_rank(debt_lt / (assets + 1000), 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed cashflow efficiency derivative, balance-sheet cash liquidity rank, and 20-day long-term debt drag hedge."
+        }
+      ]
+    },
+    {
+      "title": "Balance-Sheet Cash Acceleration Conditioned on Relative Valuation with Cashflow Quantile",
+      "domain": "fundamental_cash_acceleration_valuation_interaction",
+      "economic_rationale": "cash_st / (assets + 1000) reflects balance-sheet cash cushion relative to total assets from SEC corporate filings. Taking its 60-day z-score and squaring conviction (signed_power(ts_zscore(..., 60), 2)) isolates rapid cash accumulation inflections. Multiplying by the 1-argument hump of relative valuation (hump(rank(relative_valuation_rank_derivative) - 0.5)) ensures exposure is deployed only when the company is fundamentally underpriced relative to peer replacement costs. A 20-day Gaussian quantile of cashflow efficiency derivative provides tactical quality confirmation. 100% coverage in TOP3000, zero close, zero vwap, zero operating income, targeting self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Regulatory escrow cash restrictions that temporarily trap reported cash balances"
+      ],
+      "falsification_test": "Fails if cash acceleration valuation interaction yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(signed_power(ts_zscore(cash_st / (assets + 1000), 60), 2) * hump(rank(relative_valuation_rank_derivative) - 0.5) + 0.35 * ts_quantile(cashflow_efficiency_rank_derivative, 20, driver=\"gaussian\")), subindustry)",
+          "rationale": "Skeleton 2 non-linear interaction multiplying 60-day balance-sheet cash z-score by relative valuation hump filter, combined with 20-day Gaussian cashflow efficiency quantile."
+        }
+      ]
+    },
+    {
+      "title": "Relative Valuation Velocity with Cashflow Efficiency and Capital Expenditure Discipline",
+      "domain": "model_valuation_efficiency_capex_discipline",
+      "economic_rationale": "relative_valuation_rank_derivative (model16, 100% coverage) indicates whether a stock is underpriced relative to fundamental cash flows. Decaying its cross-sectional rank over 10 days captures sustained re-rating momentum (50% weight). Pairing with operational cash generation ability (cashflow_efficiency_rank_derivative, 30% weight) ensures fundamental profitability, while penalizing excessive capital expenditure runups (-0.20 * ts_rank(capex / (assets + 1000), 20)) exploits the corporate overinvestment anomaly (Titman, Wei, Xie, 2004). 100% coverage across TOP3000, zero price or analyst data, guaranteeing self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Strategic high-return capital investments that temporarily elevate capex prior to revenue acceleration"
+      ],
+      "falsification_test": "Fails if valuation efficiency capex discipline yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(relative_valuation_rank_derivative), 10) + 0.30 * rank(cashflow_efficiency_rank_derivative) - 0.20 * ts_rank(capex / (assets + 1000), 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed relative valuation rank, cashflow efficiency rank, and 20-day capex discipline hedge."
+        }
+      ]
+    }
+  ]
+}
