@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Decayed Competitor Lead-Lag Catch-Up with Low-Beta and Return Reversal Overlay",
+      "domain": "relationship_competitor_lead_lag_composite",
+      "economic_rationale": "Direct competitors (rel_ret_comp in pv13) share identical macroeconomic inputs and customer demands. Information discovery at competitor equities systematically leads individual firm stock prices due to segmented institutional order flow. Evaluating the competitor return spread (rel_ret_comp - returns) with a 10-day linear decay provides a persistent lead-lag catch-up anchor (50% weight). Blending this with defensive low-beta quality (-beta_last_60_days_spy in model51, 30% weight) and a 20-day contrarian price return reversal overlay (-20% weight) captures institutional catch-up rebalancing while controlling risk and dampening turnover to achieve Fitness > 0.50 and self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Permanent structural market share losses that justify widening competitor return divergence"
+      ],
+      "falsification_test": "Fails if competitor lead-lag composite yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(rel_ret_comp - returns), 10) + 0.30 * rank(-beta_last_60_days_spy) - 0.20 * ts_rank(returns, 20)), subindustry)",
+          "rationale": "Skeleton 1 composite blending 10-day decayed competitor return spread, low-beta quality rank, and 20-day return reversal, neutralized by subindustry."
+        }
+      ]
+    },
+    {
+      "title": "Non-Linear Operating Profitability Yield Conditioned on Low-Beta with Gaussian VWAP Discount",
+      "domain": "fundamental_operating_yield_regime_interaction",
+      "economic_rationale": "Operating income scaled by market capitalization (operating_income / cap, statutory SEC filings in fundamental6) captures audited ongoing business earning power. Taking the 60-day time-series z-score and amplifying it quadratically (signed_power(ts_zscore(...), 2)) isolates high-conviction fundamental operational acceleration. Conditioning this through a hump function of low-beta rank (rank(-beta_last_60_days_spy) - 0.5) ensures high fundamental exposure only when the stock is in a low-risk, defensive regime. A 20-day Gaussian quantile of intraday VWAP discount ((vwap - close) / close) injects agile execution timing without correlation to analyst datasets, targeting self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unanticipated non-operating asset write-downs that impair equity valuation despite stable operating income"
+      ],
+      "falsification_test": "Fails if conditioned operating yield yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(signed_power(ts_zscore(operating_income / cap, 60), 2) * hump(rank(-beta_last_60_days_spy) - 0.5, 0.01) + 0.35 * ts_quantile((vwap - close) / close, 20, driver=\"gaussian\")), subindustry)",
+          "rationale": "Skeleton 2 non-linear interaction multiplying 60-day operating yield z-score by low-beta hump filter, combined with 20-day Gaussian VWAP discount quantile."
+        }
+      ]
+    },
+    {
+      "title": "Customer Return Momentum Spillover with Operating Yield and VWAP Mean-Reversion",
+      "domain": "relationship_customer_spillover_fundamental_blend",
+      "economic_rationale": "Economic shocks propagate along customer-supplier supply chains with multi-day delays (pv13_custretsig_retsig, 93% matrix coverage in pv13). Decaying customer return signs over 10 days captures gradual supply-chain information diffusion (50% weight). Pairing this with balance-sheet operating profitability (operating_income / cap, 30% weight) ensures exposure to fundamentally solvent firms, while a 20-day contrarian hedge against closing price overextension above VWAP ((close - vwap) / close, -20% weight) penalizes retail FOMO overshoots, achieving low turnover and self-correlation < 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Sudden customer supplier substitutions that break historical customer-supplier correlation"
+      ],
+      "falsification_test": "Fails if customer spillover fundamental composite yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(rank(0.50 * ts_decay_linear(rank(pv13_custretsig_retsig), 10) + 0.30 * rank(operating_income / cap) - 0.20 * ts_rank((close - vwap) / close, 20)), subindustry)",
+          "rationale": "Skeleton 1 multi-factor composite blending 10-day decayed customer return sign, operating profitability rank, and 20-day VWAP overshoot reversal."
+        }
+      ]
+    }
+  ]
+}
