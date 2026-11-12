@@ -238,10 +238,11 @@ operators:
       arity: 2
       param_types: ["expression", "number"]
       description: "sign(x) * (abs(x) ** y)"
-    - name: "sigmoid"
-      arity: 1
-      param_types: ["expression"]
-      description: "Standard sigmoid 1 / (1 + exp(-x))"
+    # sigmoid is inaccessible on WorldQuant BRAIN simulator
+    # - name: "sigmoid"
+    #   arity: 1
+    #   param_types: ["expression"]
+    #   description: "Standard sigmoid 1 / (1 + exp(-x))"
     - name: "clamp"
       arity: 3
       param_types: ["expression", "number", "number"]
