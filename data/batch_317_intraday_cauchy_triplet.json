@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Intraday Bar Directional Pressure Cauchy Reversion",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The normalized intraday bar body (close - open) / (high - low + 0.0001 * close) measures net directional order flow executed within regular trading hours relative to total day range. Benchmarked against market-cap weighted market baseline, scaled by 80-day volatility, and mapped through heavy-tailed Cauchy quantiles, the signal harvests structural overreaction and market-maker inventory absorption with ultra-low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "80d",
+      "confounders": [
+        "Major pre-market macro news creating sustained trend days without midday reversal",
+        "Earnings release gap-and-go continuations"
+      ],
+      "falsification_test": "Fails during aggressive directional trend regimes where closing momentum systematically follows through the next day.",
+      "candidates": [
+        {
+          "expression": "body_ret = (close - open) / (high - low + 0.0001 * close); mean_body = group_mean(body_ret, rank(ts_mean(cap, 25)), market); disp_body = abs(body_ret - mean_body) / (abs(body_ret) + abs(mean_body) + 0.1); disp_smooth = ts_mean(disp_body, 80); body_std = ts_std_dev(body_ret, 80); adj_body = disp_smooth * body_std * body_ret; adj_mean = ts_mean(adj_body, 80); adj_std = ts_std_dev(adj_body, 80); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 80)"
+        }
+      ]
+    },
+    {
+      "title": "Closing VWAP Execution Displacement Cauchy Reversion",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The displacement of closing auction price relative to institutional volume-weighted average price (close - vwap) / (high - low + 0.0001 * close) identifies aggressive late-day order execution imbalances. When closing displacement diverges abnormally from cap-weighted market benchmark, market makers hold excess unbalanced inventory. Applying dual-moment standardization, fat-tailed Cauchy mapping, and 80-day decay harvests liquidity recovery profits.",
+      "expected_direction": "positive",
+      "intended_horizon": "80d",
+      "confounders": [
+        "Index rebalance closing auction flow continuing into subsequent sessions",
+        "Large institutional block trades trading at fixed benchmark discounts"
+      ],
+      "falsification_test": "Inverts during institutional accumulation campaigns where buying above VWAP persists for consecutive weeks.",
+      "candidates": [
+        {
+          "expression": "vwap_dist = (close - vwap) / (high - low + 0.0001 * close); mean_vwap = group_mean(vwap_dist, rank(ts_mean(cap, 25)), market); disp_vwap = abs(vwap_dist - mean_vwap) / (abs(vwap_dist) + abs(mean_vwap) + 0.1); disp_smooth = ts_mean(disp_vwap, 80); vwap_std = ts_std_dev(vwap_dist, 80); adj_vwap = disp_smooth * vwap_std * vwap_dist; adj_mean = ts_mean(adj_vwap, 80); adj_std = ts_std_dev(adj_vwap, 80); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 80)"
+        }
+      ]
+    },
+    {
+      "title": "Share Turnover Rate Liquidity Shock Cauchy Reversion",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Daily equity turnover rate (volume / sharesout) captures the exact fraction of common equity changing hands in a single session. When turnover rate diverges sharply from market-cap weighted benchmark turnover, it reflects transient liquidity shocks and institutional inventory turnover. Normalizing by trailing 80-day turnover volatility and decaying across 80 days captures structural liquidity mean-reversion.",
+      "expected_direction": "positive",
+      "intended_horizon": "80d",
+      "confounders": [
+        "Corporate secondary share offerings or buyback executions altering active float",
+        "Index addition/deletion days with mandatory benchmark turnover"
+      ],
+      "falsification_test": "Underperforms during sustained speculative liquidity frenzies where high turnover persists alongside parabolic momentum.",
+      "candidates": [
+        {
+          "expression": "to_rate = volume / sharesout; mean_to = group_mean(to_rate, rank(ts_mean(cap, 25)), market); disp_to = abs(to_rate - mean_to) / (abs(to_rate) + abs(mean_to) + 0.0001); disp_smooth = ts_mean(disp_to, 80); to_std = ts_std_dev(to_rate, 80); adj_to = disp_smooth * to_std * to_rate; adj_mean = ts_mean(adj_to, 80); adj_std = ts_std_dev(adj_to, 80); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 80)"
+        }
+      ]
+    }
+  ]
+}
