@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Event-Driven News Sentiment Accumulation with Persistent Holding Filter (trade_when)",
+      "domain": "news_sentiment_event_persistent_holding",
+      "economic_rationale": "Information from after-hours corporate news headlines (nws12_afterhsz_sl) diffuses slowly into broader market valuations. Using trade_when(rank(ts_sum(vec_avg(nws12_afterhsz_sl), 60)) > 0.5, power(rank(ts_mean(volume, 5) / ts_mean(volume, 252)), 0.5) + 1, rank(ts_sum(vec_avg(nws12_afterhsz_sl), 60)) < 0.5), we enter volume accumulation positions only when 60-day news sentiment is net positive, and freeze weight changes until news sentiment flips negative. By avoiding day-to-day position rebalancing when sentiment remains favorable, trade_when sharply reduces portfolio turnover while preserving strong directional momentum. Subindustry neutralization isolates firm-specific news drift with self-correlation < 0.35.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Major macroeconomic announcements (e.g. FOMC rate decisions) that override single-stock headline tone"
+      ],
+      "falsification_test": "Fails if event-driven news accumulation yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "trade_when(rank(ts_sum(vec_avg(nws12_afterhsz_sl), 60)) > 0.5, power(rank(ts_mean(volume, 5) / ts_mean(volume, 252)), 0.5) + 1, rank(ts_sum(vec_avg(nws12_afterhsz_sl), 60)) < 0.5)",
+          "rationale": "trade_when operator entering volume surge with +1 leverage boost on positive 60-day news sentiment and holding until sentiment turns negative."
+        }
+      ]
+    },
+    {
+      "title": "Smooth Logistic News Sentiment Activation with Volume Surge Synergy (sigmoid & ts_zscore)",
+      "domain": "news_sentiment_logistic_activation_synergy",
+      "economic_rationale": "Standard binary step functions (> 0.5 ? +1 : 0) suffer from knife-edge turnover when news sentiment hovers near the median. Replacing the step function with a smooth logistic transformation (sigmoid(ts_zscore(vec_avg(nws12_afterhsz_sl), 60))) maps rolling 60-day news sentiment z-scores continuously onto the (0, 1) interval. Stocks with explosive positive news get an asymptotic +0.90 to +0.99 boost, neutral news gets +0.50, and negative news gets +0.05. Combining this smooth activation with square-root compressed relative volume surges (power(rank(ts_mean(volume, 5) / ts_mean(volume, 252)), 0.5)) provides continuous long/short differentiation under subindustry neutralization, eliminating threshold churn and driving Fitness > 1.20.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "High-frequency news clustering around scheduled earnings releases that temporarily inflates sentiment z-scores"
+      ],
+      "falsification_test": "Fails if sigmoid news activation yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "power(rank(ts_mean(volume, 5) / ts_mean(volume, 252)), 0.5) + sigmoid(ts_zscore(vec_avg(nws12_afterhsz_sl), 60))",
+          "rationale": "Continuous non-linear multi-factor composite combining relative volume surge rank with smooth sigmoid logistic activation of 60-day news sentiment z-score."
+        }
+      ]
+    },
+    {
+      "title": "Informed News-Volume Co-Movement with Contrarian Social Media Buzz (ts_corr & scl12_buzz)",
+      "domain": "sentiment_news_volume_comovement_contrarian_buzz",
+      "economic_rationale": "ts_corr(vec_avg(nws12_afterhsz_sl), volume, 60) measures the rolling 60-day correlation between news sentiment and trading activity. A positive correlation signals informed institutional participation: institutions trade aggressively on positive headlines and withdraw on negative news. When this informed news-volume co-movement is above median (rank > 0.5), pairing it with contrarian social media buzz (-ts_decay_linear(ts_backfill(scl12_buzz, 10), 10)) exploits institutional accumulation occurring before retail hype inflates social buzz. The ternary +1 leverage boost rewards uncrowded institutional accumulation under subindustry neutralization with self-correlation < 0.35.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Viral retail meme-stock campaigns that distort social media buzz independent of fundamental news flow"
+      ],
+      "falsification_test": "Fails if news-volume correlation with contrarian buzz yields Sharpe < 1.25 or Fitness < 0.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "rank(ts_corr(vec_avg(nws12_afterhsz_sl), volume, 60)) > 0.5 ? power(rank(-ts_decay_linear(ts_backfill(scl12_buzz, 10), 10)), 0.5) + 1 : power(rank(-ts_decay_linear(ts_backfill(scl12_buzz, 10), 10)), 0.5)",
+          "rationale": "Ternary leverage boost triggered when rolling 60-day news-volume correlation exceeds median, allocating to contrarian decayed social buzz."
+        }
+      ]
+    }
+  ]
+}
