@@ -80,6 +80,30 @@ operators:
       arity: 3
       param_types: ["expression", "integer", "number"]
       description: "Rolling quantile over d days"
+    - name: "ts_min"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling minimum over d days"
+    - name: "ts_max"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling maximum over d days"
+    - name: "ts_stddev"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling standard deviation over d days (alias for ts_std_dev)"
+    - name: "ts_skewness"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Rolling skewness over d days"
+    - name: "ts_moment"
+      arity: [2, 3]
+      param_types: ["expression", "integer", "integer"]
+      description: "Rolling central moment over d days"
+    - name: "ts_av_diff"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "x - ts_mean(x, d) over d days"
     # ts_kurtosis is inaccessible on BRAIN simulator
     - name: "ts_zscore"
       arity: 2
@@ -188,6 +212,10 @@ operators:
       arity: 1
       param_types: ["expression"]
       description: "Computes arithmetic mean across elements of a vector data field"
+    - name: "vector_neut"
+      arity: 2
+      param_types: ["expression", "expression"]
+      description: "Neutralizes expression x against vector y"
   # Math & transformations
   elementwise:
     - name: "log"
@@ -251,3 +279,7 @@ operators:
       arity: [1, 2]
       param_types: ["expression"]
       description: "Hump function: dampens small variations around threshold"
+    - name: "tanh"
+      arity: 1
+      param_types: ["expression"]
+      description: "Hyperbolic tangent non-linear compression"

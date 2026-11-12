@@ -61,6 +61,137 @@ def extract_fields_from_node(node: ExpressionNode) -> set[str]:
     return res
 
 
+def infer_node_unit(node: ExpressionNode, allowed_fields: dict[str, dict]) -> str:
+    """Infer the physical unit dimension of an AST node.
+
+    Returns:
+        'price': currency / price quantities (close, open, USD)
+        'shares': share volume quantities (volume, shares)
+        'dimensionless': ratios, ranks, z-scores, counts, scalars
+    """
+    if isinstance(node, LiteralNode):
+        return "dimensionless"
+
+    if isinstance(node, FieldNode):
+        fname = node.name.lower()
+        finfo = allowed_fields.get(fname, {})
+        u = str(finfo.get("unit") or finfo.get("unit_type") or "").lower()
+        if u in {"usd", "price"}:
+            return "price"
+        if u in {"shares", "volume"}:
+            return "shares"
+        return "dimensionless"
+
+    if isinstance(node, FunctionCallNode):
+        op = node.name.lower()
+        # Normalizing / ranking operators ALWAYS strip physical dimensions:
+        if op in {
+            "rank",
+            "group_rank",
+            "ts_rank",
+            "group_zscore",
+            "zscore",
+            "scale",
+            "group_scale",
+            "normalize",
+            "quantile",
+            "ts_scale",
+            "ts_zscore",
+            "ts_corr",
+            "correlation",
+            "trade_when",
+            "sign",
+            "densify",
+            "bucket",
+        }:
+            return "dimensionless"
+
+        # Unit-preserving functions inherit from the primary operand:
+        if op in {
+            "ts_mean",
+            "ts_sum",
+            "ts_median",
+            "ts_max",
+            "ts_min",
+            "ts_decay_linear",
+            "decay_linear",
+            "ts_backfill",
+            "ts_delay",
+            "ts_delta",
+            "ts_std_dev",
+            "ts_stddev",
+            "abs",
+            "min",
+            "max",
+            "floor",
+            "ceil",
+            "round",
+        } and len(node.args) > 0:
+            return infer_node_unit(node.args[0], allowed_fields)
+
+        return "dimensionless"
+
+    if isinstance(node, UnaryOperationNode):
+        return infer_node_unit(node.operand, allowed_fields)
+
+    if isinstance(node, BinaryOperationNode):
+        if node.operator in {"+", "-"}:
+            u_left = infer_node_unit(node.left, allowed_fields)
+            u_right = infer_node_unit(node.right, allowed_fields)
+            if u_left in {"price", "shares"}:
+                return u_left
+            if u_right in {"price", "shares"}:
+                return u_right
+            return "dimensionless"
+
+        if node.operator == "/":
+            u_left = infer_node_unit(node.left, allowed_fields)
+            u_right = infer_node_unit(node.right, allowed_fields)
+            if u_left == u_right and u_left in {"price", "shares"}:
+                return "dimensionless"  # e.g. close / ts_delay(close, 5) is dimensionless
+            return "dimensionless"
+
+        return "dimensionless"
+
+    if isinstance(node, TernaryNode):
+        u_true = infer_node_unit(node.true_expr, allowed_fields)
+        u_false = infer_node_unit(node.false_expr, allowed_fields)
+        if u_true == u_false:
+            return u_true
+        return "dimensionless"
+
+    return "dimensionless"
+
+
+def find_condition_lookback(node: ExpressionNode) -> int:
+    """Find maximum time-series lookback window within a condition expression."""
+    max_lb = 0
+    if isinstance(node, FunctionCallNode):
+        op = node.name.lower()
+        if op in {
+            "ts_sum",
+            "ts_mean",
+            "ts_decay_linear",
+            "decay_linear",
+            "ts_median",
+            "ts_std_dev",
+            "ts_stddev",
+            "ts_max",
+            "ts_min",
+            "ts_backfill",
+        }:
+            for a in node.args[1:]:
+                if isinstance(a, LiteralNode) and isinstance(a.value, int):
+                    max_lb = max(max_lb, a.value)
+        for a in node.args:
+            max_lb = max(max_lb, find_condition_lookback(a))
+    elif isinstance(node, BinaryOperationNode):
+        max_lb = max(find_condition_lookback(node.left), find_condition_lookback(node.right))
+    elif isinstance(node, UnaryOperationNode):
+        max_lb = find_condition_lookback(node.operand)
+    return max_lb
+
+
 class ExpressionValidator:
     """Validates an AST against operator and data field whitelists."""
 
@@ -187,27 +318,24 @@ class ExpressionValidator:
                 max_d = max(max_d, sub_d)
 
             elif isinstance(current, BinaryOperationNode):
-                # Dimension / unit mismatch warning for addition and subtraction
+                # Physical unit compatibility check for addition and subtraction
                 if current.operator in {"+", "-"}:
-                    left_fields = extract_fields_from_node(current.left)
-                    right_fields = extract_fields_from_node(current.right)
-                    for lf in left_fields:
-                        for rf in right_fields:
-                            l_info = self.allowed_fields.get(lf, {})
-                            r_info = self.allowed_fields.get(rf, {})
-                            l_unit = l_info.get("unit") or l_info.get("unit_type")
-                            r_unit = r_info.get("unit") or r_info.get("unit_type")
-                            if (
-                                l_unit
-                                and r_unit
-                                and l_unit != r_unit
-                                and ("price" in l_unit.lower() or l_unit == "USD")
-                                and (r_unit in {"ratio", "count", "dimensionless"})
-                            ):
-                                warnings.append(
-                                    f"Unit mismatch warning in '{current.operator}': field '{lf}' has unit '{l_unit}', "
-                                    f"while '{rf}' has unit '{r_unit}'. Consider dividing or normalizing to dimensionless."
-                                )
+                    u_left = infer_node_unit(current.left, self.allowed_fields)
+                    u_right = infer_node_unit(current.right, self.allowed_fields)
+
+                    # Adding dimensionless scalar to physical unit triggers BRAIN platform warning
+                    if u_left in {"price", "shares"} and u_right == "dimensionless":
+                        warnings.append(
+                            f"Incompatible unit warning for '{current.operator}': combining physical dimension '{u_left}' with dimensionless '{u_right}'. Wrap field in rank/group_rank or normalize to avoid BRAIN platform unit warnings."
+                        )
+                    elif u_right in {"price", "shares"} and u_left == "dimensionless":
+                        warnings.append(
+                            f"Incompatible unit warning for '{current.operator}': combining dimensionless '{u_left}' with physical dimension '{u_right}'. Wrap field in rank/group_rank or normalize to avoid BRAIN platform unit warnings."
+                        )
+                    elif u_left in {"price", "shares"} and u_right in {"price", "shares"} and u_left != u_right:
+                        warnings.append(
+                            f"Incompatible unit warning for '{current.operator}': combining physical unit '{u_left}' with '{u_right}'."
+                        )
 
                 d1 = traverse(current.left, depth + 1)
                 d2 = traverse(current.right, depth + 1)
@@ -218,6 +346,12 @@ class ExpressionValidator:
                 max_d = max(max_d, sub_d)
 
             elif isinstance(current, TernaryNode):
+                cond_lb = find_condition_lookback(current.condition)
+                if cond_lb < 20:
+                    warnings.append(
+                        f"Condition stability warning: condition lookback of {cond_lb}d is less than the 20d minimum. "
+                        f"Unsmoothed ternary conditions flicker daily, causing excessive turnover (>70%). Wrap condition in ts_sum(..., >=20) or ts_mean(..., >=20)."
+                    )
                 d1 = traverse(current.condition, depth + 1)
                 d2 = traverse(current.true_expr, depth + 1)
                 d3 = traverse(current.false_expr, depth + 1)

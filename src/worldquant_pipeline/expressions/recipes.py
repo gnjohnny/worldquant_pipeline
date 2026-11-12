@@ -152,18 +152,82 @@ class AlphaRecipeGenerator:
         return f"group_rank({orthogonal}, {group})"
 
     @staticmethod
-    def convex_decile_power(
-        factor: str,
-        group: str = "subindustry",
-        power: int = 2,
-        reversal_weight: float = 0.15,
-        reversal_lookback: int = 3,
+    def ternary_regime_modulation(
+        regime_field: str,
+        driver_expr: str,
+        regime_lookback: int = 60,
+        threshold: float = 0.5,
+        power_exp: float = 0.5,
+        offset: float = 1.0,
     ) -> str:
-        """Convex signed power formulation on group rank."""
-        if reversal_weight <= 0.0:
-            return f"signed_power(group_rank({factor}, {group}) - 0.5, {power})"
-        main_weight = round(1.0 - reversal_weight, 2)
-        return (
-            f"{main_weight} * signed_power(group_rank({factor}, {group}) - 0.5, {power}) - "
-            f"{reversal_weight} * group_rank(ts_delta(close, {reversal_lookback}) / close, {group})"
+        """Create a non-linear ternary regime-gated alpha (the 8-PASS blueprint).
+
+        Uses long-horizon rolling sum (>=30d) on the condition to prevent turnover flicker,
+        modulating a dimensionless driver expression.
+        """
+        condition = f"rank(ts_sum({regime_field}, {regime_lookback})) > {threshold}"
+        driver_powered = f"power(rank({driver_expr}), {power_exp})"
+        return f"{condition} ? {driver_powered} + {offset} : {driver_powered}"
+
+    @staticmethod
+    def volume_weighted_reversion(
+        reversion_lookback: int = 3,
+        volume_lookback: int = 60,
+        group: str = "subindustry",
+    ) -> str:
+        """Create a volume-weighted short-term price reversion alpha.
+
+        Exploits liquidity-exhausted price overreactions. Direction-locked with negative sign.
+        """
+        vol_ratio = f"volume / ts_mean(volume, {volume_lookback})"
+        interaction = f"ts_delta(close, {reversion_lookback}) * rank({vol_ratio})"
+        return f"-group_rank({interaction}, {group})"
+
+    @staticmethod
+    def decayed_ratio_spread(
+        factor_numerator: str,
+        factor_denominator: str,
+        backfill_days: int = 60,
+        decay_days: int = 12,
+        group: str = "subindustry",
+        epsilon: float = 1000.0,
+    ) -> str:
+        """Create a unit-safe, decay-smoothed fundamental or options ratio spread."""
+        ratio_expr = (
+            f"ts_backfill({factor_numerator}, {backfill_days}) / "
+            f"(ts_backfill({factor_denominator}, {backfill_days}) + {epsilon})"
         )
+        return f"group_rank(ts_decay_linear({ratio_expr}, {decay_days}), {group}) - 0.5"
+
+    @staticmethod
+    def cross_factor_orthogonal_spread(
+        quality_factor: str,
+        risk_factor: str,
+        decay_days: int = 15,
+        group: str = "subindustry",
+    ) -> str:
+        """Create an orthogonal factor spread (Long Quality / Short Risk) with linear decay."""
+        spread = f"group_rank({quality_factor}, {group}) - group_rank({risk_factor}, {group})"
+        return f"group_rank(ts_decay_linear({spread}, {decay_days}), {group}) - 0.5"
+
+    @staticmethod
+    def statistical_moment_anomaly(
+        factor: str,
+        lookback: int = 60,
+        decay_days: int = 12,
+        group: str = "subindustry",
+        invert: bool = True,
+    ) -> str:
+        """Create a statistical skewness anomaly alpha capturing jump and tail risk."""
+        sign_str = "-" if invert else ""
+        return f"group_rank(ts_decay_linear({sign_str}ts_skewness({factor}, {lookback}), {decay_days}), {group}) - 0.5"
+
+    @staticmethod
+    def hyperbolic_tangent_compression(
+        factor: str,
+        decay_days: int = 12,
+        group: str = "subindustry",
+    ) -> str:
+        """Compress extreme outliers non-linearly using tanh and smooth via linear decay."""
+        compressed = f"tanh(group_zscore({factor}, {group}))"
+        return f"group_rank(ts_decay_linear({compressed}, {decay_days}), {group}) - 0.5"

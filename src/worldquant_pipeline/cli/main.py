@@ -825,6 +825,71 @@ def companion(
         console.print("Copy the batch content and click '[bold cyan]Load Batch from Clipboard[/bold cyan]' in the browser HUD.")
 
 
+@app.command("import-fields")
+def import_fields(
+    file_path: Annotated[Path, typer.Argument(help="Path to CSV or JSON file containing field definitions")],
+    category: Annotated[str | None, typer.Option("--category", "-c", help="Default category if missing in file")] = None,
+) -> None:
+    """Import new dataset fields from a CSV or JSON file into the database catalog."""
+    if not file_path.exists():
+        console.print(f"[bold red]File not found: {file_path}[/bold red]")
+        raise typer.Exit(code=1)
+
+    fields_to_add: list[dict[str, Any]] = []
+    if file_path.suffix.lower() == ".json":
+        with open(file_path, "r", encoding="utf-8") as f:
+            raw_data = json.load(f)
+            if isinstance(raw_data, list):
+                fields_to_add = raw_data
+            elif isinstance(raw_data, dict) and "fields" in raw_data:
+                fields_to_add = raw_data["fields"]
+    elif file_path.suffix.lower() == ".csv":
+        import csv
+
+        with open(file_path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                fields_to_add.append(dict(row))
+
+    if not fields_to_add:
+        console.print("[yellow]No fields found in file.[/yellow]")
+        return
+
+    added_count = 0
+    with get_session() as session:
+        for item in fields_to_add:
+            fkey = item.get("field_key") or item.get("name") or item.get("id")
+            if not fkey:
+                continue
+            fkey = str(fkey).strip().lower()
+            cat = item.get("category") or category or "custom"
+            desc = item.get("description") or f"WorldQuant BRAIN data field {fkey}"
+            unit = item.get("unit") or item.get("unit_type") or "dimensionless"
+            delay = int(item.get("timing_delay") or item.get("delay") or 1)
+
+            existing = session.query(DataField).filter_by(field_key=fkey).first()
+            if not existing:
+                df = DataField(
+                    field_key=fkey,
+                    category=cat,
+                    description=desc,
+                    timing_delay=delay,
+                    unit=unit,
+                    unit_type=unit,
+                    permitted_use=True,
+                )
+                session.add(df)
+                added_count += 1
+            else:
+                existing.category = cat
+                existing.description = desc
+                existing.unit = unit
+                existing.unit_type = unit
+        session.commit()
+
+    console.print(f"[bold green]Successfully imported/updated {added_count} fields into data catalog![/bold green]")
+
+
 def main() -> None:
     app()
 
