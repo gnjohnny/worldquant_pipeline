@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Synthetic Forward Price Carry Premium",
+      "domain": "options_synthetic_forward",
+      "economic_rationale": "Synthetic forward price (forward_price_150) derived from ATM options put-call parity reflects institutional term-structure demand and net carry. The relative basis (forward_price_150 - close) / close captures positive forward cost of carry and institutional demand for upside exposure. Equities with elevated synthetic forward carry systematically outperform as institutional expectations are realized in cash markets. A 15-day linear decay dampens turnover while preserving cross-sectional signal rank.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unusually high borrowing fees (hard-to-borrow stocks) artificially inflating synthetic forward price",
+        "Large upcoming ex-dividend dates distorting forward pricing"
+      ],
+      "falsification_test": "Fails during severe market deleveraging regimes where hard-to-borrow stocks collapse despite high forward basis.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(group_zscore((forward_price_150 - close) / close, subindustry), 15), subindustry) - 0.5"
+        }
+      ]
+    },
+    {
+      "title": "Put-Call Open Interest Contrarian Hedging Exhaustion",
+      "domain": "options_positioning_sentiment",
+      "economic_rationale": "The 20-day put-to-call open interest ratio (pcr_oi_20) measures institutional downside hedging pressure across options markets. Abnormally elevated put positioning within a subindustry signals excessive panic hedging and oversold conditions where downside risk is over-discounted. As hedging demand subsides, equities with top-percentile put open interest mean-revert strongly upward, capturing a contrarian sentiment premium.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Genuine impending balance-sheet bankruptcy or catastrophic litigation justifying high put open interest",
+        "Passive index rebalancing across options strikes"
+      ],
+      "falsification_test": "Inverts during systemic default spirals where distressed equities with high put open interest continue downward into restructuring.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(group_zscore(pcr_oi_20, subindustry), 15), subindustry) - 0.5"
+        }
+      ]
+    },
+    {
+      "title": "Call Breakeven Upside Distance Channel Expansion",
+      "domain": "options_breakeven_positioning",
+      "economic_rationale": "Open-interest weighted call breakeven (call_breakeven_150) identifies where institutional call buyers anticipate equity price appreciation by expiration. Equities with large percentage distance to call breakeven (call_breakeven_150 - close) / close reflect wide upside gamma channels and aggressive bullish positioning by sophisticated counterparties, delivering sustained risk-adjusted excess returns over constrained peers.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Speculative far-out-of-the-money retail call buying on low-quality meme stocks",
+        "Earnings volatility spikes causing temporary option premium inflation"
+      ],
+      "falsification_test": "Fails during broad market drawdowns where far-OTM calls expire worthless without spot convergence.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(group_zscore((call_breakeven_150 - close) / close, subindustry), 15), subindustry) - 0.5"
+        }
+      ]
+    }
+  ]
+}
