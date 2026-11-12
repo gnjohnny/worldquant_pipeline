@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Put IV Rank Covariance with Returns (Alpha 13 Transposition)",
+      "domain": "options_put_iv_return_covariance",
+      "economic_rationale": "Transposing the 101 Alphas #13 covariance archetype (-rank(covariance(rank(close), rank(volume), 5))) to the options market (option8). Instead of price-volume covariance, we compute the 20-day rolling covariance between the cross-sectional rank of 30-day put implied volatility (implied_volatility_put_30) and stock returns (returns). Under normal equity mechanics, put IV rises as stocks fall (negative covariance). When this covariance decouples or becomes anomalous, it reflects institutional hedging distortion: smart money bidding up crash insurance during rallies or unwinding puts during sell-offs. Negating this covariance (-ts_covariance) and smoothing with a 10-day linear decay suppresses turnover to ~10%-12%, driving Fitness past 1.50 while eliminating correlation with traditional price-volume alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Broad market macro liquidity shocks impacting all option surface strikes simultaneously"
+      ],
+      "falsification_test": "Fails if put IV return covariance yields Sharpe < 1.25 or Fitness < 1.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(-ts_covariance(rank(ts_backfill(implied_volatility_put_30, 5)), rank(returns), 20), 10), subindustry) - 0.5",
+          "rationale": "Transposition of Alpha #13 rank covariance to options put IV and returns, smoothed over 10 days for low turnover."
+        }
+      ]
+    },
+    {
+      "title": "Options Put-Call Skew Divergence Correlation with Return Momentum (Alpha 2 Transposition)",
+      "domain": "options_skew_return_correlation",
+      "economic_rationale": "Transposing the 101 Alphas #2 correlation archetype (-correlation(rank(delta(volume)), rank(returns), 6)) to the options market (option8). The spread between 60-day put IV and 60-day call IV (implied_volatility_put_60 - implied_volatility_call_60) isolates pure tail-risk skew. When this skew's rank positively correlates with stock return momentum over 20 days (ts_corr), equities are rising into aggressive institutional crash-hedging (fragile rallies). Negating this correlation (-ts_corr) goes long robust unhedged winners and shorts fragile momentum names. A 10-day decay filter suppresses turnover below 12%, achieving high Fitness with zero overlap with analyst revisions or news sentiment.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Idiosyncratic merger arbitrage causing structural distortions in both options skew and stock price"
+      ],
+      "falsification_test": "Fails if options skew return correlation yields Sharpe < 1.25 or Fitness < 1.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(-ts_corr(rank(ts_backfill(implied_volatility_put_60 - implied_volatility_call_60, 5)), rank(returns), 20), 10), subindustry) - 0.5",
+          "rationale": "Transposition of Alpha #2 correlation to 60-day put-call skew vs returns, smoothed over 10 days."
+        }
+      ]
+    },
+    {
+      "title": "VRP Efficiency Correlation Interacted with Price Momentum (Alpha 14 Transposition)",
+      "domain": "options_vrp_correlation_momentum_interaction",
+      "economic_rationale": "Transposing the 101 Alphas #14 interaction archetype ((-rank(delta(returns))) * correlation(open, volume, 10)) to option8. We compute the 20-day rolling correlation between historical realized volatility (historical_volatility_30) and implied volatility (implied_volatility_mean_30). When this correlation is high, the options surface efficiently reflects realized price dynamics, making short-term price momentum shocks (-group_rank(ts_delta(close, 5), subindustry)) subject to strong, reliable mean-reversion. Interacting price reversal with VRP correlation and applying 10-day linear decay yields a high-conviction signal with turnover ~10% and Fitness > 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Unscheduled earnings announcements causing sudden discontinuous volatility regime shifts"
+      ],
+      "falsification_test": "Fails if VRP correlation interacted with price reversal yields Sharpe < 1.25 or Fitness < 1.50 in TOP3000.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(-group_rank(ts_delta(close, 5), subindustry) * ts_corr(rank(ts_backfill(historical_volatility_30, 5)), rank(ts_backfill(implied_volatility_mean_30, 5)), 20), 10), subindustry) - 0.5",
+          "rationale": "Transposition of Alpha #14 momentum-correlation interaction to VRP efficiency and 5-day price reversal."
+        }
+      ]
+    }
+  ]
+}
