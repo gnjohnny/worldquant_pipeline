@@ -3050,7 +3050,7 @@ fields:
   unit: USD
   region: USA
   permitted_use: true
-- field_key: correlation_last_360_days_
+- field_key: correlation_last_360_days_spy
   category: risk
   description: spy The Pearson correlation coefficient of daily log returns between
     the security and SPY, calculated over the most recent 360 calendar days
