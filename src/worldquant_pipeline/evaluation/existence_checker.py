@@ -92,16 +92,23 @@ class AlphaExistenceChecker:
         """Fast regex-based field extraction without slow recursive AST traversal."""
         import re
         tokens = set(re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b", expr_str.lower()))
+        # Extract local intermediate variables assigned on the LHS of '=' (e.g. 'var = expr;')
+        local_vars = set(re.findall(r"\b([a-zA-Z_][a-zA-Z0-9_]*)\s*=", expr_str.lower()))
+        known_keywords = {"driver", "cauchy", "gaussian", "normal", "uniform", "range", "filter"}
         known_ops = {
             "group_rank", "group_zscore", "group_neutralize", "group_mean", "group_scale",
-            "group_median", "group_std_dev", "group_max", "group_min", "group_sum",
+            "group_median", "group_std_dev", "group_stddev", "group_max", "group_min", "group_sum",
             "ts_decay_linear", "ts_decay_exp_window", "ts_mean", "ts_rank", "ts_delta",
-            "ts_delay", "ts_std_dev", "ts_argmax", "ts_argmin", "ts_backfill", "ts_corr",
+            "ts_delay", "ts_std_dev", "ts_stddev", "ts_argmax", "ts_argmin", "ts_backfill", "ts_corr",
             "ts_kurtosis", "ts_covariance", "ts_regression", "ts_product", "ts_sum",
             "signed_power", "rank", "abs", "max", "min", "scale", "trade_when", "log",
             "exp", "sqrt", "clamp", "decay_linear", "normalize", "zscore", "bucket", "densify",
+            "quantile", "tanh", "sigmoid", "ts_skewness", "ts_moment", "ts_av_diff",
         }
-        all_fields = {t for t in tokens if t not in known_ops}
+        all_fields = {
+            t for t in tokens
+            if t not in known_ops and t not in local_vars and t not in known_keywords
+        }
         primary_fields = {t for t in all_fields if t not in cls.BENCHMARK_PRICE_FIELDS}
         return all_fields, primary_fields
 
