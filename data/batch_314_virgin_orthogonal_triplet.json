@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Volume-Weighted 3-Day Liquidity Exhaustion Reversion",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Short-term (3-day) price reversals are significantly magnified when accompanied by anomalous liquidity surges (volume relative to its 60-day moving average). By multiplying normalized return change ts_delta(close, 3) / close with the cross-sectional percentile rank of normalized turnover rank(volume / ts_mean(volume, 60)), the signal isolates liquidity-exhausted price overreactions. Smoothing with a 10-day linear decay dampens noise, and subindustry group ranking ensures sector neutrality.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sustained fundamental news breaks where high volume signals genuine repricing rather than overreaction",
+        "Earnings announcement windows creating extreme directional momentum"
+      ],
+      "falsification_test": "Fails during aggressive trend-continuation regimes with low cross-sectional dispersion.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear(ts_delta(close, 3) / close * rank(volume / ts_mean(volume, 60)), 10), subindustry) - 0.5"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain 1-Hop Information Breadth and Operational Resilience",
+      "domain": "alternative_supply_chain",
+      "economic_rationale": "Supply chain information breadth (pv13_1l_scibr) measures the diversification and network centrality of a firm's direct customer and supplier relationships. Firms with higher informational breadth exhibit greater operational resilience against supplier shocks and demand disruptions. A 20-day ts_backfill ensures continuous coverage for periodic updates, while group_zscore and a 15-day linear decay prevent turnover spikes.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Restructuring or supplier consolidation reducing breadth without hurting profitability",
+        "Data reporting lags in international supplier disclosures"
+      ],
+      "falsification_test": "Inverts during macro shocks where complex supply chains experience greater systemic bottlenecks than localized single-supplier firms.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(group_zscore(ts_backfill(pv13_1l_scibr, 20), subindustry), 15), subindustry) - 0.5"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Risk Dispersion and Idiosyncratic Pricing Power",
+      "domain": "systematic_risk_model",
+      "economic_rationale": "Systematic risk (systematic_risk_last_90_days, the R^2 of stock returns against broad market and factor benchmarks over 90 days) captures the proportion of variance driven purely by macroeconomic beta rather than firm-specific fundamentals. Stocks with high systematic risk are macro-sensitive price takers, whereas stocks with low systematic risk within the same subindustry possess strong idiosyncratic pricing power and economic moats. Smoothing with a 15-day linear decay creates a robust idiosyncratic quality tilt with low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Macro liquidity crises where all stocks correlate to 1.0 regardless of fundamentals",
+        "Speculative bull rallies where high-beta commodities outperform"
+      ],
+      "falsification_test": "Underperforms during sharp liquidity-driven market rallies led by speculative high-beta equities.",
+      "candidates": [
+        {
+          "expression": "-group_rank(ts_decay_linear(group_zscore(systematic_risk_last_90_days, subindustry), 15), subindustry) - 0.5"
+        }
+      ]
+    }
+  ]
+}
