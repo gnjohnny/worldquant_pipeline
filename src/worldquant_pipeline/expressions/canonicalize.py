@@ -63,6 +63,16 @@ def canonicalize_node(node: ExpressionNode) -> str:
 
 def canonicalize_expression(expr_str: str) -> str:
     """Parse an expression string and return its canonical normalized representation."""
+    if ";" in expr_str:
+        stmts = [s.strip() for s in expr_str.split(";") if s.strip()]
+        canonical_stmts: list[str] = []
+        for s in stmts:
+            if "=" in s and not any(op in s for op in ["==", "!=", "<=", ">="]):
+                lhs, rhs = s.split("=", 1)
+                canonical_stmts.append(f"{lhs.strip().lower()} = {canonicalize_expression(rhs.strip())}")
+            else:
+                canonical_stmts.append(canonicalize_expression(s))
+        return "; ".join(canonical_stmts)
     ast = parse_expression(expr_str)
     return canonicalize_node(ast)
 

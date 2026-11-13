@@ -145,17 +145,21 @@ operators:
       param_types: ["expression", "group"]
       description: "Cross-sectional z-score within a group"
     - name: "group_mean"
-      arity: 2
+      arity: [2, 3]
       param_types: ["expression", "group"]
-      description: "Cross-sectional mean within a group"
+      description: "Cross-sectional mean within a group (supports optional weight)"
     - name: "group_median"
-      arity: 2
+      arity: [2, 3]
       param_types: ["expression", "group"]
-      description: "Cross-sectional median within a group"
+      description: "Cross-sectional median within a group (supports optional weight)"
     - name: "group_std_dev"
-      arity: 2
+      arity: [2, 3]
       param_types: ["expression", "group"]
-      description: "Cross-sectional standard deviation within a group"
+      description: "Cross-sectional standard deviation within a group (supports optional weight)"
+    - name: "group_stddev"
+      arity: [2, 3]
+      param_types: ["expression", "group"]
+      description: "Cross-sectional standard deviation within a group alias"
     - name: "group_max"
       arity: 2
       param_types: ["expression", "group"]
@@ -165,9 +169,9 @@ operators:
       param_types: ["expression", "group"]
       description: "Cross-sectional minimum within a group"
     - name: "group_sum"
-      arity: 2
+      arity: [2, 3]
       param_types: ["expression", "group"]
-      description: "Cross-sectional sum within a group"
+      description: "Cross-sectional sum within a group (supports optional weight)"
     - name: "group_scale"
       arity: 2
       param_types: ["expression", "group"]

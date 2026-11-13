@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Lower Shadow Dip-Absorption Microstructure Cauchy Reversion",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The lower shadow ratio ((min(open, close) - low) / (high - low + 0.0001 * close)) quantifies intraday price rejection at local extremes and aggressive liquidity absorption by dip-buyers. Being strictly bounded within [0, 1], it eliminates sign-flipping directional noise. Benchmarking against cap-weighted market dispersion, volatility scaling over 80 days, and applying Cauchy heavy-tail compression isolates unsustainable dip-buying overreactions, yielding high Fitness and ultra-low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "80d",
+      "confounders": [
+        "Persistent fundamental distress where buyers repeatedly attempt to catch falling knives without reversal",
+        "Regime shifts with high volatility clusters"
+      ],
+      "falsification_test": "Inverts during liquidity cascade sell-offs where lower intraday wicks represent failed bear flags that continue downward.",
+      "candidates": [
+        {
+          "expression": "shadow = (min(open, close) - low) / (high - low + 0.0001 * close); mean_shadow = group_mean(shadow, rank(ts_mean(cap, 25)), market); disp = abs(shadow - mean_shadow) / (abs(shadow) + abs(mean_shadow) + 0.05); disp_smooth = ts_mean(disp, 80); sh_std = ts_std_dev(shadow, 80); adj_sh = disp_smooth * sh_std * shadow; adj_mean = ts_mean(adj_sh, 80); adj_std = ts_std_dev(adj_sh, 80); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 80)"
+        }
+      ]
+    },
+    {
+      "title": "Overnight Gap Shock Imbalance Cauchy Reversion",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The absolute overnight price jump (abs(open / ts_delay(close, 1) - 1)) captures off-hours information surprises and retail pre-market order flow shocks. Absolute magnitude ensures strict non-negativity (X >= 0), preserving signal monotonicity through the Cauchy transformation. Normalizing by cap-weighted market dispersion and smoothing over 80 days captures long-term structural overreaction to overnight price shocks with minimal turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "80d",
+      "confounders": [
+        "Overnight buyout announcements or take-private transactions with zero mean-reversion",
+        "Major macroeconomic interest rate policy shocks"
+      ],
+      "falsification_test": "Underperforms during sustained earnings momentum seasons where large overnight gap-ups persistently drift in the direction of the initial shock.",
+      "candidates": [
+        {
+          "expression": "gap = abs(open / ts_delay(close, 1) - 1); mean_gap = group_mean(gap, rank(ts_mean(cap, 25)), market); disp = abs(gap - mean_gap) / (abs(gap) + abs(mean_gap) + 0.01); disp_smooth = ts_mean(disp, 80); gap_std = ts_std_dev(gap, 80); adj_gap = disp_smooth * gap_std * gap; adj_mean = ts_mean(adj_gap, 80); adj_std = ts_std_dev(adj_gap, 80); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 80)"
+        }
+      ]
+    },
+    {
+      "title": "Event-Safe Backfilled Analyst Forecast Dispersion Cauchy Reversion",
+      "domain": "analyst_expectations",
+      "economic_rationale": "Wall Street analyst estimate dispersion ((high_est - low_est) / (abs(mean_est) + 0.001)) measures fundamental valuation disagreement and informational uncertainty. Because raw analyst estimates are point-in-time event data, wrapping each in ts_backfill(..., 60) creates a dense, continuous time series and eliminates platform event arithmetic errors. Scaling backfilled dispersion through the 80-day Cauchy framework produces an orthogonal fundamental signal that does not correlate with price or volume wicks.",
+      "expected_direction": "positive",
+      "intended_horizon": "80d",
+      "confounders": [
+        "Stale analyst estimates during corporate restructuring or spin-offs",
+        "Sparse analyst coverage on small-cap securities"
+      ],
+      "falsification_test": "Fails during broad-based analyst consensus upgrade revisions where wide dispersion reflects early recognition of multi-year secular growth.",
+      "candidates": [
+        {
+          "expression": "high_est = ts_backfill(anl4_adxqfv110_high, 60); low_est = ts_backfill(anl4_adxqfv110_low, 60); mean_est = ts_backfill(anl4_adxqfv110_mean, 60); anl_spread = (high_est - low_est) / (abs(mean_est) + 0.001); mean_anl = group_mean(anl_spread, rank(ts_mean(cap, 25)), market); disp = abs(anl_spread - mean_anl) / (abs(anl_spread) + abs(mean_anl) + 0.05); disp_smooth = ts_mean(disp, 80); anl_std = ts_std_dev(anl_spread, 80); adj_anl = disp_smooth * anl_std * anl_spread; adj_mean = ts_mean(adj_anl, 80); adj_std = ts_std_dev(adj_anl, 80); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 80)"
+        }
+      ]
+    }
+  ]
+}

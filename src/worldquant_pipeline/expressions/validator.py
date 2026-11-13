@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 
 from worldquant_pipeline.config.settings import get_settings
 from worldquant_pipeline.exceptions import (
+    ASTSyntaxError,
     OperatorArityError,
     UnknownFieldError,
     UnknownOperatorError,
@@ -149,6 +150,15 @@ def infer_node_unit(node: ExpressionNode, allowed_fields: dict[str, dict]) -> st
             u_right = infer_node_unit(node.right, allowed_fields)
             if u_left == u_right and u_left in {"price", "shares"}:
                 return "dimensionless"  # e.g. close / ts_delay(close, 5) is dimensionless
+            return "dimensionless"
+
+        if node.operator == "*":
+            u_left = infer_node_unit(node.left, allowed_fields)
+            u_right = infer_node_unit(node.right, allowed_fields)
+            if u_left in {"price", "shares"} and u_right == "dimensionless":
+                return u_left
+            if u_right in {"price", "shares"} and u_left == "dimensionless":
+                return u_right
             return "dimensionless"
 
         return "dimensionless"
@@ -372,7 +382,58 @@ class ExpressionValidator:
         )
 
     def validate_expression_string(self, expr_str: str) -> ASTValidationResult:
-        """Parse and validate an expression string."""
+        """Parse and validate an expression string (supporting single and multi-statement expressions)."""
+        if ";" in expr_str:
+            stmts = [s.strip() for s in expr_str.split(";") if s.strip()]
+            all_errors: list[str] = []
+            all_warnings: list[str] = []
+            all_fields: set[str] = set()
+            all_operators: set[str] = set()
+            total_nodes = 0
+            max_depth = 0
+            local_vars: set[str] = set()
+
+            for stmt in stmts:
+                expr_to_parse = stmt
+                if "=" in stmt and not any(op in stmt for op in ["==", "!=", "<=", ">="]):
+                    parts = stmt.split("=", 1)
+                    var_name = parts[0].strip().lower()
+                    local_vars.add(var_name)
+                    expr_to_parse = parts[1].strip()
+
+                scoped_fields = dict(self.allowed_fields)
+                for lv in local_vars:
+                    scoped_fields[lv] = {"category": "local_var", "unit": "dimensionless"}
+
+                scoped_validator = ExpressionValidator(
+                    allowed_operators=self.allowed_operators,
+                    allowed_fields=scoped_fields,
+                    max_depth=self.max_depth,
+                )
+                try:
+                    node = parse_expression(expr_to_parse)
+                    sub_res = scoped_validator.validate_node(node)
+                    all_errors.extend(sub_res.errors)
+                    all_warnings.extend(sub_res.warnings)
+                    total_nodes += sub_res.node_count
+                    max_depth = max(max_depth, sub_res.max_depth)
+                    all_fields.update(sub_res.referenced_fields - local_vars)
+                    all_operators.update(sub_res.referenced_operators)
+                except ASTSyntaxError as e:
+                    all_errors.append(f"Syntax error in '{stmt}': {e}")
+                except WorldQuantPipelineError as e:
+                    all_errors.append(f"Error parsing '{stmt}': {e}")
+
+            return ASTValidationResult(
+                is_valid=len(all_errors) == 0,
+                errors=all_errors,
+                warnings=all_warnings,
+                node_count=total_nodes,
+                max_depth=max_depth,
+                referenced_fields=all_fields,
+                referenced_operators=all_operators,
+            )
+
         node = parse_expression(expr_str)
         return self.validate_node(node)
 
