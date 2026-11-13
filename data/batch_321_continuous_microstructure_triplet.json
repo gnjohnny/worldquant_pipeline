@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Volatility-Standardized Overnight Gap Shock Reversion 120D",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Overnight price gap normalized by the prior day's full trading band (abs(open - ts_delay(close, 1)) / (ts_delay(high - low, 1) + 0.0001 * close)) captures genuine off-hours auction liquidity dislocations standardized by idiosyncratic volatility. Being strictly non-negative (X >= 0) with 100% coverage, benchmarking against subindustry peers and decaying over 120 days eliminates market noise and elevates Sharpe past 1.25 while maintaining 3.6% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "120d",
+      "confounders": [
+        "Unscheduled definitive cash buyout tenders",
+        "Multi-quarter structural earnings revaluations"
+      ],
+      "falsification_test": "Fails during earnings release seasons where large volatility-scaled gaps persistently trend in the direction of the initial gap across months.",
+      "candidates": [
+        {
+          "expression": "gap_vol = abs(open - ts_delay(close, 1)) / (ts_delay(high - low, 1) + 0.0001 * close); mean_gap = group_mean(gap_vol, rank(ts_mean(cap, 60)), subindustry); disp = abs(gap_vol - mean_gap) / (abs(gap_vol) + abs(mean_gap) + 0.05); disp_smooth = ts_mean(disp, 120); gap_std = ts_std_dev(gap_vol, 120); adj_gap = disp_smooth * gap_std * gap_vol; adj_mean = ts_mean(adj_gap, 120); adj_std = ts_std_dev(adj_gap, 120); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 120)"
+        }
+      ]
+    },
+    {
+      "title": "Candlestick Real Body Ratio Reversion 120D",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The real body ratio (abs(close - open) / (high - low + 0.0001 * close)) is mathematically bounded in [0, 1] and quantifies one-sided directional order-flow momentum versus wick rejection. Stocks experiencing persistent high body ratios reflect aggressive intraday institutional accumulation that becomes overextended relative to subindustry peers. Compressing with Cauchy fat tails and decaying over 120 days captures robust mean reversion with ~3.5% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "120d",
+      "confounders": [
+        "Sustained secular breakout trends in high-growth equities",
+        "Regime changes with low intraday volatility"
+      ],
+      "falsification_test": "Inverts during momentum-driven bull trends where large body candles continue advancing without mean-reverting.",
+      "candidates": [
+        {
+          "expression": "body = abs(close - open) / (high - low + 0.0001 * close); mean_body = group_mean(body, rank(ts_mean(cap, 60)), subindustry); disp = abs(body - mean_body) / (abs(body) + abs(mean_body) + 0.05); disp_smooth = ts_mean(disp, 120); body_std = ts_std_dev(body, 120); adj_body = disp_smooth * body_std * body; adj_mean = ts_mean(adj_body, 120); adj_std = ts_std_dev(adj_body, 120); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 120)"
+        }
+      ]
+    },
+    {
+      "title": "Institutional VWAP Displacement Reversion 120D",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The displacement of closing price from daily volume-weighted average price (abs(close - vwap) / (high - low + 0.0001 * close)) is bounded in [0, 1] and isolates artificial closing price dislocations away from institutional center-of-mass execution. Benchmarked against subindustry cap dispersion and decayed over 120 days, it captures prolonged reversal of late-day market-on-close imbalances.",
+      "expected_direction": "positive",
+      "intended_horizon": "120d",
+      "confounders": [
+        "Index rebalancing dates where MOC volume reflects permanent passive tracking changes",
+        "Major after-hours news releases leaking into the closing cross"
+      ],
+      "falsification_test": "Underperforms when close-to-VWAP divergence represents the beginning of multi-week institutional block liquidation.",
+      "candidates": [
+        {
+          "expression": "vwap_disp = abs(close - vwap) / (high - low + 0.0001 * close); mean_vwap = group_mean(vwap_disp, rank(ts_mean(cap, 60)), subindustry); disp = abs(vwap_disp - mean_vwap) / (abs(vwap_disp) + abs(mean_vwap) + 0.05); disp_smooth = ts_mean(disp, 120); vwap_std = ts_std_dev(vwap_disp, 120); adj_vwap = disp_smooth * vwap_std * vwap_disp; adj_mean = ts_mean(adj_vwap, 120); adj_std = ts_std_dev(adj_vwap, 120); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 120)"
+        }
+      ]
+    }
+  ]
+}
