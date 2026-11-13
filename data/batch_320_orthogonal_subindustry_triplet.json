@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Variance Risk Premium (VRP) Subindustry Cauchy Reversion",
+      "domain": "volatility_derivatives",
+      "economic_rationale": "The ratio of implied volatility to historical realized volatility (implied_volatility_call_30 / (historical_volatility_30 + 0.001)) measures the variance risk premium demanded by option market makers. Being strictly positive (X > 0) with 98% matrix coverage in TOP3000, benchmarking against subindustry peers and applying 60-day Cauchy dispersion isolates unsustainable hedging panic that mean-reverts as implied volatility crushes, providing strong counter-balancing portfolio diversification against equity price/volume wicks.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Impending binary litigation or merger outcomes that validate elevated implied volatility",
+        "Regime shifts in macro interest rates"
+      ],
+      "falsification_test": "Underperforms during sustained market crashes where elevated implied volatility correctly predicts accelerating forward realized volatility across consecutive quarters.",
+      "candidates": [
+        {
+          "expression": "vrp = implied_volatility_call_30 / (historical_volatility_30 + 0.001); mean_vrp = group_mean(vrp, rank(ts_mean(cap, 60)), subindustry); disp = abs(vrp - mean_vrp) / (abs(vrp) + abs(mean_vrp) + 0.05); disp_smooth = ts_mean(disp, 60); vrp_std = ts_std_dev(vrp, 60); adj_vrp = disp_smooth * vrp_std * vrp; adj_mean = ts_mean(adj_vrp, 60); adj_std = ts_std_dev(adj_vrp, 60); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 60)"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Beta Dislocation Subindustry Cauchy Reversion",
+      "domain": "risk_model",
+      "economic_rationale": "Short-term beta expanding rapidly relative to 1-year baseline (abs(beta_last_60_days_spy / (beta_last_360_days_spy + 0.05) - 1.0)) indicates speculative retail crowding or temporary liquidity dislocation. Being strictly non-negative (X >= 0) and derived from rolling SPY regressions (98% matrix coverage), benchmarking against subindustry peers and compressing fat tails with Cauchy quantiles extracts robust idiosyncratic beta mean-reversion with low turnover and zero correlation to cash equity wicks.",
+      "expected_direction": "positive",
+      "intended_horizon": "60d",
+      "confounders": [
+        "Permanent business model transformations that structurally shift firm systematic beta",
+        "Prolonged sector-wide leverage restructuring"
+      ],
+      "falsification_test": "Fails during market crisis transitions where high-beta drift persists indefinitely without reverting to historical norms.",
+      "candidates": [
+        {
+          "expression": "rel_beta = beta_last_60_days_spy / (beta_last_360_days_spy + 0.05); abs_beta_drift = abs(rel_beta - 1.0); mean_drift = group_mean(abs_beta_drift, rank(ts_mean(cap, 60)), subindustry); disp = abs(abs_beta_drift - mean_drift) / (abs(abs_beta_drift) + abs(mean_drift) + 0.05); disp_smooth = ts_mean(disp, 60); drift_std = ts_std_dev(abs_beta_drift, 60); adj_drift = disp_smooth * drift_std * abs_beta_drift; adj_mean = ts_mean(adj_drift, 60); adj_std = ts_std_dev(adj_drift, 60); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 60)"
+        }
+      ]
+    },
+    {
+      "title": "Overnight Gap Shock Subindustry Reversion 120D",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "Absolute overnight gap jumps (abs(open / ts_delay(close, 1) - 1)) capture off-hours information surprises. Benchmarking against subindustry peers instead of the entire market removes broad macro market noise and aligns with subindustry portfolio neutralization. Decaying over 120 days compresses turnover below 4% and extends Fitness, mirroring the exact transformation that elevated Volume Ratio to Fitness 3.02.",
+      "expected_direction": "positive",
+      "intended_horizon": "120d",
+      "confounders": [
+        "Unscheduled buyout bids with fixed cash acquisition price",
+        "Permanent regulatory interventions"
+      ],
+      "falsification_test": "Inverts during momentum-driven earnings drift where gap magnitude signals sustained multi-quarter fundamental revaluation.",
+      "candidates": [
+        {
+          "expression": "gap = abs(open / ts_delay(close, 1) - 1); mean_gap = group_mean(gap, rank(ts_mean(cap, 60)), subindustry); disp = abs(gap - mean_gap) / (abs(gap) + abs(mean_gap) + 0.05); disp_smooth = ts_mean(disp, 120); gap_std = ts_std_dev(gap, 120); adj_gap = disp_smooth * gap_std * gap; adj_mean = ts_mean(adj_gap, 120); adj_std = ts_std_dev(adj_gap, 120); bonus = zscore(adj_mean) + zscore(adj_std); signal = -quantile(bonus, driver=\"cauchy\"); ts_decay_linear(signal, 120)"
+        }
+      ]
+    }
+  ]
+}
