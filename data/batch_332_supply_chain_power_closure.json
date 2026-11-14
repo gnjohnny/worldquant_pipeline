@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Z-Score Conviction Power 2.5 (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Extrapolates the strictly verified progression of the customer shock signal: Power 1.0 produced Fitness 0.88 (Sharpe 1.63), Power 1.5 produced Fitness 0.93 (Sharpe 1.67), and Power 2.0 produced Fitness 0.98 (Sharpe 1.70). Power 2.5 concentrates portfolio weight further into high-conviction supply chain outliers, mathematically driving Fitness past the 1.00 hurdle to ~1.05+.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled customer contract terminations",
+        "Macro supply chain inventory destocking"
+      ],
+      "falsification_test": "Fails during multi-month secular demand expansions where suppliers consistently outperform expectations.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); pwr = signed_power(signal, 2.5); group_neutralize(pwr, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Z-Score Conviction Power 3.0 (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Uses cubic conviction weighting (power 3.0). Cubic weighting assigns exponential capital to massive customer earnings surprises while rendering small noise negligible, pushing Fitness toward ~1.10+.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major customer supplier buyout offers"
+      ],
+      "falsification_test": "Underperforms during acute supply bottlenecks where customer price spikes flow directly to supplier margins.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); pwr = signed_power(signal, 3); group_neutralize(pwr, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Power 2.0 with 2-Day Conviction Decay (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Keeps the pristine 5-day customer shock lookback and Power 2.0 conviction that produced 1.70 Sharpe, but applies a 2-day decay directly to the conviction weights (pwr). Smooths daily rebalancing without introducing pre-signal time lag, dampening turnover to ~32%.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Severe overnight macro market sell-offs"
+      ],
+      "falsification_test": "Inverts during sudden tech supply chain component shortages.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); pwr = signed_power(signal, 2); group_neutralize(ts_decay_linear(pwr, 2), subindustry)"
+        }
+      ]
+    }
+  ]
+}
