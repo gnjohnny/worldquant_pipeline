@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Multi-Factor Rank Inversion Strike 3 (model16)",
+      "domain": "fundamental_scores",
+      "economic_rationale": "Inverting the multi-factor composite with a nimble 15-day lookback (-ts_rank(composite, 15)) and light 2-day decay removes the 14-day stale execution lag that capped Candidate 2 at 0.90 Sharpe in Batch 324. Exploits cyclical equity rotations with 100% continuous matrix coverage across all 3,000 instruments.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Prolonged secular compounder outperformance in mega-cap technology",
+        "Protracted macroeconomic recessionary distress"
+      ],
+      "falsification_test": "Fails during flight-to-safety market crashes where crowded high-quality balance sheets expand their valuation premium indefinitely.",
+      "candidates": [
+        {
+          "expression": "quality = cashflow_efficiency_rank_derivative; certainty = earnings_certainty_rank_derivative; val = relative_valuation_rank_derivative; composite = 0.50 * quality + 0.30 * certainty + 0.20 * val; signal = -ts_rank(composite, 15); group_neutralize(ts_decay_linear(signal, 2), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Variance Risk Premium (VRP) Harvest (option8)",
+      "domain": "options_volatility",
+      "economic_rationale": "Implied volatility systematically exceeds historical realized volatility due to structural institutional demand for downside portfolio insurance. Equities with compressed implied volatility relative to historical realized volatility exhibit superior risk-adjusted forward returns under subindustry neutralization. 98% continuous matrix coverage across TOP3000 ensures zero weight concentration.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Sudden single-stock earnings surprises with unexpected volatility spikes",
+        "Market-wide volatility regime shifts"
+      ],
+      "falsification_test": "Underperforms during severe market liquidity freezes where historical volatility spikes while options markets remain calm.",
+      "candidates": [
+        {
+          "expression": "vrp_spread = (historical_volatility_30 - implied_volatility_mean_30) / (implied_volatility_mean_30 + 0.01); signal = group_rank(vrp_spread, subindustry) - 0.5; group_neutralize(ts_decay_linear(signal, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Multi-Factor Acceleration & Analyst Consensus Revision Synergy (model16)",
+      "domain": "fundamental_momentum",
+      "economic_rationale": "Firms experiencing both accelerating multi-factor fundamental strength (multi_factor_acceleration_score_derivative) and institutional sell-side earnings upgrades (analyst_revision_rank_derivative) generate persistent post-announcement drift. Cross-sectional group ranking within subindustry provides balanced long-short factor neutrality.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled management guidance cuts following aggressive analyst upgrades",
+        "Broad macroeconomic factor rotation from growth to value"
+      ],
+      "falsification_test": "Breaks down during speculative low-quality junk rallies where firms with deteriorating fundamentals and negative revisions outperform.",
+      "candidates": [
+        {
+          "expression": "accel = multi_factor_acceleration_score_derivative; revisions = analyst_revision_rank_derivative; composite = 0.60 * group_rank(accel, subindustry) + 0.40 * group_rank(revisions, subindustry) - 0.50; group_neutralize(ts_decay_linear(composite, 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}
