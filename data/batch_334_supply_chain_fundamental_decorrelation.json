@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Reversion Conditioned on Cashflow Efficiency (pv13 + model16)",
+      "domain": "alternative_data",
+      "economic_rationale": "Decorrelates the 1.90 Sharpe supply chain reversal from the user's pure price-volume reversion alphas by conditioning on fundamental cashflow quality (cashflow_efficiency_rank_derivative). Instead of blindly shorting all customer shock winners, it selectively buys high-quality cash-generative suppliers on dips and shorts speculative junk suppliers on rallies, collapsing portfolio self-correlation below 0.30.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled customer contract terminations",
+        "Macro sector-wide inventory destocking"
+      ],
+      "falsification_test": "Fails during multi-month secular demand expansions where low-quality suppliers outperform cashflow compounders.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); quality = group_rank(cashflow_efficiency_rank_derivative, industry); signal = -group_zscore(cust_sig, industry) * quality; clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Reversion under Sector Neutralization (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Neutralizes customer return shocks across broad economic Sectors rather than narrow industries. Captures macro supply chain flows across inter-industry boundaries, breaking the intra-industry correlation cluster against active portfolio alphas.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major customer supplier buyout offers"
+      ],
+      "falsification_test": "Underperforms during acute supply bottlenecks where customer price spikes flow directly to supplier margins.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, sector); clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 3); group_neutralize(pwr, sector)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Reversion Conditioned on Analyst Revision Drift (pv13 + model16)",
+      "domain": "alternative_data",
+      "economic_rationale": "Combines supply chain shock reversal with sell-side analyst revisions. Only fades customer shocks on equities lacking institutional analyst upgrades, separating the trade from pure technical market-wide reversion.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Severe overnight macro market sell-offs"
+      ],
+      "falsification_test": "Inverts during sudden tech supply chain component shortages.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); rev = group_rank(analyst_revision_rank_derivative, industry); signal = -group_zscore(cust_sig, industry) * rev; clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    }
+  ]
+}
