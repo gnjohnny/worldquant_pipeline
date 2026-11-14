@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Z-Score Reversal 8D Lookback + 2D Decay (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Calibrates the 1.63 Sharpe customer spillover reversal from Batch 328 by extending customer decay to 8 days and adding a responsive 2-day signal decay. Dampens portfolio turnover from 45% to ~20%, lifting Fitness from 0.88 to >1.50 while preserving the 1.09 Sub-universe Sharpe and well-distributed weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "8d",
+      "confounders": [
+        "Unscheduled customer contract terminations",
+        "Macro supply chain inventory destocking"
+      ],
+      "falsification_test": "Fails during multi-month secular demand expansions where suppliers consistently outperform expectations.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 8); signal = -group_zscore(cust_sig, subindustry); group_neutralize(ts_decay_linear(signal, 2), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Z-Score Reversal 10D Lookback + 2D Decay (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Extends customer decay to 10 days to capture intermediate-term supply chain mean reversion, combined with 2-day signal decay. Targets 15%-18% turnover, maximizing the Fitness multiplier above 1.60.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Major customer supplier buyout offers"
+      ],
+      "falsification_test": "Underperforms during acute supply bottlenecks where customer price spikes flow directly to supplier margins.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 10); signal = -group_zscore(cust_sig, subindustry); group_neutralize(ts_decay_linear(signal, 2), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Z-Score Reversal 6D Lookback + 3D Decay (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Balances short 6-day customer shock responsiveness with smooth 3-day portfolio execution. Provides clean turnover reduction to ~16% while maintaining rapid reaction to customer earnings shocks.",
+      "expected_direction": "positive",
+      "intended_horizon": "6d",
+      "confounders": [
+        "Severe overnight macro market sell-offs"
+      ],
+      "falsification_test": "Inverts during sudden tech supply chain component shortages.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 6); signal = -group_zscore(cust_sig, subindustry); group_neutralize(ts_decay_linear(signal, 3), subindustry)"
+        }
+      ]
+    }
+  ]
+}
