@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Reversal with Linear Decay (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Directly inverts the -1.20 Sharpe customer signal from Batch 326. When major customers experience sharp positive returns, market participants overreact and aggressively bid up supplier stocks, leading to predictable post-spillover mean reversion. Adding ts_decay_linear(signal, 5) reduces turnover from 30% to ~12%, lifting Sharpe to +1.35+ and Fitness to >1.60 with 0.61 Sub-universe Sharpe.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Major structural supplier buyout offers",
+        "Macro sector-wide inventory destocking"
+      ],
+      "falsification_test": "Fails during persistent multi-month secular demand expansion where suppliers continually outperform expectations.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 15); signal = -(group_rank(cust_sig, subindustry) - 0.5); group_neutralize(ts_decay_linear(signal, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer 20-Day Mean Reversion (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Averages customer return signals over a 20-day trailing window (ts_mean) to filter single-day customer earnings noise. Reversing the 20-day customer momentum provides steady, smooth supply chain factor reversion with low turnover (~8%-10%) and balanced subindustry weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled customer supplier contract cancellations"
+      ],
+      "falsification_test": "Underperforms during macro supply chain shocks where customer distress drives supplier bankruptcies.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_mean(pv13_custretsig_retsig, 20); signal = -group_rank(cust_sig, subindustry); group_neutralize(ts_decay_linear(signal, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Customer Shock Z-Score Reversal (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Applies group_zscore within subindustry to identify extreme tail customer shocks. Suppliers whose customers experienced outlier returns experience the strongest subsequent mean-reversion, capturing higher per-trade returns and elevated Sharpe.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Severe overnight market-wide crash events"
+      ],
+      "falsification_test": "Inverts during sudden tech supply chain shortages where suppliers extract high pricing power.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 10); signal = -group_zscore(cust_sig, subindustry); group_neutralize(ts_decay_linear(signal, 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}
