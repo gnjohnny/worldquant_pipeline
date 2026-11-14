@@ -1,0 +1,54 @@
+{
+  "hypotheses": [
+    {
+      "title": "Variance Risk Premium Conditioned on Fundamental Cashflow Efficiency (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Raw variance risk premium (historical vol minus implied vol) captures options underpricing but suffers in small-cap junk names. Conditioning on cross-sectional fundamental cashflow quality (cashflow_efficiency_rank_derivative) isolates robust firms where volatility mispricing resolves safely, driving up Sharpe and Sub-universe consistency.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden catastrophic firm-specific litigation",
+        "Macro volatility regime shifts"
+      ],
+      "falsification_test": "Fails during prolonged market-wide volatility expansions where realized volatility exceeds implied volatility across all market tiers.",
+      "candidates": [
+        {
+          "expression": "vrp = historical_volatility_30 - implied_volatility_mean_30; quality = group_rank(cashflow_efficiency_rank_derivative, industry); signal = group_zscore(vrp, industry) * quality; clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Volatility Term Structure Backwardation Reversion (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "The volatility term structure slopes upward in contango during calm periods (90-day IV > 30-day IV). When near-term panic strikes, 30-day IV spikes above 90-day IV into backwardation. Fading severe near-term backwardation on high cashflow quality companies captures the panic recovery premium.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled earnings pre-announcements",
+        "Impending corporate restructuring"
+      ],
+      "falsification_test": "Underperforms when inverted term structures correctly anticipate persistent corporate deterioration.",
+      "candidates": [
+        {
+          "expression": "term_spread = implied_volatility_mean_90 - implied_volatility_mean_30; quality = group_rank(cashflow_efficiency_rank_derivative, industry); signal = group_zscore(term_spread, industry) * quality; clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Downside Put Skew Exhaustion Conditioned on Fundamental Quality (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "When institutional and retail investors panic-hedge against downside crash risk, 30-day put implied volatility violently exceeds call implied volatility. Fading excessive downside skew on firms with superior operational cash generation exploits panic overshoot.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Severe overnight market-wide black swan events"
+      ],
+      "falsification_test": "Inverts during systemic solvency shocks where elevated put demand precedes further collapse.",
+      "candidates": [
+        {
+          "expression": "skew = implied_volatility_put_30 - implied_volatility_call_30; quality = group_rank(cashflow_efficiency_rank_derivative, industry); signal = -group_zscore(skew, industry) * quality; clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    }
+  ]
+}
