@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain Customer Return Spillover Momentum (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Information diffuses gradually across complex economic supply networks. Customer firms experience revenue and demand shocks first; suppliers' stock prices lag behind by several trading days because market participants fail to price customer linkages in real time. Decaying customer return signals over a 10-day window captures this lead-lag drift with 93% continuous matrix coverage.",
+      "expected_direction": "positive",
+      "intended_horizon": "10d",
+      "confounders": [
+        "Sudden customer supplier contract cancellations",
+        "Macro sector-wide inventory destocking"
+      ],
+      "falsification_test": "Fails during supply chain disintermediation where suppliers lose major accounts despite strong customer equity performance.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 10); signal = group_rank(cust_sig, subindustry) - 0.5; group_neutralize(signal, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Analyst Revision Price-Lag Underreaction (model16)",
+      "domain": "fundamental_momentum",
+      "economic_rationale": "Exploits institutional underreaction to sell-side revisions. When consensus analyst revisions are aggressively upgraded (rev_rank is high) but the underlying equity price has lagged over the trailing month (px_rank is low), the market has not yet priced in the earnings inflection. Long the underreacting upgraded equities and short overbought downgraded equities.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled guidance cuts immediately following analyst target increases",
+        "Severe broad market liquidity drawdowns"
+      ],
+      "falsification_test": "Underperforms during speculative rallies where heavily downgraded, low-quality equities surge on short-squeeze dynamics.",
+      "candidates": [
+        {
+          "expression": "rev_rank = group_rank(analyst_revision_rank_derivative, subindustry); px_rank = group_rank(ts_delta(close, 20) / close, subindustry); signal = rev_rank - px_rank; group_neutralize(ts_decay_linear(signal, 5), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Volatility Panic Term Structure Reversion (option8)",
+      "domain": "options_volatility",
+      "economic_rationale": "When 30-day implied volatility rank exceeds 90-day implied volatility rank within subindustry, options markets are in acute event panic (backwardation). Once headline fear peaks and implied volatility crushes, the underlying equity experiences powerful mean-reversion. Ranking both terms eliminates unit mismatches and ensures balanced weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Protracted corporate insolvency or restructuring",
+        "Sustained macroeconomic volatility regimes"
+      ],
+      "falsification_test": "Breaks down during structural default events where short-term volatility correctly anticipates bankruptcy.",
+      "candidates": [
+        {
+          "expression": "panic_spread = group_rank(implied_volatility_mean_30, subindustry) - group_rank(implied_volatility_mean_90, subindustry); group_neutralize(ts_decay_linear(panic_spread, 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}
