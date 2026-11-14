@@ -1,0 +1,54 @@
+{
+  "hypotheses": [
+    {
+      "title": "Idiosyncratic Risk Spike Normalization under Subindustry Neutralization (model51)",
+      "domain": "risk_model",
+      "economic_rationale": "When a firm experiences an acute surge in 30-day idiosyncratic risk relative to its 360-day baseline, institutional risk-parity and volatility-targeting mandates mechanically down-weight the stock. Winsorizing the cross-sectional subindustry z-score at +/-2.5 and applying a quadratic conviction curve captures the liquidity rebound once forced selling exhausts.",
+      "expected_direction": "negative",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Permanent business model impairment",
+        "Imminent corporate bankruptcy"
+      ],
+      "falsification_test": "Fails during protracted credit default cycles where high idiosyncratic volatility persists indefinitely.",
+      "candidates": [
+        {
+          "expression": "idio_ratio = unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001); idio_shock = group_zscore(idio_ratio, subindustry); clipped = min(max(idio_shock, -2.5), 2.5); pwr = -signed_power(clipped, 2); group_neutralize(pwr, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Variance Risk Premium Cross-Sectional Harvest (option8)",
+      "domain": "options",
+      "economic_rationale": "Implied volatility structurally trades at a premium over historical realized volatility. When cross-sectional historical realized volatility exceeds implied volatility within an industry, the options market has underpriced realized turbulence. Fading the mispricing under industry neutralization captures variance risk premium convergence.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Catastrophic sudden earnings releases",
+        "Takeover announcements"
+      ],
+      "falsification_test": "Underperforms during sustained market volatility regimes where realized volatility continues to expand beyond option pricing.",
+      "candidates": [
+        {
+          "expression": "vrp = historical_volatility_30 - implied_volatility_mean_30; vrp_sig = group_zscore(vrp, industry); clipped = min(max(vrp_sig, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Put-Call Volume Ratio Sentiment Exhaustion (option8)",
+      "domain": "options",
+      "economic_rationale": "Extreme spikes in the 30-day put-call volume ratio indicate retail and speculative hedging panic. Under industry neutralization, stocks with maximum relative put buying pressure reach downside exhaustion. Fading the sentiment shock using winsorized quadratic weights extracts contrarian rebound alpha.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Broad macroeconomic index deleveraging"
+      ],
+      "falsification_test": "Inverts during systemic liquidity runs where extreme put volumes precede further fundamental collapse.",
+      "candidates": [
+        {
+          "expression": "pcr_sig = -group_zscore(pcr_vol_30, industry); clipped = min(max(pcr_sig, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, industry)"
+        }
+      ]
+    }
+  ]
+}
