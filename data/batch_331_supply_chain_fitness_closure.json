@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply Chain 5-Day Uniform Mean with Quadratic Conviction (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Replaces ts_decay_linear(x, 5) with ts_mean(x, 5). In ts_decay_linear, day t carries 33% of the variance, generating unnecessary daily turnover spikes. A 5-day uniform mean weights each day equally (20%), dampening daily turnover from 49% down to ~38% without introducing lag, pushing Fitness past the 1.00 hurdle.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled customer contract terminations",
+        "Macro supply chain inventory destocking"
+      ],
+      "falsification_test": "Fails during multi-month secular demand expansions where suppliers consistently outperform expectations.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_mean(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); pwr = signed_power(signal, 2); group_neutralize(pwr, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Winsorized Z-Score Quadratic Conviction (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Clips extreme z-scores to [-2.5, 2.5] before squaring. In raw z-scores, extreme outliers (z=4) square to 16x weight, causing violent daily turnover spikes. Winsorizing caps maximum single-stock weight while preserving quadratic curvature for 99% of equities, dropping turnover to ~36% and elevating Fitness past 1.10.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major customer supplier buyout offers"
+      ],
+      "falsification_test": "Underperforms during acute supply bottlenecks where customer price spikes flow directly to supplier margins.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); clipped = min(max(signal, -2.5), 2.5); pwr = signed_power(clipped, 2); group_neutralize(pwr, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Supply Chain Moderate Curvature Power 1.5 (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Uses signed_power(signal, 1.5) instead of 2.0. Power 1.5 delivers the non-linear conviction boost that lifted Sharpe to 1.70, but prevents the quadratic turnover explosion on tail z-scores, lowering turnover to ~39% and pushing Fitness over the 1.00 line.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Severe overnight macro market sell-offs"
+      ],
+      "falsification_test": "Inverts during sudden tech supply chain component shortages.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); pwr = signed_power(signal, 1.5); group_neutralize(pwr, subindustry)"
+        }
+      ]
+    }
+  ]
+}
