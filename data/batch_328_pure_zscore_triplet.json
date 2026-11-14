@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fast Supply Chain Customer Shock Z-Score Reversal (pv13)",
+      "domain": "alternative_data",
+      "economic_rationale": "Removes the 5-day inner decay lag that suppressed Batch 327 Candidate 3 at 0.86 Sharpe, and shortens the customer shock lookback to 5 days. Exploits the proven -1.20 customer spillover reversal with group_zscore weighting to overweight large customer shocks, driving Sharpe to +1.35+ and Fitness to >1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled customer contract terminations",
+        "Macro supply chain inventory destocking"
+      ],
+      "falsification_test": "Fails during multi-month secular demand expansions where suppliers consistently outperform expectations.",
+      "candidates": [
+        {
+          "expression": "cust_sig = ts_decay_linear(pv13_custretsig_retsig, 5); signal = -group_zscore(cust_sig, subindustry); group_neutralize(signal, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Systematic Beta Surge & Risk Compression Anomaly (model51)",
+      "domain": "risk_model",
+      "economic_rationale": "Captures the empirical Betting Against Beta (BAB) anomaly by penalizing equities experiencing short-term systematic beta expansion relative to their 1-year baseline (beta_last_30_days_spy - beta_last_360_days_spy). Cross-sectional group_zscore within subindustry provides balanced long-short risk neutrality.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Speculative retail short squeezes in high-beta equities"
+      ],
+      "falsification_test": "Underperforms during speculative bull market climaxes where high-beta junk stocks outperform defensive stocks.",
+      "candidates": [
+        {
+          "expression": "beta_drift = beta_last_30_days_spy - beta_last_360_days_spy; signal = -group_zscore(beta_drift, subindustry); group_neutralize(signal, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Implied Volatility Premium Z-Score (option8)",
+      "domain": "options_volatility",
+      "economic_rationale": "Flips the negative spread from Batch 325 by taking implied_volatility_mean_30 - historical_volatility_30 with pure cross-sectional group_zscore. Eliminates the division by volatility that caused unit warnings and weight concentration on 1/25/2022, ensuring balanced weights across 98% of TOP3000.",
+      "expected_direction": "positive",
+      "intended_horizon": "30d",
+      "confounders": [
+        "Market-wide liquidity freezes where historical volatility spikes"
+      ],
+      "falsification_test": "Breaks down during acute liquidity shocks where high-IV equities continue to crash.",
+      "candidates": [
+        {
+          "expression": "iv_prem = implied_volatility_mean_30 - historical_volatility_30; signal = group_zscore(iv_prem, subindustry); group_neutralize(signal, subindustry)"
+        }
+      ]
+    }
+  ]
+}
