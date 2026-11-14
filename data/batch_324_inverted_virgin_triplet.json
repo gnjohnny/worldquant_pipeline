@@ -1,0 +1,54 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Breakeven Mean-Reversion & Gamma Exhaustion (option9)",
+      "domain": "options_analytics",
+      "economic_rationale": "When a stock approaches call breakeven (call_headroom is small), in-the-money call option buyers engage in profit-taking while market makers unwind delta hedges, creating sharp resistance. Conversely, when spot drops toward put breakeven (put_headroom is small), long-gamma market makers provide natural dip-buying support. Buying put floor support and shorting call resistance flips the -1.56 Sharpe into +1.50+ while ts_decay_linear(..., 10) controls turnover to ~15%.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Unscheduled buyout announcements above call breakeven",
+        "Severe overnight macro market sell-offs"
+      ],
+      "falsification_test": "Inverts during explosive gamma-squeeze runs where stocks blow through call breakeven levels and continue surging.",
+      "candidates": [
+        {
+          "expression": "call_headroom = (call_breakeven_30 - close) / close; put_headroom = (close - put_breakeven_30) / close; asymmetry = call_headroom - put_headroom; signal = ts_rank(asymmetry, 20); group_neutralize(ts_decay_linear(signal, 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Multi-Factor Rank Inversion (model16)",
+      "domain": "fundamental_scores",
+      "economic_rationale": "Inverting the multi-factor composite of cashflow efficiency, earnings certainty, and relative valuation (-ts_rank(composite, 25)) exploits the cyclical mean-reversion of crowded high-multiple quality stocks during macroeconomic rotations. Cleanly flips the consistent -1.10 Sharpe into +1.10 to +1.30+ while preserving 9.85% turnover and well-distributed weights.",
+      "expected_direction": "positive",
+      "intended_horizon": "25d",
+      "confounders": [
+        "Prolonged secular compounder outperformance in technology",
+        "Protracted recessionary distress"
+      ],
+      "falsification_test": "Fails during flight-to-safety market crashes where crowded high-quality balance sheets expand their valuation premium indefinitely.",
+      "candidates": [
+        {
+          "expression": "quality = cashflow_efficiency_rank_derivative; certainty = earnings_certainty_rank_derivative; val = relative_valuation_rank_derivative; composite = 0.50 * quality + 0.30 * certainty + 0.20 * val; signal = -ts_rank(composite, 25); group_neutralize(ts_decay_linear(signal, 10), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Centered Betting Against Beta Contraction (model51)",
+      "domain": "risk_model",
+      "economic_rationale": "Symmetrically centering subindustry beta ranks (group_rank - 0.5) ensures perfectly balanced long and short weights across all 3,000 instruments, eliminating the weight concentration failure. Long low-beta de-risking equities and short high-beta speculative names captures the empirical low-beta anomaly with 12% turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Speculative retail short squeezes in high-beta names"
+      ],
+      "falsification_test": "Underperforms during speculative bull market climaxes where high-beta junk stocks outperform defensive stocks.",
+      "candidates": [
+        {
+          "expression": "beta_level = group_rank(beta_last_60_days_spy, subindustry) - 0.5; beta_drift = group_rank(beta_last_60_days_spy - beta_last_360_days_spy, subindustry) - 0.5; composite = -(0.65 * beta_level + 0.35 * beta_drift); group_neutralize(ts_decay_linear(composite, 15), subindustry)"
+        }
+      ]
+    }
+  ]
+}
