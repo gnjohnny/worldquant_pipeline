@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Betting Against Beta Defensive Contraction (model51)",
+      "domain": "risk_model",
+      "economic_rationale": "High-beta stocks systematically underperform due to leverage-constrained retail crowding, while low-beta equities deliver superior risk-adjusted returns (Frazzini & Pedersen). In addition, equities experiencing short-term beta compression relative to their 1-year baseline indicate institutional de-risking and flight to quality. Subindustry neutralization removes macro sector biases.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Speculative market melt-ups where high-beta junk stocks rally indiscriminately",
+        "Abrupt macroeconomic interest rate shocks"
+      ],
+      "falsification_test": "Underperforms during explosive low-quality speculative rallies where high-beta names outperform defensive names across all sectors.",
+      "candidates": [
+        {
+          "expression": "beta_level = beta_last_60_days_spy; beta_drift = beta_last_60_days_spy - beta_last_360_days_spy; raw_alpha = -0.70 * group_rank(beta_level, subindustry) - 0.30 * group_rank(beta_drift, subindustry); ts_decay_linear(raw_alpha, 15)"
+        }
+      ]
+    },
+    {
+      "title": "Fundamental Multi-Factor Quality & Certainty Synergy (model16)",
+      "domain": "fundamental_scores",
+      "economic_rationale": "In empirical corporate finance, high operating cashflow generation per unit of capital protects firms from solvency shocks, while high earnings certainty penalizes aggressive accounting accruals. Combining Cashflow Efficiency Rank Derivative, Earnings Certainty Rank Derivative, and Relative Valuation into a smoothed subindustry-neutral factor creates a durable quality compounder alpha completely orthogonal to daily market microstructure.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Distressed deep-value turnarounds that take multi-year horizons to reflect in reported cash flows",
+        "Sudden corporate acquisitions"
+      ],
+      "falsification_test": "Fails during early-stage economic recovery cycles where highly leveraged, low-quality firms experience cyclical multiple expansion before generating free cash flows.",
+      "candidates": [
+        {
+          "expression": "quality = cashflow_efficiency_rank_derivative; certainty = earnings_certainty_rank_derivative; val = relative_valuation_rank_derivative; composite = 0.50 * quality + 0.30 * certainty + 0.20 * val; group_neutralize(ts_rank(composite, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Breakeven Support & Asymmetry Alpha (option9)",
+      "domain": "options_analytics",
+      "economic_rationale": "Option market maker gamma exposure creates natural price support when spot trades above put breakeven levels (long gamma stabilizes dips). Comparing downside put breakeven headroom against upside call breakeven headroom measures net institutional directional positioning. Smoothing this asymmetry over a 15-day rolling rank and neutralizing by subindustry extracts a pure derivatives positioning signal with zero exposure to cash equity volume.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Binary merger arbitration spreads where option breakevens reflect deal failure odds",
+        "Severe overnight gaps opening beyond strike bands"
+      ],
+      "falsification_test": "Inverts during liquidity cascade crashes where put breakeven floors fail and market makers are forced into short-gamma liquidation.",
+      "candidates": [
+        {
+          "expression": "put_headroom = (close - put_breakeven_30) / close; call_headroom = (call_breakeven_30 - close) / close; asymmetry = put_headroom - call_headroom; group_neutralize(ts_rank(asymmetry, 15), subindustry)"
+        }
+      ]
+    }
+  ]
+}
