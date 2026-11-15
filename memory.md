@@ -28,12 +28,18 @@ Last updated: 2026-11-15 12:08 UTC+3
 
 ## Current state
 
-- **Invariant 10**: ACTIVE & STRICTLY ENFORCED.
-- **Active Research Batch**: Batch 337 ([batch_337_single_line_options_triplet.json](file:///C:/Users/Johnny/Agy_test/worldquant_pipeline/data/batch_337_single_line_options_triplet.json)) — 100% single-line options volatility surface conditioned by fundamental cashflow efficiency.
-- **Git & DB Synchronized**: All models, rules, and candidate IDs tracked in local PostgreSQL and committed to git.
+- **Invariant 10**: ACTIVE & STRICTLY ENFORCED (100% Single-Line Mandate).
+- **Approved Alphas for Today (2 / 4 Complete!)**:
+  1. **Alpha 1 Submitted (`14b75193`)**: `SupplyChain_CashflowConditioned_ShockReversal_5D`
+     - Dataset: `pv13` + `model16` | Sharpe: 2.12 | Fitness: 1.67 | Turnover: 34.78% | Self-corr: 0.6050
+  2. **Alpha 2 APPROVED & READY FOR SUBMISSION (`07b525d7`)**: `OptionSkew_DownsideExhaustion_CashflowConditioned_5D`
+     - Expression: `group_neutralize(signed_power(min(max(-group_zscore(implied_volatility_put_30 - implied_volatility_call_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)`
+     - Dataset: `option8` + `model16` (Virgin Options Volatility Skew)
+     - **8 PASS** | Sharpe: **2.19** (SPECTACULAR) | Fitness: **1.83** (EXCELLENT tier $\ge 1.80$) | Turnover: **19.57%** | Sub-universe: **1.15** | Self-correlation: **0.4900** (ULTRA LOW!)
+- **Sister Alpha Option (`3f153939`)**: Term structure backwardation reversion also achieved 8 PASS (Sharpe 1.52, Fitness 1.08, Turnover 18.16%, Self-corr 0.4395).
+- **Git & DB Synchronized**: All batches, hypotheses, experiments, and decisions tracked in PostgreSQL.
 
 ## Next steps
 
-1. Simulate Batch 337 (Candidates 1, 2, and 3) on the WorldQuant BRAIN simulator using the pure single-line expressions.
-2. Verify that the single-line format eliminates correlation masking and provides genuine backtest metrics.
-3. Validate against G0–G7 gates (Sharpe >= 1.25, Fitness >= 1.50, Turnover 1%–70%, Self-corr < 0.70).
+1. Present Invariant 6 Standardized Submission Card for Alpha 2 (`07b525d7`) so the user can submit it immediately.
+2. Advance to engineer Batch 338 targeting the 3rd qualifying alpha of the day on an untouched dataset (`model51` / `analyst4`).
