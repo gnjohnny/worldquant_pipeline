@@ -1,0 +1,54 @@
+{
+  "hypotheses": [
+    {
+      "title": "Low-Beta Defensive Anomaly Conditioned on Earnings Certainty (model51 + model16)",
+      "domain": "risk_model",
+      "economic_rationale": "Exploits the empirical low-beta anomaly within each industry by systematically longing low-beta firms with high earnings predictability and shorting speculative high-beta lottery stocks under pure single-line industry neutralization.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden speculative tech rallies",
+        "High-beta momentum market breakout"
+      ],
+      "falsification_test": "Underperforms during speculative liquidity expansions where junk high-beta equities decouple upward from fundamental cash flows.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(-group_zscore(beta_last_60_days_spy, industry) * group_rank(earnings_certainty_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Beta Surge and Acceleration Reversion (model51 + model16)",
+      "domain": "risk_model",
+      "economic_rationale": "Fades acute short-term surges in rolling market beta relative to 1-year baseline on cashflow compounders, capturing liquidity mean-reversion as speculative turbulence normalizes.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Persistent fundamental leverage restructuring",
+        "Sector-wide macro regime shift"
+      ],
+      "falsification_test": "Fails when beta surges accurately anticipate permanent structural increases in operating leverage.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(-group_zscore(beta_last_30_days_spy - beta_last_360_days_spy, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Deep Value Quality under Relative Valuation (model16)",
+      "domain": "fundamental",
+      "economic_rationale": "Longs fundamentally underpriced firms (high relative valuation derivative) whose earnings streams carry superior certainty and sustainability, systematically avoiding low-quality value traps under industry neutralization.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unforeseen regulatory changes in financial accounting"
+      ],
+      "falsification_test": "Inverts during growth mania cycles where expensive multiple expansion outperforms fundamental replacement value.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(relative_valuation_rank_derivative, industry) * group_rank(earnings_certainty_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    }
+  ]
+}

@@ -29,13 +29,16 @@ Last updated: 2026-11-15 12:08 UTC+3
 ## Current state
 
 - **Invariant 10**: ACTIVE & STRICTLY ENFORCED (100% Single-Line Mandate).
-- **Approved Alphas for Today (2 / 4 Complete!)**:
-  1. **Alpha 1 Submitted (`14b75193`)**: `SupplyChain_CashflowConditioned_ShockReversal_5D`
-     - Dataset: `pv13` + `model16` | Sharpe: 2.12 | Fitness: 1.67 | Turnover: 34.78% | Self-corr: 0.6050
-  2. **Alpha 2 APPROVED & READY FOR SUBMISSION (`07b525d7`)**: `OptionSkew_DownsideExhaustion_CashflowConditioned_5D`
+- **Approved & Submitted Alphas for Today (2 / 4 Complete!)**:
+  1. **Submission 1 (`14b75193`)**: `SupplyChain_CashflowConditioned_ShockReversal_5D`
+     - Dataset: `pv13` + `model16` | Sharpe: 2.12 | Fitness: 1.67 (Rating: GOOD) | Turnover: 34.78% | Self-corr: 0.6050
+     - Status: **SUBMITTED**
+  2. **Submission 2 (`07b525d7`, Candidate 3 of Batch 337)**: `OptionSkew_DownsideExhaustion_CashflowConditioned_5D`
      - Expression: `group_neutralize(signed_power(min(max(-group_zscore(implied_volatility_put_30 - implied_volatility_call_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)`
-     - Dataset: `option8` + `model16` (Virgin Options Volatility Skew)
-     - **8 PASS** | Sharpe: **2.19** (SPECTACULAR) | Fitness: **1.83** (EXCELLENT tier $\ge 1.80$) | Turnover: **19.57%** | Sub-universe: **1.15** | Self-correlation: **0.4900** (ULTRA LOW!)
+     - Dataset: `option8` + `model16` (Options Volatility Skew)
+     - **8 PASS** | Sharpe: **2.19** | Fitness: **1.83** (Rating: **GOOD**; threshold for EXCELLENT at Delay 1 is >2.0) | Turnover: **19.57%** | Sub-universe: **1.15** | Self-correlation: **0.4900** (ULTRA LOW!)
+     - Status: **SUBMITTED**
+- **Remaining for Today**: **2 Alphas Needed** to complete the 4-alpha daily quota.
 - **Sister Alpha Option (`3f153939`)**: Term structure backwardation reversion also achieved 8 PASS (Sharpe 1.52, Fitness 1.08, Turnover 18.16%, Self-corr 0.4395).
 - **Git & DB Synchronized**: All batches, hypotheses, experiments, and decisions tracked in PostgreSQL.
 
