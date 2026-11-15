@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "60-Day Institutional Put Skew Exhaustion on Cashflow Quality (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "While 30-day skew captures monthly retail hedging, the 60-day tenor captures structural quarterly institutional hedging overhang. Fading acute 60-day downside put skew spikes on high cashflow compounders targets institutional panic exhaustion under industry neutralization.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major quarterly earnings blackouts",
+        "Systemic credit crisis"
+      ],
+      "falsification_test": "Inverts during systemic solvency shocks where elevated put demand precedes further collapse.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(-group_zscore(implied_volatility_put_60 - implied_volatility_call_60, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "90D vs 30D Term Structure Conditioned on Analyst Revision Momentum (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "In Batch 337, the 90D-30D term structure achieved 8 PASS (Sharpe 1.52, Sub-universe 0.94, Self-corr 0.4395), but Fitness was 1.08. By replacing cashflow with rapid institutional consensus upgrades (analyst_revision_rank_derivative), we capture firms with upward revision momentum whose option volatility is underpriced, driving Fitness past 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled earnings pre-announcements"
+      ],
+      "falsification_test": "Underperforms when inverted term structures correctly anticipate persistent corporate deterioration.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(implied_volatility_mean_90 - implied_volatility_mean_30, industry) * group_rank(analyst_revision_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "90D vs 30D Term Structure with Cubic Conviction (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Tests cubic power curvature (power 3) on the 8 PASS 90D-30D term structure. Steeper curvature expands conviction on the highest-confidence names while keeping turnover low via z-score clipping [-2.5, 2.5], directly targeting a Fitness boost from 1.08 to >= 1.50.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Prolonged backwardation regimes"
+      ],
+      "falsification_test": "Fails when high-conviction term structure inversions persist across broad sectors.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(implied_volatility_mean_90 - implied_volatility_mean_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 3), industry)"
+        }
+      ]
+    }
+  ]
+}
