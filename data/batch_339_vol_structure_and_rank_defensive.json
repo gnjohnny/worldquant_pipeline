@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Acute 30D vs 10D Volatility Term Structure Backwardation Reversion (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Captures acute near-term panic where 10-day implied volatility blows out above 30-day baseline into steep backwardation. Conditioned on fundamental corporate cashflow generation under industry neutralization, extracting recovery alpha as panic resolves.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled earnings pre-announcements",
+        "Impending corporate restructuring"
+      ],
+      "falsification_test": "Fails when inverted short-term term structures correctly anticipate persistent corporate insolvency.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(implied_volatility_mean_30 - implied_volatility_mean_10, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Parkinson Intraday Volatility Noise Spread Fading (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Parkinson volatility measures intraday high-low whipsaw while historical volatility measures close-to-close institutional commitment. Fading acute intraday noise relative to realized close-to-close volatility on cashflow compounders captures liquidity provision returns.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Intraday breakout momentum regimes"
+      ],
+      "falsification_test": "Inverts during momentum trend days where wide intraday high-low spreads mark the start of multi-week directional trends.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(-group_zscore(parkinson_volatility_30 - historical_volatility_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Rank-Neutral Low-Beta Defensive Quality (model51 + model16)",
+      "domain": "risk_model",
+      "economic_rationale": "Pure rank-based formulation of the Low-Beta anomaly. Eliminates weight concentration by using cross-sectional ranking across all 3,000 instruments, systematically longing defensive compounders and shorting volatile lottery stocks.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Speculative high-beta market melt-ups"
+      ],
+      "falsification_test": "Underperforms during speculative liquidity expansions where junk high-beta equities outperform stable compounders.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(group_rank(-beta_last_60_days_spy, industry) * group_rank(earnings_certainty_rank_derivative, industry), industry)"
+        }
+      ]
+    }
+  ]
+}
