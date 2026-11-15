@@ -1,11 +1,18 @@
+import sys
 import uuid
 from datetime import datetime
-import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from worldquant_pipeline.storage.database import get_session
-from worldquant_pipeline.storage.models import AlphaCandidate, Experiment, ExperimentMetric, Decision
+from worldquant_pipeline.storage.models import (
+    AlphaCandidate,
+    Decision,
+    Experiment,
+    ExperimentMetric,
+)
+
 
 def record_batch335():
     batch_data = [

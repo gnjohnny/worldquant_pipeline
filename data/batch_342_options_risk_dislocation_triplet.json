@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Put Breakeven Cushion and Long Gamma Market Maker Support (option9)",
+      "domain": "options",
+      "economic_rationale": "Measures the proportional distance between spot stock price and the 30-day put breakeven level ((close - put_breakeven_30) / close). Equities trading comfortably above put breakeven sit in the long-gamma regime of options market makers who dynamically buy dips and dampen volatility. Cross-sectional industry z-score smoothed across 10 trading days provides persistent structural downside buffer while decoupling completely from implied volatility skew and fundamental earnings.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden volatility regime shifts causing dealer gamma de-hedging",
+        "Sparse options open interest in smaller capitalization equities"
+      ],
+      "falsification_test": "Inverts during systemic liquidity cascades where spot slices through put breakeven levels and dealers are forced into short gamma liquidation.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(group_rank(ts_decay_linear(group_zscore((close - put_breakeven_30) / close, industry), 10), industry) - 0.5, industry)"
+        }
+      ]
+    },
+    {
+      "title": "Put-Call Open Interest Ratio Hedging Exhaustion Reversion (option9)",
+      "domain": "options",
+      "economic_rationale": "The Put-Call Open Interest Ratio (pcr_oi_30) measures extreme institutional downside hedging demand. When 30-day PCR surges significantly above its trailing 60-day baseline, institutional put accumulation has reached saturation, signaling an oversold market condition prime for contrarian mean reversion. Taking the negative standardized deviation smoothed with 10-day linear decay captures structural rebound opportunities under subindustry neutrality.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Persistent fundamental deterioration sustaining legitimate put open interest accumulation"
+      ],
+      "falsification_test": "Fails if structural downside deterioration continues unabated and elevated put open interest reflects genuine solvency risk rather than temporary hedging panic.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(group_rank(-ts_decay_linear((pcr_oi_30 - ts_mean(pcr_oi_30, 60)) / (ts_std_dev(pcr_oi_30, 60) + 0.01), 10), subindustry) - 0.5, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Low-Beta Defensive Anomaly with Unsystematic Variance Stabilization (model51)",
+      "domain": "risk",
+      "economic_rationale": "Exploits the classic Low-Beta anomaly (-beta_last_60_days_spy) where leverage-constrained investors overpay for lottery-like high-beta stocks. To prevent falling into distressed value traps, we construct an orthogonal factor spread subtracting the rank of short-term idiosyncratic risk acceleration (unsystematic_risk_last_30_days / unsystematic_risk_last_360_days). Taking the cross-sectional rank of this orthogonal difference smoothed across 12 days ensures uniform capital distribution and zero correlation with options skew or earnings momentum.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Violent cyclical market rallies where high-beta speculative equities outperform defensives"
+      ],
+      "falsification_test": "Underperforms during explosive speculative bull runs where low-beta and low-idiosyncratic-risk defensive equities lag high-beta momentum names.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(group_rank(ts_decay_linear(group_rank(-beta_last_60_days_spy, industry) - group_rank(unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001), industry), 12), industry) - 0.5, industry)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,12 @@
-import sys, json
+import json
+import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from worldquant_pipeline.storage.database import get_session
 from worldquant_pipeline.hypotheses.importer import HypothesisImporter
+from worldquant_pipeline.storage.database import get_session
+
 
 def main():
     batch_path = Path("data/batch_338_risk_valuation_single_line_triplet.json")
