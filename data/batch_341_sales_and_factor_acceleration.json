@@ -1,0 +1,53 @@
+{
+  "hypotheses": [
+    {
+      "title": "Quarterly Sales Surprise Momentum Conditioned on Earnings Certainty (analyst4 + model16)",
+      "domain": "analyst",
+      "economic_rationale": "Exploits post-earnings announcement drift (PEAD) and sell-side analyst anchoring bias using quarterly reported net sales (actual_sales_value_quarter). Comparing reported quarterly sales against trailing 1-year mean isolates top-line fundamental surprise. Conditioning on earnings certainty isolates robust cash-backed compounders and completely decouples from options volatility and price-volume datasets.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major one-time inventory liquidations",
+        "Macro cyclical demand contraction"
+      ],
+      "falsification_test": "Inverts during broad cyclical turning points where high-growth sales compounders compress violently on multiple contraction.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore((actual_sales_value_quarter - ts_mean(actual_sales_value_quarter, 252)) / (ts_std_dev(actual_sales_value_quarter, 252) + 1.0), industry) * group_rank(earnings_certainty_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Composite Factor Score Intraday Momentum and Cashflow Quality (model16)",
+      "domain": "fundamental",
+      "economic_rationale": "composite_factor_score_derivative tracks multi-factor intraday style momentum and earnings quality across 100% of US equities. Longing firms with high multi-factor momentum and superior operational cash generation captures institutional consensus upgrades without touching options or price-volume datasets.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Rapid intraday market rotation between value and growth"
+      ],
+      "falsification_test": "Underperforms when intraday multi-factor momentum signals reverse aggressively during macro regime shifts.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(composite_factor_score_derivative, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Growth Potential Expansion Conditioned on Earnings Certainty (model16)",
+      "domain": "fundamental",
+      "economic_rationale": "growth_potential_rank_derivative measures medium-term expansion trajectory in corporate revenues and operating earnings. Conditioning on earnings_certainty_rank_derivative filters out speculative high-beta growth traps, isolating reliable structural compounders under pure single-line industry neutralization.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unforeseen regulatory changes in financial accounting"
+      ],
+      "falsification_test": "Fails during market-wide multiple contractions where expensive high-growth equities suffer systemic deratings.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(growth_potential_rank_derivative, industry) * group_rank(earnings_certainty_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    }
+  ]
+}
