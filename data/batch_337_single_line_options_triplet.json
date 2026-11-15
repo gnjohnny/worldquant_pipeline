@@ -1,0 +1,54 @@
+{
+  "hypotheses": [
+    {
+      "title": "Single-Line Variance Risk Premium Conditioned on Cashflow Quality (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Pure single-line nested implementation of cross-sectional variance risk premium conditioned by fundamental corporate quality. Eliminates multi-line parser ambiguity on WorldQuant BRAIN, isolating high cashflow compounders experiencing volatility mispricing.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden catastrophic firm-specific litigation",
+        "Macro volatility regime shifts"
+      ],
+      "falsification_test": "Fails during prolonged market-wide volatility expansions where realized volatility exceeds implied volatility across all market tiers.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(historical_volatility_30 - implied_volatility_mean_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Single-Line Volatility Term Structure Backwardation Reversion (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Pure single-line implementation of term structure slope inversion. Buys high cashflow compounders whose short-term 30-day IV has temporarily spiked above 90-day IV in acute panic.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unscheduled earnings pre-announcements",
+        "Impending corporate restructuring"
+      ],
+      "falsification_test": "Underperforms when inverted term structures correctly anticipate persistent corporate deterioration.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(group_zscore(implied_volatility_mean_90 - implied_volatility_mean_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    },
+    {
+      "title": "Single-Line Downside Put Skew Exhaustion Conditioned on Quality (option8 + model16)",
+      "domain": "options",
+      "economic_rationale": "Pure single-line implementation fading acute put-minus-call skew surges on firms with superior operational cash generation, capturing liquidity mean-reversion as panic hedging subsides.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Severe overnight market-wide black swan events"
+      ],
+      "falsification_test": "Inverts during systemic solvency shocks where elevated put demand precedes further collapse.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(signed_power(min(max(-group_zscore(implied_volatility_put_30 - implied_volatility_call_30, industry) * group_rank(cashflow_efficiency_rank_derivative, industry), -2.5), 2.5), 2), industry)"
+        }
+      ]
+    }
+  ]
+}
