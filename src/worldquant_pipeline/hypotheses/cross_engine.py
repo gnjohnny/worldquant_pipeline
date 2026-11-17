@@ -10,7 +10,7 @@ Engineers multi-dataset synergistic alpha hypotheses pairing orthogonal informat
 
 Enforces:
 - Optimal Turnover frontier (10.0% - 13.0%) for maximum platform Fitness (>= 1.80)
-- Pre-simulation correlation risk screening (<= 0.60 against approved portfolio)
+- Pre-simulation correlation risk screening (<= 0.35 against approved portfolio)
 - AST depth <= 10 and 100% dimensionless unit purity
 - Standardized Tri-Candidate Batch Protocol (Invariant 7)
 """
@@ -533,7 +533,7 @@ class CrossDatasetEngine:
         self,
         archetype_key: str,
         session: Session | None = None,
-        max_correlation_risk: float = 0.40,
+        max_correlation_risk: float = 0.35,
     ) -> CrossDatasetCandidate:
         """Generate and rigorously audit a single cross-dataset candidate."""
         if archetype_key not in self.archetypes:
@@ -612,13 +612,13 @@ class CrossDatasetEngine:
     def generate_tri_candidate_batch(
         self,
         session: Session | None = None,
-        max_correlation_risk: float = 0.40,
+        max_correlation_risk: float = 0.35,
         preferred_archetypes: list[str] | None = None,
     ) -> tuple[dict[str, Any], list[CrossDatasetCandidate]]:
         """Generate a verified, non-colliding Tri-Candidate Batch (Invariant 7).
 
         Selects 3 mutually orthogonal archetypes, auditing each candidate against the
-        database of approved alphas to guarantee low self-correlation (<= 0.40).
+        database of approved alphas to guarantee low self-correlation (<= 0.35).
         """
         keys_pool = preferred_archetypes or [
             "model16_derivatives_synergy",
@@ -685,7 +685,7 @@ class CrossDatasetEngine:
         self,
         filepath: str | Path,
         session: Session | None = None,
-        max_correlation_risk: float = 0.40,
+        max_correlation_risk: float = 0.35,
     ) -> tuple[Path, list[CrossDatasetCandidate]]:
         """Generate and save a Tri-Candidate batch to a JSON file."""
         path = Path(filepath)

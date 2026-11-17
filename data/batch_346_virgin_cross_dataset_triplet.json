@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Fundamental Multi-Style Pentagon Surface Acceleration Divergence (model16)",
+      "domain": "fundamental",
+      "economic_rationale": "Captures the first derivative (acceleration) of the composite multi-style pentagon score (Value, Growth, Profitability, Momentum, Quality) via fscore_surface_accel. When a firm's fundamental trajectory accelerates relative to its subindustry peers, institutional capital actively re-rates the equity ahead of consensus revisions. Standardizing within subindustry and pairing with 20-day percentage price mean-reversion isolates durable operational momentum while holding turnover under 10% and driving Fitness > 1.55.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Transitory quarterly non-operating gains inflating short-term surface acceleration",
+        "Protracted industry-wide macro downturns compressing multiples across all accelerating peers"
+      ],
+      "falsification_test": "Fails during speculative low-quality junk rallies where deteriorating fundamental firms outperform high-acceleration quality firms.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear(ts_backfill(fscore_surface_accel, 20), 5), subindustry), -2.0), 2.0) - 0.20 * min(max(group_zscore(ts_decay_linear((close - ts_mean(close, 20)) / close, 5), subindustry), -2.0), 2.0)"
+        }
+      ]
+    },
+    {
+      "title": "Short-Term Put-to-Call Open Interest Sentiment Divergence (option9)",
+      "domain": "options",
+      "economic_rationale": "Evaluates the inverted 10-day Put-to-Call Open Interest ratio (-pcr_oi_10). A rapid contraction in put open interest relative to call open interest indicates informed institutional traders unwinding downside protection and accumulating upside convexity. Standardizing within subindustry and coupling with 20-day percentage price mean-reversion enters high-sentiment names on temporary pullbacks with zero correlation to implied volatility surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Event-driven retail speculation artificially inflating call open interest prior to binary events",
+        "Low overall options liquidity distorting open interest ratios in small-cap instruments"
+      ],
+      "falsification_test": "Fails if elevated call open interest is driven entirely by covered call writing from institutional holders anticipating upside exhaustion.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear(-pcr_oi_10, 5), subindustry), -2.0), 2.0) - 0.20 * min(max(group_zscore(ts_decay_linear((close - ts_mean(close, 20)) / close, 5), subindustry), -2.0), 2.0)"
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Risk Decoupling and Institutional Quality Divergence (model51)",
+      "domain": "risk",
+      "economic_rationale": "Exploits low idiosyncratic return variance relative to the broad market benchmark (-unsystematic_risk_last_60_days). Equities exhibiting low unsystematic risk within their subindustry represent balance sheet stability, robust market integration, and institutional flight-to-safety destinations during market volatility regimes. Pairing with 20-day price mean-reversion delivers consistent large-cap sub-universe performance and low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Market-wide liquidity shocks where all asset correlations converge toward unity",
+        "Protracted high-beta momentum regimes where defensive low-unsystematic risk equities lag"
+      ],
+      "falsification_test": "Fails during aggressive high-beta speculative rallies where unhedged idiosyncratic risk is rewarded over market stability.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear(-unsystematic_risk_last_60_days, 5), subindustry), -2.0), 2.0) - 0.20 * min(max(group_zscore(ts_decay_linear((close - ts_mean(close, 20)) / close, 5), subindustry), -2.0), 2.0)"
+        }
+      ]
+    }
+  ]
+}

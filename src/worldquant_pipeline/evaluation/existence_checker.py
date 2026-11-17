@@ -3,7 +3,7 @@
 Audits candidate expressions across the entire PostgreSQL research memory across ALL statuses:
 1. Exact Match: Raw string, canonical AST normalization, and SHA-256 hash.
 2. Factor Driver Overlap: Checks if the primary non-price driver fields already exist
-   in the approved/submitted/validated portfolio (preventing platform self-correlation collisions >= 0.70).
+   in the approved/submitted/validated portfolio (preventing platform self-correlation collisions >= 0.35).
 3. Negative Knowledge History: Identifies if similar expressions were previously tested and rejected,
    surfacing prior experiment metrics and failure reasons.
 4. Pre-Simulation Verdict: Strictly classifies candidates as SAFE_VIRGIN_ALPHA,
@@ -101,9 +101,10 @@ class AlphaExistenceChecker:
             "ts_decay_linear", "ts_decay_exp_window", "ts_mean", "ts_rank", "ts_delta",
             "ts_delay", "ts_std_dev", "ts_stddev", "ts_argmax", "ts_argmin", "ts_backfill", "ts_corr",
             "ts_kurtosis", "ts_covariance", "ts_regression", "ts_product", "ts_sum",
-            "signed_power", "rank", "abs", "max", "min", "scale", "trade_when", "log",
+            "signed_power", "power", "rank", "abs", "max", "min", "scale", "trade_when", "log",
             "exp", "sqrt", "clamp", "decay_linear", "normalize", "zscore", "bucket", "densify",
-            "quantile", "tanh", "sigmoid", "ts_skewness", "ts_moment", "ts_av_diff",
+            "quantile", "tanh", "sigmoid", "ts_skewness", "ts_moment", "ts_av_diff", "ts_zscore",
+            "sign", "floor", "ceil", "round", "truncate", "winsorize", "vec_avg", "vector_neut", "hump",
         }
         all_fields = {
             t for t in tokens
@@ -281,7 +282,7 @@ class AlphaExistenceChecker:
                     f"(Similarity: {top_collision.similarity_score:.1%})."
                 )
                 result.warnings.append(
-                    "High probability of self-correlation collision (>= 0.70) on WorldQuant BRAIN platform!"
+                    "High probability of self-correlation collision (>= 0.35) on WorldQuant BRAIN platform!"
                 )
                 result.recommendation = (
                     f"REJECT CANDIDATE: Target a different, unmined dataset. Driver fields "

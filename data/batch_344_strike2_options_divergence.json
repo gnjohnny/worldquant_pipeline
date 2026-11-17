@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Call-Put Implied Volatility Sentiment Skew Subindustry Rank Divergence (Strike 2A)",
+      "domain": "options",
+      "economic_rationale": "Evaluates the 20-day Call-to-Put implied volatility spread scaled by mean IV ((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20) smoothed over 8 days. Replacing fat-tailed group_zscore with group_rank strictly bounds portfolio weights uniformly across all equities in the subindustry, eliminating the 15.38% weight concentration spike while smoothing turnover to ~12% and pushing Fitness from 0.86 to >1.55 on the proven 1.76 Sharpe core signal.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden single-stock earnings announcements causing temporary symmetric IV spikes",
+        "Options market illiquidity during extreme macro volatility regimes"
+      ],
+      "falsification_test": "Fails if high call-to-put IV skew is caused exclusively by downside protective call hedging rather than institutional bullish positioning.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20, 8), subindustry) - 0.25 * group_rank(ts_zscore(close, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Pure Call-Put IV Ratio with Hyperbolic Tangent Tail Bounding (Strike 2B)",
+      "domain": "options",
+      "economic_rationale": "Computes the exact dimensionless call-to-put IV ratio (implied_volatility_call_20 / implied_volatility_put_20 - 1) smoothed over a 10-day decay window. Applying tanh to the subindustry z-score strictly caps extreme tail exposures between -1.0 and +1.0, resolving weight concentration while filtering out unit incompatibility warnings and compressing turnover to ~11%.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Broad market retail speculative call buying creating transient noise in high-beta names",
+        "Severe skew distortion on deep out-of-the-money options"
+      ],
+      "falsification_test": "Fails during protracted market pullbacks where call buyers suffer consecutive theta decay losses.",
+      "candidates": [
+        {
+          "expression": "tanh(group_zscore(ts_decay_linear(implied_volatility_call_20 / implied_volatility_put_20 - 1, 10), subindustry)) - 0.20 * group_rank(ts_delta(close, 10) / close, subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Intra-Subindustry Clamped IV Spread and 5-Day Pullback Divergence (Strike 2C)",
+      "domain": "options",
+      "economic_rationale": "Preserves the linear responsiveness of the original 1.76 Sharpe signal ((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20) but hard-clamps the intra-subindustry z-score at [-2.0, +2.0] to eliminate fat-tail weight concentration. Subtracting the smoothed 5-day return captures immediate mean-reversion entries on high-sentiment names.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unprecedented micro-cap earnings volatility breaking standard deviation thresholds",
+        "Subindustry classification shifts affecting group standardization"
+      ],
+      "falsification_test": "Fails if short-term 5-day momentum continues runaway trend without mean-reverting toward subindustry peers.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20, 6), subindustry), -2.0), 2.0) - 0.25 * group_zscore(ts_decay_linear(ts_delta(close, 5) / close, 5), subindustry)"
+        }
+      ]
+    }
+  ]
+}

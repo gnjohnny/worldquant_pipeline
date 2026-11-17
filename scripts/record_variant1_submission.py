@@ -1,21 +1,24 @@
-import sys, uuid
+import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from worldquant_pipeline.storage.database import get_session
-from worldquant_pipeline.storage.models import (
-    ResearchHypothesis,
-    AlphaCandidate,
-    Experiment,
-    ExperimentMetric,
-    Decision,
-    DataField,
-)
 from worldquant_pipeline.expressions.canonicalize import (
     canonicalize_expression,
     compute_expression_hash,
 )
+from worldquant_pipeline.storage.database import get_session
+from worldquant_pipeline.storage.models import (
+    AlphaCandidate,
+    DataField,
+    Decision,
+    Experiment,
+    ExperimentMetric,
+    ResearchHypothesis,
+)
+
 
 def record():
     expr = (

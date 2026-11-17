@@ -10,11 +10,11 @@ simulation_defaults:
 
 quality_gates:
   min_sharpe: 1.25
-  min_fitness: 1.50
+  min_fitness: 1.55
   max_turnover: 0.70
   min_turnover: 0.01
   max_drawdown: 0.25
-  max_correlation: 0.70
+  max_correlation: 0.35
 
 operators:
   # Time-series operators: [name, arity, description]
@@ -283,7 +283,3 @@ operators:
       arity: [1, 2]
       param_types: ["expression"]
       description: "Hump function: dampens small variations around threshold"
-    - name: "tanh"
-      arity: 1
-      param_types: ["expression"]
-      description: "Hyperbolic tangent non-linear compression"

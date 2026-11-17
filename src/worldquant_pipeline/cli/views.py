@@ -199,7 +199,7 @@ def render_parsed_metrics(
         table.add_row(name, val_str, cutoff, st_str)
 
     add_row("Sharpe Ratio", metrics.sharpe, ">= 1.25", metrics.sharpe >= 1.25 if metrics.sharpe is not None else None)
-    add_row("Fitness Score", metrics.fitness, ">= 1.50 (GOOD)", metrics.fitness >= 1.50 if metrics.fitness is not None else None)
+    add_row("Fitness Score", metrics.fitness, "> 1.55 (Submission)", metrics.fitness > 1.55 if metrics.fitness is not None else None)
     add_row(
         "Turnover",
         metrics.turnover,
@@ -217,8 +217,8 @@ def render_parsed_metrics(
         add_row(
             "Self-Correlation",
             metrics.self_correlation,
-            "< 0.70",
-            metrics.self_correlation < 0.70,
+            "< 0.35 (Submission)",
+            metrics.self_correlation < 0.35,
         )
 
     console.print(table)
@@ -383,7 +383,7 @@ def render_existence_check(result: Any) -> None:
     elif v_val == "HIGH_PORTFOLIO_COLLISION":
         console.print(Panel(
             f"[bold red]FAIL: HIGH PORTFOLIO COLLISION ALERT (RISK: {result.max_risk_score:.1%})[/bold red]\n"
-            "Shares core driver fields with active/submitted alphas in your portfolio. High self-correlation risk (>= 0.70).",
+            "Shares core driver fields with active/submitted alphas in your portfolio. High self-correlation risk (>= 0.35).",
             title="Database Existence & Portfolio Collision Audit",
             border_style="bold red",
         ))

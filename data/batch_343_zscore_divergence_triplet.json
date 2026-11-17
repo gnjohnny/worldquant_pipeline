@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Market Correlation Decoupling and Idiosyncratic Quality Divergence (model51)",
+      "domain": "risk",
+      "economic_rationale": "Exploits low market integration (-correlation_last_60_days_spy). Equities that decouple from broad market movements (SPY) provide natural diversification. Evaluating rolling market correlation via intra-subindustry z-score and subtracting the 20-day price mean-reversion z-score isolates idiosyncratic outperformance during market dislocations, targeting turnover ~11% and zero factor correlation to past models.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sudden macro liquidity shocks that cause all asset correlations to converge to 1.0",
+        "Protracted market-wide momentum where low-correlation equities lag broad index performance"
+      ],
+      "falsification_test": "Inverts during broad market-wide beta momentum rallies where all equities move in lockstep with the benchmark index.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(-correlation_last_60_days_spy, 5), subindustry) - 0.25 * group_zscore((close - ts_mean(close, 20)) / (ts_std_dev(close, 20) + 0.001), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Call vs Put Implied Volatility Sentiment Skew Divergence (option8)",
+      "domain": "options",
+      "economic_rationale": "Evaluates the 20-day Call-to-Put implied volatility spread ((implied_volatility_call_20 - implied_volatility_put_20) / (implied_volatility_mean_20 + 0.001)). When informed institutional investors position for upside expansion, short-term call IV rises relative to put IV. Standardizing this sentiment spread within subindustries and subtracting 20-day price deviation captures high-conviction options demand while dampening turnover and drawdowns.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Event-driven earnings announcements causing artificial short-term IV spikes across both calls and puts",
+        "Options illiquidity in lower-volume equities producing noisy implied volatility surfaces"
+      ],
+      "falsification_test": "Fails if elevated call IV reflects speculative retail frenzy rather than informed institutional capital positioning.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear((implied_volatility_call_20 - implied_volatility_put_20) / (implied_volatility_mean_20 + 0.001), 5), subindustry) - 0.25 * group_zscore((close - ts_mean(close, 20)) / (ts_std_dev(close, 20) + 0.001), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Dividend Yield Cash-Solvency Anchor and Pullback Divergence (analyst4)",
+      "domain": "fundamental",
+      "economic_rationale": "Firms with high quarterly dividend yield relative to closing price (ts_backfill(actual_dividend_value_qua, 60) / close) demonstrate robust operational cash distribution capacity and balance sheet discipline. Standardizing dividend yield within subindustries and subtracting 20-day price deviation enters high-yielding companies on oversold pullbacks, suppressing turnover to ~10% and driving Fitness > 1.55 with zero correlation to option or beta surfaces.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Distressed companies maintaining high trailing dividend yield right before dividend cuts",
+        "Ex-dividend date price drops creating temporary artificial price distortions"
+      ],
+      "falsification_test": "Fails during high-growth speculative market rallies where zero-dividend growth tech massively outperforms high-dividend value equities.",
+      "candidates": [
+        {
+          "expression": "group_zscore(ts_decay_linear(ts_backfill(actual_dividend_value_qua, 60) / close, 5), subindustry) - 0.25 * group_zscore((close - ts_mean(close, 20)) / (ts_std_dev(close, 20) + 0.001), subindustry)"
+        }
+      ]
+    }
+  ]
+}

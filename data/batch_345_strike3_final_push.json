@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Call-to-Put IV Skew 10D Persistence with 20D Price Mean-Reversion (Strike 3A)",
+      "domain": "options",
+      "economic_rationale": "Extends call-to-put IV skew decay to 10 days to capture persistent institutional positioning in large-cap equities. Pairs with 20-day percentage price mean-reversion ((close - ts_mean(close, 20)) / close), both hard-clamped at [-2.0, 2.0]. This structure resolves weight concentration, slashes turnover to ~12%, elevates Fitness above 1.55, and lifts Sub-universe Sharpe above the 0.81 hurdle by stabilizing large-cap factor predictability.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Major macro earnings announcements temporarily inflating IV across both calls and puts",
+        "Protracted market-wide trend regimes where 20-day price mean reversion lags"
+      ],
+      "falsification_test": "Fails if high call-to-put IV skew is caused by downside short-call retail selling rather than institutional bullish accumulation.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20, 10), subindustry), -2.0), 2.0) - 0.20 * min(max(group_zscore(ts_decay_linear((close - ts_mean(close, 20)) / close, 5), subindustry), -2.0), 2.0)"
+        }
+      ]
+    },
+    {
+      "title": "Call-to-Put IV Skew 8D Persistence with 15D Intermediate Pullback (Strike 3B)",
+      "domain": "options",
+      "economic_rationale": "Combines 8-day decay smoothed IV skew with an intermediate 15-day percentage price reversion ((close - ts_mean(close, 15)) / close) smoothed over 4 days, both clamped at [-2.0, 2.0]. Optimizes the trade-off between large-cap stability and mid-cap responsiveness, driving sub-universe Sharpe consistency across all liquidity tiers.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Sector-wide rotation causing asynchronous IV adjustments among subindustry peers",
+        "Short-term gamma squeezes distorting options skew"
+      ],
+      "falsification_test": "Fails during sharp momentum rallies where 15-day oversold pullbacks continue downward trend.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20, 8), subindustry), -2.0), 2.0) - 0.25 * min(max(group_zscore(ts_decay_linear((close - ts_mean(close, 15)) / close, 4), subindustry), -2.0), 2.0)"
+        }
+      ]
+    },
+    {
+      "title": "Tightly-Clamped IV Skew with Direct 20D Price Mean-Reversion (Strike 3C)",
+      "domain": "options",
+      "economic_rationale": "Applies a tighter clamp at [-1.8, 1.8] to both the 6-day IV spread and the unsmoothed 20-day price deviation ((close - ts_mean(close, 20)) / close). Stricter outlier suppression prevents noisy tails from diluting top-tier liquid sub-universe performance, targeting Sharpe > 1.80 and Sub-universe Sharpe > 0.85.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Unhedged overnight gap risk in illiquid subindustries",
+        "Options implied volatility mean-reverting faster than underlying equity price"
+      ],
+      "falsification_test": "Fails if equity prices fail to track the directional bias implied by options skew over a 20-day horizon.",
+      "candidates": [
+        {
+          "expression": "min(max(group_zscore(ts_decay_linear((implied_volatility_call_20 - implied_volatility_put_20) / implied_volatility_mean_20, 6), subindustry), -1.8), 1.8) - 0.20 * min(max(group_zscore((close - ts_mean(close, 20)) / close, subindustry), -1.8), 1.8)"
+        }
+      ]
+    }
+  ]
+}

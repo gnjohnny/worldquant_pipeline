@@ -141,7 +141,7 @@ class TestHypothesisImporter:
 class TestQualityGates:
     def test_passing_metrics(self):
         runner = QualityGateRunner()
-        metrics = {"sharpe": 1.65, "turnover": 0.25, "fitness": 1.40}
+        metrics = {"sharpe": 1.65, "turnover": 0.25, "fitness": 1.65}
         res = runner.evaluate_metrics(metrics)
         assert res.passed is True
         assert len(res.failures) == 0

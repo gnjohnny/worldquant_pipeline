@@ -26,11 +26,11 @@ class QualityGateRunner:
         settings = get_settings()
         self.thresholds = thresholds or settings.research_config.get("quality_gates", {
             "min_sharpe": 1.25,
-            "min_fitness": 1.50,
+            "min_fitness": 1.55,
             "max_turnover": 0.70,
             "min_turnover": 0.01,
             "max_drawdown": 0.25,
-            "max_correlation": 0.70,
+            "max_correlation": 0.35,
         })
         self.validator = ExpressionValidator()
 
@@ -123,11 +123,11 @@ class QualityGateRunner:
             else:
                 gate_details["G5_turnover_bounds"] = True
 
-        # 3. Gate G5.3: Minimum Fitness
-        min_fitness = self.thresholds.get("min_fitness", 1.00)
+        # 3. Gate G5.3: Minimum Fitness (Submission Rule: Fitness > 1.55)
+        min_fitness = self.thresholds.get("min_fitness", 1.55)
         if fitness is not None:
-            if fitness < min_fitness:
-                warnings.append(f"Warning: Fitness score {fitness:.2f} is below target ({min_fitness:.2f}).")
+            if fitness <= min_fitness:
+                failures.append(f"Gate G5: Fitness score {fitness:.2f} is below submission cutoff ({min_fitness:.2f}).")
                 gate_details["G5_min_fitness"] = False
             else:
                 gate_details["G5_min_fitness"] = True
@@ -141,8 +141,8 @@ class QualityGateRunner:
             else:
                 gate_details["G5_max_drawdown"] = True
 
-        # 5. Gate G5.5: Maximum Self-Correlation
-        max_corr = self.thresholds.get("max_correlation", 0.70)
+        # 5. Gate G5.5: Maximum Self-Correlation (Submission Rule: Self-Correlation < 0.35)
+        max_corr = self.thresholds.get("max_correlation", 0.35)
         if self_corr is not None:
             if self_corr >= max_corr:
                 failures.append(f"Gate G5: Self-correlation {self_corr:.4f} is above cutoff of {max_corr:.2f}.")

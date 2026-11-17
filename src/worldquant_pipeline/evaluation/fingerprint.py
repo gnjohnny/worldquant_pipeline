@@ -57,7 +57,7 @@ class FingerprintAuditResult:
 class FactorFingerprintAuditor:
     """Audits candidate expressions against historical and approved alphas to prevent self-correlation collisions."""
 
-    BENCHMARK_PRICE_FIELDS: ClassVar[set[str]] = {"close", "open", "high", "low", "volume", "vwap", "returns"}
+    BENCHMARK_PRICE_FIELDS: ClassVar[set[str]] = {"close", "open", "high", "low", "volume", "vwap", "returns", "cap"}
 
     @classmethod
     def extract_fingerprint(cls, expr_str: str) -> FactorFingerprint:
@@ -205,10 +205,10 @@ class FactorFingerprintAuditor:
         # Sort comparisons by risk descending
         comparisons.sort(key=lambda x: x.estimated_correlation_risk, reverse=True)
 
-        # Risk classification
-        if max_risk >= 0.70:
+        # Risk classification (Submission Rule: Correlation < 0.35)
+        if max_risk >= 0.35:
             risk_level = "HIGH"
-        elif max_risk >= 0.45:
+        elif max_risk >= 0.20:
             risk_level = "MEDIUM"
         else:
             risk_level = "LOW"

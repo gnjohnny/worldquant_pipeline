@@ -107,7 +107,7 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
             result.self_correlation_passed = False
         elif re.search(r"(?i)or Sharpe is better by 10\.0% or more", cleaned_text):
             result.self_correlation_passed = True
-        elif result.self_correlation >= 0.70:
+        elif result.self_correlation >= 0.35:
             result.self_correlation_passed = False
 
     # 7. Max Drawdown
@@ -128,14 +128,14 @@ def parse_brain_paste(raw_text: str) -> ParsedSimulationMetrics:
 def evaluate_consultant_track_decision(
     metrics: ParsedSimulationMetrics,
 ) -> tuple[str, str]:
-    """Evaluate candidate metrics against Gold Level Consultant Track Invariants.
+    """Evaluate candidate metrics against Platform Submission Invariants.
 
-    Invariants:
-    1. Fitness >= 1.50 ("GOOD" status required for APPROVED).
+    Submission Invariants:
+    1. Fitness > 1.55 (Strict rule: only alphas with Fitness > 1.55 can be submitted).
     2. Sharpe >= 1.25.
     3. Turnover in [0.01, 0.70].
     4. Sub-universe Sharpe >= 0.0.
-    5. Self-correlation < 0.70.
+    5. Self-correlation < 0.35 (Strict rule: only alphas with Self-correlation < 0.35 can be submitted).
     """
     reasons: list[str] = []
     is_approved = True
@@ -144,9 +144,9 @@ def evaluate_consultant_track_decision(
         is_approved = False
         reasons.append(f"Sharpe {metrics.sharpe} < 1.25 cutoff")
 
-    if metrics.fitness is None or metrics.fitness < 1.50:
+    if metrics.fitness is None or metrics.fitness <= 1.55:
         is_approved = False
-        reasons.append(f"Fitness {metrics.fitness} < 1.50 cutoff (Gold Consultant Track)")
+        reasons.append(f"Fitness {metrics.fitness} <= 1.55 cutoff (Submission Rule: Fitness > 1.55)")
 
     if metrics.turnover is not None and (metrics.turnover < 0.01 or metrics.turnover > 0.70):
         is_approved = False
@@ -159,9 +159,9 @@ def evaluate_consultant_track_decision(
         is_approved = False
         reasons.append(f"Sub-universe Sharpe {metrics.sub_universe_sharpe} < 0.0")
 
-    if metrics.self_correlation is not None and not metrics.self_correlation_passed:
+    if metrics.self_correlation is not None and (metrics.self_correlation >= 0.35 or not metrics.self_correlation_passed):
         is_approved = False
-        reasons.append(f"Self-correlation {metrics.self_correlation} >= 0.70 collision threshold")
+        reasons.append(f"Self-correlation {metrics.self_correlation} >= 0.35 collision threshold (Submission Rule: Self-correlation < 0.35)")
 
     if not metrics.weight_well_distributed:
         is_approved = False
@@ -170,25 +170,23 @@ def evaluate_consultant_track_decision(
     if is_approved:
         decision = "APPROVED"
         full_reason = (
-            f"8/8 PASS! GOLD LEVEL CONSULTANT QUALIFIED: Sharpe {metrics.sharpe} >= 1.25, "
-            f"Fitness {metrics.fitness} >= 1.50 (GOOD Status), Turnover {metrics.turnover:.2%}, "
+            f"8/8 PASS! SUBMISSION QUALIFIED: Sharpe {metrics.sharpe} >= 1.25, "
+            f"Fitness {metrics.fitness} > 1.55, Turnover {metrics.turnover:.2%}, "
             f"Sub-universe Sharpe {metrics.sub_universe_sharpe}."
         )
         if metrics.self_correlation is not None:
-            if metrics.self_correlation < 0.70:
-                full_reason += f" Self-correlation {metrics.self_correlation} < 0.70 (Clean pass)."
-            else:
-                full_reason += f" Self-correlation {metrics.self_correlation} passed with 10% Sharpe override."
+            full_reason += f" Self-correlation {metrics.self_correlation} < 0.35 (Clean pass)."
     else:
-        # If platform hard checks failed (self-correlation, turnover, weight), it is strictly REJECTED
+        # If platform hard checks failed (self-correlation >= 0.35, turnover, weight, sharpe, or fitness <= 1.55), it is strictly REJECTED
         hard_fail = (
-            (metrics.self_correlation is not None and not metrics.self_correlation_passed)
+            (metrics.self_correlation is not None and (metrics.self_correlation >= 0.35 or not metrics.self_correlation_passed))
             or (metrics.turnover is not None and (metrics.turnover < 0.01 or metrics.turnover > 0.70))
             or (not metrics.weight_well_distributed)
             or (metrics.sharpe is not None and metrics.sharpe < 1.25)
+            or (metrics.fitness is not None and metrics.fitness <= 1.55)
         )
-        if not hard_fail and metrics.fitness is not None and metrics.fitness >= 1.0:
-            # Passed platform gates (Fitness >= 1.0), but below our consultant track threshold (1.50)
+        if not hard_fail and metrics.fitness is not None and metrics.fitness > 1.55:
+            # Passed submission gates (Fitness > 1.55, Self-correlation < 0.35)
             decision = "NEEDS_REVIEW"
         else:
             decision = "REJECTED"
