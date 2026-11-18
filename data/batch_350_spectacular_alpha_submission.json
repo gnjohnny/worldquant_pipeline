@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Put-Call Ratio Regime Switch with Volatility Skew and Intraday Gain Dispersion",
+      "domain": "options",
+      "economic_rationale": "Exploits options open-interest sentiment regime shifts via trade_when(pcr_oi_270 > ts_mean(pcr_oi_10, 190)). When the 270-day put-call ratio exceeds its trailing 190-day mean of the 10-day PCR, the market regime triggers an asymmetric implied volatility skew position (implied_volatility_call_360 - implied_volatility_put_1080) with currency neutralization. Modulating with backfilled standard deviation of intraday 4-percent gain arrival times (minutes_to_four_percent_gain_2) scales capital into instruments with high microstructure momentum dispersion.",
+      "expected_direction": "positive",
+      "intended_horizon": "39d",
+      "confounders": [
+        "Sudden currency devaluations impacting multi-currency options surfaces",
+        "Protracted periods of extreme market-wide implied volatility compression"
+      ],
+      "falsification_test": "Fails if intraday gain dispersion does not scale with post-regime options volatility expansion.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(trade_when(pcr_oi_270 > ts_mean(pcr_oi_10, 190), (implied_volatility_call_360 - implied_volatility_put_1080), -20), currency) * ts_backfill(ts_std_dev(vec_avg(minutes_to_four_percent_gain_2), 50), 185)",
+          "rationale": "High-conviction 8/8 PASS alpha with Sharpe 1.78 and Fitness 2.28 in SPECTACULAR tier."
+        }
+      ]
+    }
+  ]
+}

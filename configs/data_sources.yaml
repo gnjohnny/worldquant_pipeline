@@ -1183,6 +1183,13 @@ fields:
   unit: ratio
   region: USA
   permitted_use: true
+- field_key: earnings_per_share_estimate_count
+  category: analyst
+  description: Number of analyst forecasts covering EPS
+  timing_delay: 1
+  unit: count
+  region: USA
+  permitted_use: true
 - field_key: anl4_ady_numest
   category: analyst
   description: The number of forecasts counted in aggregation
@@ -3258,5 +3265,12 @@ fields:
     \ over approximately the past 90 calendar days"
   timing_delay: 1
   unit: USD
+  region: USA
+  permitted_use: true
+- field_key: minutes_to_four_percent_gain_2
+  category: price_volume
+  description: Number of minutes to achieve a four percent gain over interval 2
+  timing_delay: 1
+  unit: minutes
   region: USA
   permitted_use: true

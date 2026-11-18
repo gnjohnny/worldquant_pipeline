@@ -1,0 +1,58 @@
+{
+  "hypotheses": [
+    {
+      "title": "Options Gamma Corridor Sector-Neutral Coverage Expansion (Strike 2)",
+      "domain": "options",
+      "economic_rationale": "Refines the validated options gamma breakeven asymmetry signal (Sharpe 0.57, Sub-univ Sharpe 0.51) by expanding cross-sectional ranking from granular subindustry to broad sector (group_rank(..., sector)) and adding 5-day backfill (ts_backfill(..., 5)). This eliminates single-stock concentration in thin subindustries, broadens active instrument participation across hundreds of stocks per group, and dampens turnover via ts_decay_linear.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Macro sector rotation suppressing individual stock options alpha",
+        "Low market-wide options trading volume during holiday periods"
+      ],
+      "falsification_test": "Fails if sector-level ranking washes out cross-firm idiosyncratic options mispricing.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((ts_backfill(call_breakeven_30, 5) + ts_backfill(put_breakeven_30, 5) - 2 * close) / close, 5), sector) - 0.5",
+          "rationale": "Sector-neutralized options gamma corridor with 5-day backfill to eliminate weight concentration."
+        }
+      ]
+    },
+    {
+      "title": "Options Gamma Asymmetry Coupled with Universal Mean-Reversion Anchor (Strike 2)",
+      "domain": "options",
+      "economic_rationale": "Solves the instrument coverage / concentration issue by coupling the 30-day options gamma breakeven asymmetry signal with an equal-weighted 5-day price mean-reversion anchor (close - ts_mean(close, 5)) / close. Because price has 100% universal coverage across all 3,000 instruments in TOP3000, all instruments receive active portfolio weights. The options signal acts as an institutional flow filter: buying stocks with strong upside options support that are currently experiencing short-term price pullbacks.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Protracted market drawdown regimes where short-term pullbacks persist into long trends",
+        "Unhedged options expiration pinning distorting breakeven levels on expiration Fridays"
+      ],
+      "falsification_test": "Fails if short-term price momentum dominates and overwhelms the options gamma support signal.",
+      "candidates": [
+        {
+          "expression": "0.5 * group_rank((ts_backfill(call_breakeven_30, 5) + ts_backfill(put_breakeven_30, 5) - 2 * close) / close, subindustry) - 0.5 * group_rank((close - ts_mean(close, 5)) / close, subindustry)",
+          "rationale": "Equal-weighted coupling of options gamma asymmetry with universal price mean-reversion anchor."
+        }
+      ]
+    },
+    {
+      "title": "30-Day Put Breakeven Support Floor Distance (Strike 2)",
+      "domain": "options",
+      "economic_rationale": "Isolates the single most liquid and robust dimension of options positioning: the downside put breakeven support floor ((close - ts_backfill(put_breakeven_30, 10)) / close). Institutional hedging creates deep liquidity and open interest in put contracts. When spot price remains safely above the 30-day put breakeven floor, option dealers maintain positive gamma and are not forced into destabilizing downside dynamic delta hedging. Applying 10-day backfill and 5-day linear decay maximizes cross-sectional instrument coverage while controlling turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Black swan market crashes breaching put breakeven floors simultaneously across the entire market",
+        "Companies with zero traded options receiving zero weight"
+      ],
+      "falsification_test": "Fails if put breakeven distance fails to offer support during sharp sector-wide pullbacks.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear((close - ts_backfill(put_breakeven_30, 10)) / close, 5), subindustry) - 0.5",
+          "rationale": "Pure downside put breakeven support floor with 10-day backfill for maximum options liquidity."
+        }
+      ]
+    }
+  ]
+}

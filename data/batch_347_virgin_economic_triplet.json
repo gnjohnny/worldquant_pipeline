@@ -1,0 +1,55 @@
+{
+  "hypotheses": [
+    {
+      "title": "Supply-Chain Customer Return Momentum Transmission Lead-Lag (pv13)",
+      "domain": "alternative",
+      "economic_rationale": "Exploits information transmission delays across corporate supply chains. Upstream institutional customers reflect revenue shocks and demand shifts first, while supplier stock prices lag by multiple days due to delayed equity re-rating by market participants. Taking the 5-day linearly smoothed customer return signal and taking the rank difference against the supplier's own 20-day return momentum isolates pure supply-chain lead-lag alpha without arbitrary tuning coefficients.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Customer return signals contaminated by non-recurring balance-sheet events",
+        "Broad macroeconomic industry-wide demand contractions suppressing both customer and supplier"
+      ],
+      "falsification_test": "Fails if supplier equities immediately co-move with customers in real time without any multi-day information propagation friction.",
+      "candidates": [
+        {
+          "expression": "group_rank(ts_decay_linear(pv13_custretsig_retsig, 5), subindustry) - group_rank(ts_decay_linear(returns, 20), subindustry)"
+        }
+      ]
+    },
+    {
+      "title": "Options Market Maker Gamma Corridor Breakeven Asymmetry (option9)",
+      "domain": "options",
+      "economic_rationale": "Measures the structural skew of 30-day open-interest weighted options breakeven levels around the current stock price ((call_breakeven_30 + put_breakeven_30 - 2 * close) / close). When call breakeven distance exceeds downside put breakeven distance, market makers hold net supportive gamma buffers and institutional option open interest prices asymmetric upside potential. Normalizing by close creates a pure dimensionless metric across subindustry peers without tuned constants.",
+      "expected_direction": "positive",
+      "intended_horizon": "5d",
+      "confounders": [
+        "Low open interest across illiquid strikes distorting volume-weighted breakeven calculations",
+        "Extreme binary corporate catalyst events causing sudden implied volatility shifts"
+      ],
+      "falsification_test": "Fails if breakeven asymmetry is driven entirely by out-of-the-money call speculative buying that expires worthless.",
+      "candidates": [
+        {
+          "expression": "group_rank((call_breakeven_30 + put_breakeven_30 - 2 * close) / close, subindustry) - 0.5"
+        }
+      ]
+    },
+    {
+      "title": "Low-Beta & Idiosyncratic Risk Decoupling Composite (model51)",
+      "domain": "risk",
+      "economic_rationale": "Capitalizes on the empirical low-beta asset pricing anomaly while isolating equities where short-term idiosyncratic variance has normalized relative to their 1-year baseline. Low-beta equities provide superior long-term risk-adjusted performance due to leverage-constrained institutional investors overpaying for high-beta lottery tickets. Combining inverted 60-day market beta with normalized unsystematic risk creates an equal-weighted defensive alpha that performs across large and small caps with low turnover.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Protracted high-beta speculative bull markets where defensive low-beta equities lag the benchmark",
+        "Sharp market regime shifts where historical rolling beta fails to capture sudden factor exposures"
+      ],
+      "falsification_test": "Fails during low-quality junk rallies where speculative high-beta distress stocks substantially outperform quality low-risk equities.",
+      "candidates": [
+        {
+          "expression": "0.5 * group_rank(-beta_last_60_days_spy, subindustry) + 0.5 * group_rank(-unsystematic_risk_last_30_days / (unsystematic_risk_last_360_days + 0.0001), subindustry) - 0.5"
+        }
+      ]
+    }
+  ]
+}
