@@ -104,6 +104,20 @@ fields:
   unit: USD
   region: USA
   permitted_use: true
+- field_key: debt
+  category: fundamental
+  description: Total debt obligations (short-term plus long-term debt)
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
+- field_key: equity
+  category: fundamental
+  description: Common shareholders equity / book value
+  timing_delay: 1
+  unit: USD
+  region: USA
+  permitted_use: true
 - field_key: analyst_revision_rank_derivative
   category: model_fundamental_scores
   description: Daily-indicator variant of momentum capturing recent price moves and
@@ -1899,7 +1913,8 @@ fields:
   permitted_use: true
 - field_key: rel_ret_all
   category: relationship
-  description: Averaged one-day return of the companies whose product overlapped with the instrument
+  description: Averaged one-day return of the companies whose product overlapped with
+    the instrument
   timing_delay: 1
   unit: ratio
   region: USA
@@ -2873,7 +2888,7 @@ fields:
   description: Ratio of put open interest to call open interest for options expiring
     in 10 days, indicating short-term positioning
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_oi_1080
@@ -2881,7 +2896,7 @@ fields:
   description: Ratio of put option open interest to call option open interest for
     stock options expiring in 1080 days, representing longer-term positioning
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_oi_120
@@ -2889,7 +2904,7 @@ fields:
   description: Ratio of total put option open interest to total call option open interest
     for options expiring in 120 days, indicating longer- term put-call position
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_oi_150
@@ -2897,7 +2912,7 @@ fields:
   description: Ratio of total put option open interest to total call option open interest
     for options expiring in 150 days, indicating longer- term put-call position
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_10
@@ -2905,7 +2920,7 @@ fields:
   description: Ratio of total put option volume to call option volume for options
     expiring in 10 days, reflecting very short-term sentiment flow
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_1080
@@ -2913,7 +2928,7 @@ fields:
   description: Ratio of put volume to call volume on a stock's options with expiration
     1080 days in the future.
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_120
@@ -2921,7 +2936,7 @@ fields:
   description: Ratio of put options volume to call options volume for contracts expiring
     in 120 days on a stock's options
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_150
@@ -2929,7 +2944,7 @@ fields:
   description: Ratio of total put options volume to call options volume for options
     expiring in 150 days, reflecting short-term options flow sentiment
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_180
@@ -2937,7 +2952,7 @@ fields:
   description: Ratio of total put option volume to call option volume for options
     expiring in 180 days, capturing short-term options flow sentiment
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_20
@@ -2945,7 +2960,7 @@ fields:
   description: Ratio of put option volume to call option volume for options expiring
     in 20 days, signaling short-term options flow sentiment
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_30
@@ -2953,7 +2968,7 @@ fields:
   description: Ratio of put volume to call volume on a stock's options with expiration
     30 days in the future
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_360
@@ -2961,7 +2976,7 @@ fields:
   description: Ratio of put volume to call volume on a stock's options with expiration
     360 days in the future
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_60
@@ -2969,7 +2984,7 @@ fields:
   description: Ratio of total put options volume to call options volume for contracts
     expiring 60 days in the future, indicating short-term options flow sentiment
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: pcr_vol_720
@@ -2977,7 +2992,7 @@ fields:
   description: Ratio of put options volume to call options volume for contracts expiring
     in 720 days on a stock's options
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: put_breakeven_270
@@ -3077,7 +3092,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     120 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_150
@@ -3085,7 +3100,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     150 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_180
@@ -3093,7 +3108,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     180 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_20
@@ -3101,7 +3116,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     20 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_270
@@ -3109,7 +3124,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     270 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_30
@@ -3117,7 +3132,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     30 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_360
@@ -3125,7 +3140,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     360 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_60
@@ -3133,7 +3148,7 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     60 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_call_90
@@ -3141,21 +3156,21 @@ fields:
   description: Implied volatility of the at-the-money call for the stock with an expiration
     90 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_mean_72
   category: options
   description: 0 The average of IvCall720 and IvPut720
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_mean_90
   category: options
   description: The average of IvCall90 and IvPut90
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_20
@@ -3163,7 +3178,7 @@ fields:
   description: At-the-money implied volatility of put options with 20 calendar days
     to expiration, annualized decimal
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_270
@@ -3171,7 +3186,7 @@ fields:
   description: Implied volatility of the at-the-money put for the stock with an expiration
     270 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_30
@@ -3179,7 +3194,7 @@ fields:
   description: Implied volatility of the at-the-money put for the stock with an expiration
     30 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_360
@@ -3187,7 +3202,7 @@ fields:
   description: Implied volatility of the at-the-money put for the stock with an expiration
     360 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_60
@@ -3195,7 +3210,7 @@ fields:
   description: Implied volatility of the at-the-money put for the stock with an expiration
     60 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_720
@@ -3203,7 +3218,7 @@ fields:
   description: Implied volatility of the at-the-money put for the stock with an expiration
     720 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: implied_volatility_put_90
@@ -3211,28 +3226,28 @@ fields:
   description: Implied volatility of the at-the-money put for the stock with an expiration
     90 calendar days from the measurement date
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_10
   category: options
   description: Historical Parkinson volatility for approximately 10 calendar days
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_150
   category: options
   description: Historical Parkinson volatility for approximately 150 calendar days
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_180
   category: options
   description: Historical Parkinson volatility for approximately 180 calendar days
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_20
@@ -3240,7 +3255,7 @@ fields:
   description: "Historical volatility using the Parkinson high\u2013low estimator\
     \ over approximately the past 20 calendar days"
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_30
@@ -3248,7 +3263,7 @@ fields:
   description: "Historical volatility using the Parkinson high\u2013low estimator\
     \ over approximately the past 30 calendar days"
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_60
@@ -3256,7 +3271,7 @@ fields:
   description: "Historical volatility using the Parkinson high\u2013low estimator\
     \ over approximately the past 60 calendar days"
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: parkinson_volatility_90
@@ -3264,7 +3279,7 @@ fields:
   description: "Historical volatility using the Parkinson high\u2013low estimator\
     \ over approximately the past 90 calendar days"
   timing_delay: 1
-  unit: USD
+  unit: ratio
   region: USA
   permitted_use: true
 - field_key: minutes_to_four_percent_gain_2

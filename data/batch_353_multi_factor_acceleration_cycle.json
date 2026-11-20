@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Multi-Factor Acceleration Score and Secular Inflection Cycle Duration Synergy",
+      "domain": "model_fundamental_scores",
+      "economic_rationale": "Combines continuous winsorized multi-factor fundamental acceleration (multi_factor_acceleration_score_derivative) with secular style inflection timing (ts_arg_min(multi_factor_static_score_derivative, 250)). Measuring the trading day distance since the 1-year minimum static multi-factor composite change captures the duration of sustained fundamental recovery across Value, Growth, Profitability, and Quality. Scaling this cycle duration with current acceleration weights firms undergoing active institutional upgrades. 3-day linear decay dampens turnover to institutional levels (~3-5%), driving high Sharpe and Fitness with zero correlation to balance sheet debt metrics.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Sudden sector-wide multiple compression during interest rate shocks",
+        "Protracted macro volatility overwhelming firm-specific fundamental acceleration"
+      ],
+      "falsification_test": "Fails if extended multi-factor recovery duration does not translate into superior risk-adjusted alpha in large caps.",
+      "candidates": [
+        {
+          "expression": "ts_decay_linear(winsorize(multi_factor_acceleration_score_derivative, std=2) * ts_arg_min(multi_factor_static_score_derivative, 250), 3)",
+          "rationale": "Pure multiplicative interaction of fundamental acceleration and inflection duration with 100% matrix coverage and 0% portfolio collision."
+        }
+      ]
+    }
+  ]
+}

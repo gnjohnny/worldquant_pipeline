@@ -93,6 +93,12 @@ class Settings:
             "anl4_strong_sell",
             "anl4_underperform",
             "anl4_outperform",
+            "anl4_adxqfv110_mean",
+            "anl4_adxqfv110_median",
+            "anl4_adxqfv110_high",
+            "anl4_adxqfv110_low",
+            "anl4_adxqfv110_numest",
+            "anl4_adxqfv110_pu",
         }
         res: dict[str, dict[str, Any]] = {}
         for f in cfg:

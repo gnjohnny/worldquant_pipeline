@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Winsorized Solvency Leverage and Deleveraging Cycle Duration Synergy",
+      "domain": "fundamental",
+      "economic_rationale": "Combines continuous winsorized balance sheet leverage (liabilities / assets, 90-day backfilled) with debt recapitalization cycle dynamics (ts_arg_min(debt / equity, 250)). Measuring the trading day distance to the 1-year minimum debt-to-equity ratio captures corporate capital structure inflection points and post-deleveraging equity rerating. 3-day linear decay dampens execution turnover to 2.91%, driving a Sharpe of 2.10 and Fitness of 1.86 with ultra-low self-correlation of 0.1726.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Rapid market-wide credit contraction impacting highly leveraged sectors",
+        "Debt restructuring through equity dilution rather than operational cash flow"
+      ],
+      "falsification_test": "Fails if high debt-to-equity minimum arrival distance leads to sustained equity underperformance across liquid large-caps.",
+      "candidates": [
+        {
+          "expression": "ts_decay_linear(winsorize(ts_backfill(liabilities / assets, 90), std=2) * ts_arg_min(debt / equity, 250), 3)",
+          "rationale": "Spectacular tier alpha with Sharpe 2.10, Fitness 1.86, Turnover 2.91%, Sub-universe Sharpe 1.10, and Self-Correlation 0.1726 (8/8 PASS)."
+        }
+      ]
+    }
+  ]
+}

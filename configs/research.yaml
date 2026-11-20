@@ -68,10 +68,18 @@ operators:
       arity: 2
       param_types: ["expression", "integer"]
       description: "Day of time-series maximum over d days"
+    - name: "ts_arg_max"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Day of time-series maximum over d days (alias)"
     - name: "ts_argmin"
       arity: 2
       param_types: ["expression", "integer"]
       description: "Day of time-series minimum over d days"
+    - name: "ts_arg_min"
+      arity: 2
+      param_types: ["expression", "integer"]
+      description: "Day of time-series minimum over d days (alias)"
     - name: "ts_median"
       arity: 2
       param_types: ["expression", "integer"]
@@ -193,9 +201,9 @@ operators:
       param_types: ["expression", "number"]
       description: "Truncate individual weights to max_percent"
     - name: "winsorize"
-      arity: 1
+      arity: [1, 2]
       param_types: ["expression"]
-      description: "Winsorize outliers in expression"
+      description: "Winsorize outliers in expression (supports optional std/quantile argument)"
     - name: "quantile"
       arity: [1, 2]
       param_types: ["expression"]

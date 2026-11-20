@@ -1,0 +1,22 @@
+{
+  "hypotheses": [
+    {
+      "title": "Analyst Quarterly Forecast Skewness Regime with Intraday VWAP Dispersion",
+      "domain": "analyst",
+      "economic_rationale": "Captures institutional post-earnings announcement drift and revision asymmetry. When the mean quarterly analyst forecast exceeds the median forecast (anl4_adxqfv110_mean > anl4_adxqfv110_median), high-conviction sell-side analysts have aggressively revised projections upwards, creating a positive forecast distribution skew that conservative median consensus has yet to incorporate. Executing via trade_when with a -20 day holding period captures the fundamental drift while dampening turnover. Modulating with rolling intraday VWAP execution dispersion (ts_std_dev(close / vwap, 20)) concentrates capital into equities with active institutional liquidity flows.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Single outlier analyst providing an extreme erroneous estimate",
+        "Protracted macro volatility causing across-the-board earnings guidance downgrades"
+      ],
+      "falsification_test": "Fails if positive forecast skewness reverts into negative guidance revisions without price drift.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(trade_when(ts_backfill(anl4_adxqfv110_mean, 60) > ts_backfill(anl4_adxqfv110_median, 60), (ts_backfill(anl4_adxqfv110_mean, 60) - ts_backfill(anl4_adxqfv110_median, 60)) / close, -20), currency) * ts_backfill(ts_std_dev(close / vwap, 20), 60)",
+          "rationale": "Virgin high-conviction candidate targeting PEAD forecast asymmetry with 0% overlap against approved portfolio."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "hypotheses": [
+    {
+      "title": "Systematic Market Decoupling and Tail-Risk Normalization",
+      "domain": "systematic_risk_and_options_surface",
+      "economic_rationale": "Equities decoupling from systematic market correlation (ts_av_diff(correlation_last_60_days_spy, 60) < 0) while experiencing subdued institutional options crash skew (-ts_zscore(implied_volatility_mean_skew_60, 60) > 0) represent prime unhedged idiosyncratic accumulation candidates. Cross-sectional subindustry neutralization isolates genuine asset-specific mispricings free from macroeconomic factor drag.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Systemic market-wide liquidity crunches forcing correlation spikes",
+        "Binary event risk (e.g. biotech FDA trial outcomes) distorting implied skew"
+      ],
+      "falsification_test": "Alpha fails if market-decoupling equities underperform during broad macroeconomic consolidation regimes.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_av_diff(correlation_last_60_days_spy, 60) * -ts_zscore(implied_volatility_mean_skew_60, 60), subindustry)",
+          "rationale": "G1/G2/G3+ zero-collision alpha uniting Model51 rolling SPY correlation dynamics with Option8 implied volatility skewness."
+        }
+      ]
+    },
+    {
+      "title": "Higher-Moment Return Asymmetry and Intraday VWAP Dislocation",
+      "domain": "price_volume_microstructure",
+      "economic_rationale": "The third standardized moment of returns (ts_skewness(returns, 60)) reflects lottery-ticket preference and crash asymmetry. Negatively skewed stocks earn a substantial volatility risk premium. Interacting negative return skewness with short-term price dislocations relative to VWAP ((close - vwap) / vwap) captures institutional execution absorption where temporary intraday dips in high-risk-premium names yield strong mean-reversion.",
+      "expected_direction": "positive",
+      "intended_horizon": "15d",
+      "confounders": [
+        "Persistent structural bankruptcy risk causing sustained negative skewness",
+        "Regime shifts in intraday algorithmic execution flow"
+      ],
+      "falsification_test": "Alpha fails if negatively skewed equities with intraday VWAP discounts continue downward drift without mean-reversion.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(-ts_skewness(returns, 60) * ts_zscore((close - vwap) / vwap, 20), subindustry)",
+          "rationale": "Pure higher-order statistical moment interaction with volume-weighted price dislocation, completely free of boilerplate templates."
+        }
+      ]
+    },
+    {
+      "title": "Idiosyncratic Risk Surge and Price Reversal Synergy",
+      "domain": "risk_model_and_price_dynamics",
+      "economic_rationale": "Spikes in unsystematic variance relative to systematic variance (unsystematic_risk_last_90_days / systematic_risk_last_90_days) signal idiosyncratic event overreactions. When paired with negative price momentum relative to the 60-day moving average (-ts_zscore(close / ts_mean(close, 60), 20)), this identifies stocks that have temporarily suffered excessive panic discounting and are poised for sharp post-event reversion.",
+      "expected_direction": "positive",
+      "intended_horizon": "20d",
+      "confounders": [
+        "Permanent impairment of corporate fundamentals driving justified idiosyncratic risk expansion",
+        "Prolonged secular bear market in individual sectors"
+      ],
+      "falsification_test": "Alpha fails if idiosyncratic risk expansion indicates fundamental solvency deterioration rather than temporary dislocation.",
+      "candidates": [
+        {
+          "expression": "group_neutralize(ts_zscore(unsystematic_risk_last_90_days / (systematic_risk_last_90_days + 0.001), 90) * -ts_zscore(close / ts_mean(close, 60), 20), subindustry)",
+          "rationale": "Orthogonal risk-model shock structure exploiting the low-beta/idiosyncratic variance anomaly paired with intermediate trend reversion."
+        }
+      ]
+    }
+  ]
+}
